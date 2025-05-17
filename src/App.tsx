@@ -10,7 +10,7 @@ import { store } from './store/store';
 function App() {
   return (
     <Provider store={store}>
-      <Router>
+      <Router basename="/finance-webapp" >
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/home"  element={<HomePage />} />

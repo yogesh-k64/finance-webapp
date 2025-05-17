@@ -1,0 +1,17 @@
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    .nav-button{
+        background: $btn-color;
+        color: $text-on-btn
+    }
+}
+
+.home-container{
+    max-width: 600px;
+    margin: auto;
+}
+
+.form-section{
+    background: $secondary-color;
+}

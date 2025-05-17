@@ -1,4 +1,5 @@
 {
+  "homepage": "https://yogesh-k64.github.io/finance-webapp",
   "name": "saturday-finance",
   "private": true,
   "version": "0.0.0",
@@ -7,6 +8,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "preview": "vite preview"
   },
   "dependencies": {

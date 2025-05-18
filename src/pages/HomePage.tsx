@@ -18,7 +18,7 @@ function HomePage() {
   }
   return (
     <div className="home-container">
-      <h1>Welcome to the App</h1>
+      <h1>Finance Manager</h1>
       <div className="button-group">
         <button onClick={() => navigate(SCREENS.CUSTOMERS)} className="nav-button">
           Customers

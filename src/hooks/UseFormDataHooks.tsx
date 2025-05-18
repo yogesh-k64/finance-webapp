@@ -1,21 +1,31 @@
+import type { Handout, collection } from '../utils/interface';
+
 import React from 'react'
+import { addCollection } from '../store/collectionSlice';
 import { addHandout } from '../store/handoutsSlice';
+import { collectionPageIgnoreField } from '../utils/constants';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-const useFormDataHooks = () => {
+interface formDateHookProps {
+  isCollectionPage?: boolean
+}
 
-  const dispatch = useDispatch();
-
-const [formData, setFormData] = useState({
+const initialFormData = {
     name: '',
     mobile: '',
     nominee: '',
     amount: '',
     date: '',
     address: '',
-  });
+  }
+
+const useFormDataHooks = (props: formDateHookProps) => {
+  const { isCollectionPage } = props
+  const dispatch = useDispatch();
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const [errors, setErrors] = useState({
     name: false,
@@ -26,7 +36,7 @@ const [formData, setFormData] = useState({
     address: false,
   });
 
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -43,6 +53,10 @@ const [formData, setFormData] = useState({
       date: formData.date.trim() === '',
       address: false,
     };
+    for (const key in newErrors) {
+      if (isCollectionPage && collectionPageIgnoreField.includes(key))
+        newErrors[key as keyof typeof newErrors] = false;
+    }
     setErrors(newErrors);
     return !Object.values(newErrors).some(error => error);
   };
@@ -59,22 +73,37 @@ const [formData, setFormData] = useState({
         date: formData.date,
         address: formData.address.trim(),
       };
-      dispatch(addHandout(newHandout));
-      // Reset form
+
+      const newCollection = {
+        id: uuidv4(),
+        name: formData.name.trim(),
+        amount: Number(formData.amount),
+        date: formData.date,
+        handoutId: ''
+      } as collection
+
+      if (isCollectionPage)
+        dispatch(addCollection(newCollection));
+      else
+        dispatch(addHandout(newHandout));
       setFormData({
         name: '',
         mobile: '',
         nominee: '',
         amount: '',
-        date: '',
+        date: formData.date,
         address: '',
       });
     }
   };
 
-  
+  const handleEdit =(item: collection | Handout)=>{
+    setFormData(Object.assign({}, initialFormData, item))
+  }
+
+
   return {
-handleSubmit, formData, errors, handleChange
+    handleSubmit, formData, errors, handleChange, handleEdit
   }
 }
 

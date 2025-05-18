@@ -1,3 +1,4 @@
+import DatePicker, { DateObject } from "react-multi-date-picker"
 import {
   Paper,
   Table,
@@ -8,67 +9,66 @@ import {
   TableRow,
 } from '@mui/material';
 
+import { DATE_PICKER_FORMAT } from "../utils/constants";
 import FormDataComp from './FormDataComp';
 import { Link } from 'react-router-dom';
-import type { RootState } from '../store/store';
+import { getHandoutSummary } from "../utils/utilsFunction";
+import { useHandoutsList } from '../store/handoutsSlice';
 import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
 function Handouts() {
-  const handouts = useSelector((state: RootState) => state.handouts.items);
-  const totalGiven = () => {
-    const givenDetails = {
-      total: 0,
-      givenToCustomer: 0,
-      profit: 0,
-    }
+  const allHandouts = useSelector(useHandoutsList);
+  const [values, setValues] = useState([
+    new DateObject().subtract(7, "days"),
+    new DateObject().add(1, "days")
+  ])
+  
+  const [fromDate, endDate] = values
+  const fromDateObj = new Date(fromDate?.toString())
+  const endDateObj = new Date(endDate?.toString())
+  const handouts = allHandouts.filter(item => {
+    return new Date(item.date) >= fromDateObj && 
+    new Date(item.date) <= endDateObj
+  })
+  const handoutsSummary = getHandoutSummary(handouts, fromDateObj, endDateObj)
 
-    handouts.forEach(item => {
-      const bondAmt = item.amount <= 5000 ? 50 : 100
-      const profit = (item.amount / 10) + bondAmt
-      givenDetails.total += item.amount
-      givenDetails.givenToCustomer += (item.amount - profit)
-      givenDetails.profit += profit
-    })
+  const { total, givenToCustomer, profit } = handoutsSummary;
 
-    return givenDetails
-  }
-  const { total, givenToCustomer, profit } = totalGiven()
+  const headCell = ["name", "mobile", "nominee", "amount", "date", "address"]
 
   return (
     <div className="handouts-container">
       <Link to="/" className="back-link">← Back to Home</Link>
-
       <h1>Handouts Management</h1>
-
       <div className="form-section">
         <h2>Add New Handout</h2>
         <FormDataComp />
       </div>
 
       <div className="table-section">
-        <h2>Handouts Records</h2>
+        <div className="header-section" >
+          <span className="title" >Handouts Records</span>
+          <DatePicker
+            format={DATE_PICKER_FORMAT}
+            value={values}
+            onChange={setValues}
+            range
+            dateSeparator="  To  "
+          />
+        </div>
         {handouts.length > 0 ? (
           <TableContainer component={Paper} className="handouts-table">
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Mobile</TableCell>
-                  <TableCell>Nominee</TableCell>
-                  <TableCell>Amount</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Address</TableCell>
+                  {headCell.map(item => <TableCell>{item}</TableCell>)}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {handouts.map(handout => (
                   <TableRow key={handout.id}>
-                    <TableCell>{handout.name || "-"}</TableCell>
-                    <TableCell>{handout.mobile|| "-"}</TableCell>
-                    <TableCell>{handout.nominee || "-"}</TableCell>
-                    <TableCell>{handout.amount || "-"}</TableCell>
-                    <TableCell>{handout.date || "-"}</TableCell>
-                    <TableCell>{handout.address || "-"}</TableCell>
+                    {headCell.map(item => <TableCell>{handout[item as keyof typeof handout] || "-"}</TableCell>)}
                   </TableRow>
                 ))}
               </TableBody>

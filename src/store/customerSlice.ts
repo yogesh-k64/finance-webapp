@@ -1,11 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-
-interface Handout {
-  id: string;
-  name: string;
-  mobile: string;
-  address: string;
-}
+import type { Handout } from '../utils/interface';
 
 interface HandoutsState {
   items: Handout[];

@@ -1,17 +1,55 @@
 .button-group {
     display: flex;
     justify-content: space-between;
-    .nav-button{
+
+    .nav-button {
         background: $btn-color;
         color: $text-on-btn
     }
 }
 
-.home-container{
+.home-container {
     max-width: 600px;
     margin: auto;
 }
 
-.form-section{
+.form-section {
     background: $secondary-color;
+
+    .form-container {
+        .form-group {
+            margin: 10px 20px;
+            width: calc(50% - 40px);
+        }
+    }
+}
+
+.table-section {
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+
+        .title {
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .rmdp-input {
+            font-size: 16px;
+            border: 1px solid #c0c4d6;
+            border-radius: 5px;
+            padding: 2px 5px;
+            padding: 10px 20px;
+            background: $btn-color;
+            color: $text-on-btn;
+            min-width: 215px;
+            text-align: center;
+        }
+    }
+
+    thead {
+        th {
+            text-transform: capitalize;
+        }
+    }
 }

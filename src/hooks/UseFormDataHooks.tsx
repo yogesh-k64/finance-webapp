@@ -1,9 +1,9 @@
 import type { Handout, collection } from '../utils/interface';
+import { STATUS_TYPES, collectionPageIgnoreField } from '../utils/constants';
 
 import React from 'react'
 import { addCollection } from '../store/collectionSlice';
 import { addHandout } from '../store/handoutsSlice';
-import { collectionPageIgnoreField } from '../utils/constants';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,13 +13,13 @@ interface formDateHookProps {
 }
 
 const initialFormData = {
-    name: '',
-    mobile: '',
-    nominee: '',
-    amount: '',
-    date: '',
-    address: '',
-  }
+  name: '',
+  mobile: '',
+  nominee: '',
+  amount: '',
+  date: '',
+  address: '',
+}
 
 const useFormDataHooks = (props: formDateHookProps) => {
   const { isCollectionPage } = props
@@ -72,6 +72,8 @@ const useFormDataHooks = (props: formDateHookProps) => {
         amount: Number(formData.amount),
         date: formData.date,
         address: formData.address.trim(),
+        collection: [] as collection[],
+        status: STATUS_TYPES.ACTIVE
       };
 
       const newCollection = {
@@ -97,7 +99,7 @@ const useFormDataHooks = (props: formDateHookProps) => {
     }
   };
 
-  const handleEdit =(item: collection | Handout)=>{
+  const handleEdit = (item: collection | Handout) => {
     setFormData(Object.assign({}, initialFormData, item))
   }
 

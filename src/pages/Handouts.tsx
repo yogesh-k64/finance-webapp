@@ -12,6 +12,7 @@ import {
 
 import DatePicker from "react-multi-date-picker"
 import FormDataComp from './FormDataComp';
+import type { Handout } from "../utils/interface";
 import { getHandoutSummary } from "../utils/utilsFunction";
 import { useHandoutsList } from '../store/handoutsSlice';
 import { useSelector } from 'react-redux';
@@ -21,13 +22,13 @@ function Handouts() {
   const navigate = useNavigate();
   const allHandouts = useSelector(useHandoutsList);
   const [values, setValues] = useState(INITIAL_FILTER_DATE)
-  
+
   const [fromDate, endDate] = values
   const fromDateObj = new Date(fromDate?.toString())
   const endDateObj = new Date(endDate?.toString())
   const handouts = allHandouts.filter(item => {
-    return new Date(item.date) >= fromDateObj && 
-    new Date(item.date) <= endDateObj
+    return new Date(item.date) >= fromDateObj &&
+      new Date(item.date) <= endDateObj
   })
   const handoutsSummary = getHandoutSummary(handouts, fromDateObj, endDateObj)
 
@@ -64,10 +65,12 @@ function Handouts() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {handouts.map(handout => (
+                {handouts.map((handout: Handout) => (
                   <TableRow key={handout.id} onClick={() => navigate(`/handouts/${handout.id}`)}
-                  className="handout-row" >
-                    {headCell.map(item => <TableCell>{handout[item as keyof typeof handout] || "-"}</TableCell>)}
+                    className="handout-row" >
+                    {headCell.map(item => {
+                      return <TableCell>{JSON.stringify(handout[item as keyof typeof handout]) || "-"}</TableCell>
+                    })}
                   </TableRow>
                 ))}
               </TableBody>

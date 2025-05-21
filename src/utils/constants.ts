@@ -2,6 +2,7 @@ export const SCREENS = {
     HOME: "/home",
     CUSTOMERS: "/customers",
     HANDOUTS: "/handouts",
+    HANDOUTS_DETAILS: "/handouts/:id",
     COLLECTION: "/collection",
 }
 

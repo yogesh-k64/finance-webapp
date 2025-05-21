@@ -45,7 +45,8 @@ const FormDataComp = () => {
       type: 'date',
       required: true,
       errorMsg: 'Date is required',
-      InputLabelProps: { shrink: true }
+      InputLabelProps: { shrink: true },
+      className: isCollectionPage ? 'date-field' : "",
     },
     {
       name: 'address',
@@ -75,7 +76,7 @@ const FormDataComp = () => {
             error={errors[field.name as keyof typeof formData]}
             helperText={errors[field.name as keyof typeof formData] ? field.errorMsg : ''}
             required={field.required}
-            className={"form-group"}
+            className={`form-group ${field.className || ""}`}
             InputLabelProps={field.InputLabelProps}
             multiline={field.multiline}
           />

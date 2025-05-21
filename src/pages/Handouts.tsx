@@ -1,4 +1,5 @@
 import DatePicker, { DateObject } from "react-multi-date-picker"
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Paper,
   Table,
@@ -11,13 +12,13 @@ import {
 
 import { DATE_PICKER_FORMAT } from "../utils/constants";
 import FormDataComp from './FormDataComp';
-import { Link } from 'react-router-dom';
 import { getHandoutSummary } from "../utils/utilsFunction";
 import { useHandoutsList } from '../store/handoutsSlice';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 
 function Handouts() {
+  const navigate = useNavigate();
   const allHandouts = useSelector(useHandoutsList);
   const [values, setValues] = useState([
     new DateObject().subtract(7, "days"),
@@ -67,7 +68,8 @@ function Handouts() {
               </TableHead>
               <TableBody>
                 {handouts.map(handout => (
-                  <TableRow key={handout.id}>
+                  <TableRow key={handout.id} onClick={() => navigate(`/handouts/${handout.id}`)}
+                  className="handout-row" >
                     {headCell.map(item => <TableCell>{handout[item as keyof typeof handout] || "-"}</TableCell>)}
                   </TableRow>
                 ))}

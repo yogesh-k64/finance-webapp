@@ -1,7 +1,9 @@
 body {
     color: $text-on-primary;
     background: $primary-color;
-    #root{
+    font-family: "Nunito", sans-serif !important;
+
+    #root {
         width: 100%;
     }
 }

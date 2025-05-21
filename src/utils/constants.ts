@@ -14,11 +14,17 @@ export const LOCAL_STORAGE_KEY = {
     CUSTOMER: "CUSTOMER",
 }
 
-export const collectionPageIgnoreField = ["nominee", "address", "mobile"] 
+export const collectionPageIgnoreField = ["nominee", "address", "mobile"]
 
 export const DATE_PICKER_FORMAT = "YYYY-MM-DD"
 
 export const INITIAL_FILTER_DATE = [
     new DateObject().subtract(7, "days"),
     new DateObject().add(1, "days")
-  ]
+]
+
+export const STATUS_TYPES = {
+    ACTIVE: 'ACTIVE',
+    PAID: 'PAID',
+    CLOSED: 'CLOSED'
+}

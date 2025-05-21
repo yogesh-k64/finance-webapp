@@ -1,3 +1,5 @@
+export type HANDOUT_STATUS = 'ACTIVE' | 'PAID' | 'CLOSED';
+
 export interface Handout {
   id: string;
   name: string;
@@ -6,6 +8,8 @@ export interface Handout {
   amount: number;
   date: string;
   address: string;
+  collection: collection[];
+  status: HANDOUT_STATUS;
 }
 
 export interface collection {

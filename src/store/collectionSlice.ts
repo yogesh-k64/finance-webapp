@@ -3,7 +3,7 @@ import { LOCAL_STORAGE_KEY } from '../utils/constants';
 import type { RootState } from './store';
 import type { collection } from '../utils/interface';
 
-interface collectionState {
+export interface collectionState {
   items: collection[];
 }
 
@@ -35,11 +35,15 @@ export const collectionSlice = createSlice({
     removeCollection: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
       localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
+    },
+    loadCollection: (state, action: PayloadAction<collectionState>) => {
+      state = action.payload;
+      localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
     }
   },
 });
 
-export const { addCollection, removeCollection } = collectionSlice.actions;
+export const { addCollection, removeCollection, loadCollection } = collectionSlice.actions;
 
 export const useCollectionList = (state: RootState) => state.collection.items;
 

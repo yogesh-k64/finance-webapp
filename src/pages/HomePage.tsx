@@ -3,11 +3,8 @@ import '../App.css';
 import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE, SCREENS } from '../utils/constants';
 import { getCollectionSummary, getHandoutSummary } from '../utils/utilsFunction';
 
-import { Button } from '@mui/material';
 import DatePicker from 'react-multi-date-picker';
-import DownloadIcon from '@mui/icons-material/Download';
-import type { RootState } from '../store/store';
-import { exportToExcel } from '../utils/exportToExcel';
+import JsonStorageControls from './ImportComp';
 import { useCollectionList } from '../store/collectionSlice';
 import { useHandoutsList } from '../store/handoutsSlice';
 import { useNavigate } from 'react-router-dom';
@@ -34,19 +31,9 @@ function HomePage() {
   const handoutsSummary = getHandoutSummary(handouts, fromDateObj, endDateObj)
   const collectionSummary = getCollectionSummary(collectionList, fromDateObj, endDateObj);
 
-
-  const state = useSelector((state: RootState) => state);
-  const [isExporting, setIsExporting] = useState(false);
-
-  const handleExport = async () => {
-    setIsExporting(true);
-    await exportToExcel(state);
-    setIsExporting(false);
-  };
-
   const getOverAllSummary = () => {
     return {
-      balance: handoutsSummary.givenToCustomer - collectionSummary.total
+      balance: collectionSummary.total - handoutsSummary.givenToCustomer 
     }
   }
   return (
@@ -79,17 +66,7 @@ function HomePage() {
         <p>Last week Balance: {0}</p>
         <p>Balance: {getOverAllSummary().balance}</p>
       </div>
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<DownloadIcon />}
-          onClick={handleExport}
-          className="export-button"
-          sx={{ mt: 3 }}
-          disabled={isExporting}
-        >
-          {isExporting ? 'Exporting...' : 'Export to Excel'}
-        </Button>
+      <JsonStorageControls />
     </div>
   );
 }

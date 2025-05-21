@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
-import type { Handout } from '../utils/interface';
+import type { collection, Handout } from '../utils/interface';
 
-interface HandoutsState {
+export interface HandoutsState {
   items: Handout[]
 }
 
@@ -32,14 +32,28 @@ export const handoutsSlice = createSlice({
       state.items.push(action.payload);
       localStorage.setItem('handouts', JSON.stringify(state));
     },
+    addCollectionToHandout: (state, action: PayloadAction<{ id: string, colItem: collection }>) => {
+      const { colItem, id } = action.payload;
+      state.items = state.items.map(item => {
+        if (item.id === id) {
+          item.collection.push(colItem);
+        }
+        return item;
+      });
+      localStorage.setItem('handouts', JSON.stringify(state));
+    },
     removeHandout: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
+      localStorage.setItem('handouts', JSON.stringify(state));
+    },
+    loadHandouts: (state, action: PayloadAction<HandoutsState>) => {
+      state = action.payload;
       localStorage.setItem('handouts', JSON.stringify(state));
     }
   },
 });
 
-export const { addHandout, removeHandout } = handoutsSlice.actions;
+export const { addHandout, removeHandout, loadHandouts } = handoutsSlice.actions;
 
 export const useHandoutsList = (state: RootState) => state.handouts.items;
 

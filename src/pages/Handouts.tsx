@@ -1,4 +1,4 @@
-import DatePicker, { DateObject } from "react-multi-date-picker"
+import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE } from "../utils/constants";
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Paper,
@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@mui/material';
 
-import { DATE_PICKER_FORMAT } from "../utils/constants";
+import DatePicker from "react-multi-date-picker"
 import FormDataComp from './FormDataComp';
 import { getHandoutSummary } from "../utils/utilsFunction";
 import { useHandoutsList } from '../store/handoutsSlice';
@@ -20,10 +20,7 @@ import { useState } from 'react';
 function Handouts() {
   const navigate = useNavigate();
   const allHandouts = useSelector(useHandoutsList);
-  const [values, setValues] = useState([
-    new DateObject().subtract(7, "days"),
-    new DateObject().add(1, "days")
-  ])
+  const [values, setValues] = useState(INITIAL_FILTER_DATE)
   
   const [fromDate, endDate] = values
   const fromDateObj = new Date(fromDate?.toString())

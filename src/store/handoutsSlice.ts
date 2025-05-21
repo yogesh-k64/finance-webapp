@@ -1,26 +1,13 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 import type { Handout } from '../utils/interface';
-import { getHandoutSummary } from '../utils/utilsFunction';
-
-
 
 interface HandoutsState {
-  items: Handout[];
-  givenDetails: {
-    total: number,
-    givenToCustomer: number,
-    profit: number,
-  }
+  items: Handout[]
 }
 
 const defaultInitValue = {
-  items: [],
-  givenDetails: {
-    total: 0,
-    givenToCustomer: 0,
-    profit: 0,
-  }
+  items: []
 }
 
 const loadFromLocalStorage = (): HandoutsState => {
@@ -43,7 +30,6 @@ export const handoutsSlice = createSlice({
   reducers: {
     addHandout: (state, action: PayloadAction<Handout>) => {
       state.items.push(action.payload);
-      state.givenDetails = getHandoutSummary(state.items)
       localStorage.setItem('handouts', JSON.stringify(state));
     },
     removeHandout: (state, action: PayloadAction<string>) => {
@@ -56,6 +42,5 @@ export const handoutsSlice = createSlice({
 export const { addHandout, removeHandout } = handoutsSlice.actions;
 
 export const useHandoutsList = (state: RootState) => state.handouts.items;
-export const useHandoutsSummary = (state: RootState) => state.handouts.givenDetails;
 
 export default handoutsSlice.reducer;

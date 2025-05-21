@@ -1,7 +1,7 @@
-import DatePicker, { DateObject } from 'react-multi-date-picker';
+import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE } from '../utils/constants';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-import { DATE_PICKER_FORMAT } from '../utils/constants';
+import DatePicker from 'react-multi-date-picker';
 import FormDataComp from './FormDataComp';
 import { Link } from 'react-router-dom';
 import { getCollectionSummary } from '../utils/utilsFunction';
@@ -14,11 +14,7 @@ function Collection() {
   const allCollectionList = useSelector(useCollectionList);
   const headCell = ["name", "amount", "date", "handoutId"]
 
-
-  const [values, setValues] = useState([
-    new DateObject().subtract(7, "days"),
-    new DateObject().add(1, "days")
-  ])
+  const [values, setValues] = useState(INITIAL_FILTER_DATE)
 
   const [fromDate, endDate] = values
   const fromDateObj = new Date(fromDate?.toString())

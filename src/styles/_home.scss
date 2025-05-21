@@ -11,6 +11,23 @@
 .home-container {
     max-width: 600px;
     margin: auto;
+
+    .filter-date {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 50px;
+
+        .title {
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+    }
+
+    .homepage-summary{
+        display: flex;
+        justify-content: space-around;
+    }
 }
 
 .form-section {
@@ -48,17 +65,7 @@
             font-size: 24px;
         }
 
-        .rmdp-input {
-            font-size: 16px;
-            border: 1px solid #c0c4d6;
-            border-radius: 5px;
-            padding: 2px 5px;
-            padding: 10px 20px;
-            background: $btn-color;
-            color: $text-on-btn;
-            min-width: 215px;
-            text-align: center;
-        }
+
     }
 
     thead {
@@ -76,6 +83,19 @@
             }
         }
     }
+}
+
+// date picker styles 
+
+.rmdp-input {
+    font-size: 16px;
+    border: 1px solid #c0c4d6;
+    border-radius: 5px;
+    padding: 10px 20px !important;
+    background: $btn-color;
+    color: $text-on-btn;
+    min-width: 215px;
+    text-align: center;
 }
 
 // handout details 

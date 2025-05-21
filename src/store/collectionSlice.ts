@@ -2,22 +2,13 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { LOCAL_STORAGE_KEY } from '../utils/constants';
 import type { RootState } from './store';
 import type { collection } from '../utils/interface';
-import { getCollectionSummary } from '../utils/utilsFunction';
-
-
 
 interface collectionState {
   items: collection[];
-  collectionSummary: {
-    total: number
-  }
 }
 
 const defaultInitValue = {
-  items: [],
-  collectionSummary: {
-    total: 0
-  }
+  items: []
 }
 
 const loadFromLocalStorage = (): collectionState => {
@@ -39,7 +30,6 @@ export const collectionSlice = createSlice({
   reducers: {
     addCollection: (state, action: PayloadAction<collection>) => {
       state.items.push(action.payload);
-      state.collectionSummary = getCollectionSummary(state.items)
       localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
     },
     removeCollection: (state, action: PayloadAction<string>) => {
@@ -52,6 +42,5 @@ export const collectionSlice = createSlice({
 export const { addCollection, removeCollection } = collectionSlice.actions;
 
 export const useCollectionList = (state: RootState) => state.collection.items;
-export const useCollectionSummary = (state: RootState) => state.collection.collectionSummary;
 
 export default collectionSlice.reducer;

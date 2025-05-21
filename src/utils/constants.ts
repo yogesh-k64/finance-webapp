@@ -1,3 +1,5 @@
+import { DateObject } from "react-multi-date-picker"
+
 export const SCREENS = {
     HOME: "/home",
     CUSTOMERS: "/customers",
@@ -15,3 +17,8 @@ export const LOCAL_STORAGE_KEY = {
 export const collectionPageIgnoreField = ["nominee", "address", "mobile"] 
 
 export const DATE_PICKER_FORMAT = "YYYY-MM-DD"
+
+export const INITIAL_FILTER_DATE = [
+    new DateObject().subtract(7, "days"),
+    new DateObject().add(1, "days")
+  ]

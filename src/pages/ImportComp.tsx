@@ -27,7 +27,7 @@ const JsonStorageControls = () => {
         startIcon={<DownloadIcon />}
         onClick={() => exportToJson(state)}
       >
-        Export to JSON
+        Export Data
       </Button>
       
       <input
@@ -43,7 +43,7 @@ const JsonStorageControls = () => {
           component="span"
           startIcon={<CloudUploadIcon />}
         >
-          Import JSON
+          Import Data
         </Button>
       </label>
     </div>

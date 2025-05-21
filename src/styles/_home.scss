@@ -24,7 +24,7 @@
 
     }
 
-    .homepage-summary{
+    .homepage-summary {
         display: flex;
         justify-content: space-around;
     }
@@ -46,6 +46,22 @@
         .date-field {
             width: calc(100% - 40px);
         }
+    }
+}
+
+.page-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    .title {
+        margin: auto;
+    }
+
+    .back-link {
+        position: absolute;
+        left: 0;
     }
 }
 
@@ -74,8 +90,8 @@
         }
     }
 
-    .handouts-table {
-        .handout-row {
+    .custom-table {
+        .clickable-row {
             cursor: pointer;
 
             &:hover {
@@ -84,6 +100,7 @@
         }
     }
 }
+
 
 // date picker styles 
 
@@ -100,10 +117,9 @@
 
 // handout details 
 
-.detail-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
+.copy-icon {
+    font-size: 15px !important;
+    cursor: pointer;
 }
 
 .detail-paper {

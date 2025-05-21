@@ -2,8 +2,10 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { SCREENS } from '../utils/constants';
 import TableComponentV1 from '../common/TableComponent';
+import { copyToClipboard } from '../utils/utilsFunction';
 import { useHandoutsList } from '../store/handoutsSlice';
 import { useSelector } from 'react-redux';
 
@@ -30,7 +32,7 @@ const HandoutsDetails = () => {
   }
 
   return (
-    <Box sx={{ p: 3, maxWidth: 800, margin: '0 auto' }}>
+    <Box sx={{ p: 3, maxWidth: 800, margin: '0 auto' }} className="handouts-details-container" >
       <Button
         variant="outlined"
         startIcon={<ArrowBackIcon />}
@@ -51,6 +53,8 @@ const HandoutsDetails = () => {
           <DetailItem label="Nominee" value={handout.nominee} />
           <DetailItem label="Amount" value={`₹${handout.amount}`} />
           <DetailItem label="Date" value={handout.date} />
+          <DetailItem label="Id" value={handout.id} 
+          icon={<>{<ContentCopyIcon className='copy-icon' onClick={()=>copyToClipboard(handout.id)} />}</>} />
         </Box>
         <Box sx={{ mt: 3 }}>
           <DetailItem label="Address" value={handout.address} fullWidth />
@@ -64,13 +68,16 @@ const HandoutsDetails = () => {
   );
 };
 
-const DetailItem = ({ label, value, fullWidth = false }: { label: string, value: string, fullWidth?: boolean }) => (
+const DetailItem = ({ label, value, fullWidth = false, icon }: {
+  label: string, value: string, fullWidth?: boolean,
+  icon?: React.ReactNode
+}) => (
   <Box sx={{ gridColumn: fullWidth ? '1 / -1' : 'auto' }}>
     <Typography variant="subtitle2" color="text.secondary">
       {label}
     </Typography>
     <Typography variant="body1" sx={{ mt: 0.5 }}>
-      {value || '-'}
+      {value || '-'}{icon && <span style={{ marginLeft: '8px' }}>{icon}</span>}
     </Typography>
   </Box>
 );

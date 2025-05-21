@@ -18,7 +18,6 @@
 
 .back-link {
   display: inline-block;
-  margin-bottom: 20px;
   color: #4CAF50;
   text-decoration: none;
   font-weight: bold;
@@ -77,28 +76,28 @@
   margin-top: 30px;
 }
 
-.handouts-table {
+.custom-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
 }
 
-.handouts-table th,
-.handouts-table td {
+.custom-table th,
+.custom-table td {
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
 }
 
-.handouts-table th {
+.custom-table th {
   background-color: #f2f2f2;
   font-weight: bold;
 }
 
-.handouts-table tr:nth-child(even) {
+.custom-table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.handouts-table tr:hover {
+.custom-table tr:hover {
   background-color: #f1f1f1;
 }

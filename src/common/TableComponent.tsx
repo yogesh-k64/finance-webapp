@@ -8,7 +8,7 @@ const TableComponentV1 = (props: TableComponentProps) => {
 
     if (isNonEmpty(list))
         return (
-            <TableContainer component={Paper} className="handouts-table">
+            <TableContainer component={Paper} className={`custom-table`}>
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -18,7 +18,7 @@ const TableComponentV1 = (props: TableComponentProps) => {
                     <TableBody>
                         {list.map((item, index) => (
                             <TableRow key={index} onClick={() => onClick && onClick(item)}
-                                className="handout-row" >
+                                className={`handout-row  ${onClick ? "clickable-row" : ""}`} >
                                 {headCell.map(key => {
                                     return <TableCell>{item[key as keyof typeof item] || "-"}</TableCell>
                                 })}

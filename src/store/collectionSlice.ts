@@ -37,7 +37,7 @@ export const collectionSlice = createSlice({
       localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
     },
     loadCollection: (state, action: PayloadAction<collectionState>) => {
-      state = action.payload;
+      state.items = action.payload.items;
       localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
     }
   },

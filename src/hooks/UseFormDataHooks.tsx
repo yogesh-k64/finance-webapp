@@ -19,6 +19,7 @@ const initialFormData = {
   amount: '',
   date: '',
   address: '',
+  handoutId: ''
 }
 
 const useFormDataHooks = (props: formDateHookProps) => {
@@ -34,6 +35,7 @@ const useFormDataHooks = (props: formDateHookProps) => {
     amount: false,
     date: false,
     address: false,
+    handoutId: false,
   });
 
 
@@ -52,6 +54,7 @@ const useFormDataHooks = (props: formDateHookProps) => {
       amount: formData.amount.trim() === '' || isNaN(Number(formData.amount)),
       date: formData.date.trim() === '',
       address: false,
+      handoutId: Boolean(isCollectionPage) && formData.handoutId.trim() === '' 
     };
     for (const key in newErrors) {
       if (isCollectionPage && collectionPageIgnoreField.includes(key))
@@ -81,7 +84,7 @@ const useFormDataHooks = (props: formDateHookProps) => {
         name: formData.name.trim(),
         amount: Number(formData.amount),
         date: formData.date,
-        handoutId: ''
+        handoutId: formData.handoutId,
       } as collection
 
       if (isCollectionPage)
@@ -95,6 +98,7 @@ const useFormDataHooks = (props: formDateHookProps) => {
         amount: '',
         date: formData.date,
         address: '',
+        handoutId: ''
       });
     }
   };

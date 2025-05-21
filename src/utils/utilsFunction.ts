@@ -52,3 +52,7 @@ export const isEmpty = (variable: any) => {
 export const isNonEmpty = (variable: any) => {
     return !isEmpty(variable);
 };
+
+export const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+} 

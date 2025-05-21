@@ -16,6 +16,8 @@ export const LOCAL_STORAGE_KEY = {
 
 export const collectionPageIgnoreField = ["nominee", "address", "mobile"]
 
+export const handoutsIgnoreField = ["handoutId"]
+
 export const DATE_PICKER_FORMAT = "YYYY-MM-DD"
 
 export const INITIAL_FILTER_DATE = [

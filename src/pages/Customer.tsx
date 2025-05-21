@@ -11,10 +11,10 @@ function Customers() {
 
   return (
     <div>
-      <h1>Customers Page</h1>
-      <p>This is the customers screen.</p>
-      <Link to="/" className="back-link">← Back to Home</Link>
-      <h1>Customer Management</h1>
+      <div className="page-header">
+        <Link to="/" className="back-link">← Back to Home</Link>
+        <h1 className='title' >Customer Management</h1>
+      </div>
       <div className="form-section">
         <h2>Add New Customer</h2>
         <FormDataComp />

@@ -1,6 +1,9 @@
+ 
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 import type { collection, Handout } from '../utils/interface';
+import { addCollection } from './collectionSlice';
+import { LOCAL_STORAGE_KEY } from '../utils/constants';
 
 export interface HandoutsState {
   items: Handout[]
@@ -12,7 +15,7 @@ const defaultInitValue = {
 
 const loadFromLocalStorage = (): HandoutsState => {
   try {
-    const serializedState = localStorage.getItem('handouts');
+    const serializedState = localStorage.getItem(LOCAL_STORAGE_KEY.HANDOUTS);
     if (serializedState === null) return defaultInitValue
     return JSON.parse(serializedState);
   } catch (e) {
@@ -30,7 +33,7 @@ export const handoutsSlice = createSlice({
   reducers: {
     addHandout: (state, action: PayloadAction<Handout>) => {
       state.items.push(action.payload);
-      localStorage.setItem('handouts', JSON.stringify(state));
+      localStorage.setItem(LOCAL_STORAGE_KEY.HANDOUTS, JSON.stringify(state));
     },
     addCollectionToHandout: (state, action: PayloadAction<{ id: string, colItem: collection }>) => {
       const { colItem, id } = action.payload;
@@ -40,17 +43,30 @@ export const handoutsSlice = createSlice({
         }
         return item;
       });
-      localStorage.setItem('handouts', JSON.stringify(state));
+      localStorage.setItem(LOCAL_STORAGE_KEY.HANDOUTS, JSON.stringify(state));
     },
     removeHandout: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
-      localStorage.setItem('handouts', JSON.stringify(state));
+      localStorage.setItem(LOCAL_STORAGE_KEY.HANDOUTS, JSON.stringify(state));
     },
     loadHandouts: (state, action: PayloadAction<HandoutsState>) => {
-      state = action.payload;
-      localStorage.setItem('handouts', JSON.stringify(state));
+      state.items = action.payload.items;
+      localStorage.setItem(LOCAL_STORAGE_KEY.HANDOUTS, JSON.stringify(state));
     }
   },
+  extraReducers: (builder) => {
+    builder.addCase(addCollection, (builderState, action) => {
+      const newCollection: collection = action.payload;
+      const handoutId = newCollection.handoutId;
+      builderState.items = builderState.items.map(item => {
+        if (item.id === handoutId) {
+          item.collection.push(newCollection);
+        }
+        return item;
+      });
+      localStorage.setItem(LOCAL_STORAGE_KEY.HANDOUTS, JSON.stringify(builderState));
+    });
+  }
 });
 
 export const { addHandout, removeHandout, loadHandouts } = handoutsSlice.actions;

@@ -1,18 +1,10 @@
-import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE } from "../utils/constants";
+import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE, SCREENS } from "../utils/constants";
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
 
 import DatePicker from "react-multi-date-picker"
 import FormDataComp from './FormDataComp';
 import type { Handout } from "../utils/interface";
+import TableComponentV1 from "../common/TableComponent";
 import { getHandoutSummary } from "../utils/utilsFunction";
 import { useHandoutsList } from '../store/handoutsSlice';
 import { useSelector } from 'react-redux';
@@ -36,6 +28,10 @@ function Handouts() {
 
   const headCell = ["name", "mobile", "nominee", "amount", "date", "address"]
 
+  const handleClick = (item: Handout) => {
+    navigate(`${SCREENS.HANDOUTS}/${item.id}`)
+  }
+
   return (
     <div className="handouts-container">
       <Link to="/" className="back-link">← Back to Home</Link>
@@ -56,29 +52,7 @@ function Handouts() {
             dateSeparator="  To  "
           />
         </div>
-        {handouts.length > 0 ? (
-          <TableContainer component={Paper} className="handouts-table">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {headCell.map(item => <TableCell>{item}</TableCell>)}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {handouts.map((handout: Handout) => (
-                  <TableRow key={handout.id} onClick={() => navigate(`/handouts/${handout.id}`)}
-                    className="handout-row" >
-                    {headCell.map(item => {
-                      return <TableCell>{JSON.stringify(handout[item as keyof typeof handout]) || "-"}</TableCell>
-                    })}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ) : (
-          <p>No handouts records found.</p>
-        )}
+        <TableComponentV1 headCell={headCell} list={handouts} onClick={handleClick} />
 
         <div className="given-summary">
           <p>Total given: {total}</p>

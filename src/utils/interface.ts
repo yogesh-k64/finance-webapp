@@ -17,3 +17,9 @@ export interface collection {
   amount: number;
   date: string;
 }
+
+export interface TableComponentProps {
+  headCell: string[]
+  list: Array<any>
+  onClick?: (item: any) => void
+}

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { SCREENS } from '../utils/constants';
+import TableComponentV1 from '../common/TableComponent';
 import { useHandoutsList } from '../store/handoutsSlice';
 import { useSelector } from 'react-redux';
 
@@ -10,13 +11,14 @@ const HandoutsDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const handout = useSelector(useHandoutsList).find(item => item.id === id);
+  const headCell = ["name", "amount", "date", "handoutId"]
 
   if (!handout) {
     return (
       <Box sx={{ p: 3 }}>
         <Typography variant="h5">Handout not found</Typography>
-        <Button 
-          variant="outlined" 
+        <Button
+          variant="outlined"
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate(SCREENS.HANDOUTS)}
           sx={{ mt: 2 }}
@@ -50,11 +52,14 @@ const HandoutsDetails = () => {
           <DetailItem label="Amount" value={`₹${handout.amount}`} />
           <DetailItem label="Date" value={handout.date} />
         </Box>
-        
         <Box sx={{ mt: 3 }}>
           <DetailItem label="Address" value={handout.address} fullWidth />
         </Box>
       </Paper>
+      <Box sx={{ mt: 3, mb: 2 }}>
+        <span className="title" >Collection Records</span>
+      </Box>
+      <TableComponentV1 headCell={headCell} list={handout.collection} />
     </Box>
   );
 };

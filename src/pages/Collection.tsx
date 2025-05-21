@@ -1,9 +1,9 @@
 import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE } from '../utils/constants';
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 import DatePicker from 'react-multi-date-picker';
 import FormDataComp from './FormDataComp';
 import { Link } from 'react-router-dom';
+import TableComponentV1 from '../common/TableComponent';
 import { getCollectionSummary } from '../utils/utilsFunction';
 import { useCollectionList } from '../store/collectionSlice';
 import { useSelector } from 'react-redux';
@@ -45,35 +45,7 @@ function Collection() {
             dateSeparator="  To  "
           />
         </div>
-        {collectionList.length > 0 ? (
-          <TableContainer component={Paper} className="collectionList-table">
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {headCell.map(item => <TableCell>{item}</TableCell>)}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {collectionList.map(handout => (
-                  <TableRow key={handout.id}>
-                    {headCell.map(item => <TableCell>{handout[item as keyof typeof handout] || "-"}</TableCell>)}
-                  </TableRow>
-                ))}
-                {/* <TableCell>
-                <IconButton onClick={() => handleEdit(item)}>
-                  <Edit color="primary" />
-                </IconButton>
-                <IconButton onClick={() => handleDelete(item.id)}>
-                  <Delete color="error" />
-                </IconButton>
-              </TableCell> */}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        ) : (
-          <p>No collection records found.</p>
-        )}
-
+        <TableComponentV1 headCell={headCell} list={collectionList} />
         <div className="given-summary">
           <p>Total Collected: {total}</p>
         </div>

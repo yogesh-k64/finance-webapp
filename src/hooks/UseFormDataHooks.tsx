@@ -4,6 +4,7 @@ import { STATUS_TYPES, collectionPageIgnoreField } from '../utils/constants';
 import React from 'react'
 import { addCollection } from '../store/collectionSlice';
 import { addHandout } from '../store/handoutsSlice';
+import { showSnackBar } from '../store/AppConfigReducer';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -54,7 +55,7 @@ const useFormDataHooks = (props: formDateHookProps) => {
       amount: formData.amount.trim() === '' || isNaN(Number(formData.amount)),
       date: formData.date.trim() === '',
       address: false,
-      handoutId: Boolean(isCollectionPage) && formData.handoutId.trim() === '' 
+      handoutId: Boolean(isCollectionPage) && formData.handoutId.trim() === ''
     };
     for (const key in newErrors) {
       if (isCollectionPage && collectionPageIgnoreField.includes(key))
@@ -63,6 +64,13 @@ const useFormDataHooks = (props: formDateHookProps) => {
     setErrors(newErrors);
     return !Object.values(newErrors).some(error => error);
   };
+
+  const handleShowMsg = (msg: string) => {
+    dispatch(showSnackBar({
+      message: msg,
+      status: "success"
+    }));
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,10 +95,14 @@ const useFormDataHooks = (props: formDateHookProps) => {
         handoutId: formData.handoutId,
       } as collection
 
-      if (isCollectionPage)
+      if (isCollectionPage) {
+        handleShowMsg("Collection added successfully");
         dispatch(addCollection(newCollection));
-      else
+      }
+      else {
+        handleShowMsg("Handout added successfully");
         dispatch(addHandout(newHandout));
+      }
       setFormData({
         name: '',
         mobile: '',

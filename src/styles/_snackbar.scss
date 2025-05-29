@@ -1,0 +1,31 @@
+.snackbar-body {
+  .snackbar-content {
+    align-items: center;
+    min-height: 35px;
+    font-family: "Nunito", sans-serif !important;
+    box-shadow: none;
+
+    >div {
+      font-size: 14px;
+      padding: 0;
+    }
+
+    .MuiAlert-icon {
+      svg {
+        font-size: 20px;
+      }
+    }
+
+    .MuiAlert-action {
+      padding-left: 12px;
+
+      svg {
+        font-size: 16px;
+      }
+    }
+
+    @media (min-width: $screen-sm) {
+      max-width: 350px;
+    }
+  }
+}

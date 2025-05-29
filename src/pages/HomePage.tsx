@@ -1,5 +1,3 @@
-import '../App.css';
-
 import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE, SCREENS } from '../utils/constants';
 import { getCollectionSummary, getHandoutSummary } from '../utils/utilsFunction';
 

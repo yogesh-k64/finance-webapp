@@ -1,3 +1,5 @@
+import './styles/app.scss'
+
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 
@@ -8,6 +10,7 @@ import HandoutsDetails from './pages/HandoutsDetails';
 import HomePage from './pages/HomePage';
 import { Provider } from 'react-redux';
 import { SCREENS } from './utils/constants';
+import SnackBar from './common/Snackbar';
 import { store } from './store/store';
 
 const customTheme = createTheme({
@@ -19,6 +22,7 @@ function App() {
   return (
     <ThemeProvider theme={customTheme} >
       <Provider store={store}>
+        <SnackBar />
         <Router basename="/finance-webapp" >
           <Routes>
             <Route path="/" element={<HomePage />} />

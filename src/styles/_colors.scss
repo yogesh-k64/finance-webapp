@@ -1,20 +1,41 @@
+// color code 
+$neutral-clr-800: #081028;
+$neutral-clr-700: #0A1330;
+$neutral-clr-600: #0B1739;
+$neutral-clr-500: #7E89AC;
+$neutral-clr-400: #AEB9E1;
+$neutral-clr-300: #D1DBF9;
+$neutral-clr-200: #D9E1FA;
+$neutral-clr-100: #FFFFFF;
+
+// border color
+$border-outline: #343B4F;
+
+// button color
+$btn-grad: linear-gradient(128.49deg, #CB3CFF 19.86%, #7F25FB 68.34%);
+$btn-bg: #CB3CFF;
+
+// text color
+$primary-txt-color: #FFFFFF;
+$secondary-txt-color: #AEB9E1;
+$tertiary-txt-color: #D1DBF9;
 
 
 // background color
-$primary-color: #FBFBFB;
-$secondary-color: #E8F9FF;
+$app-bg: $neutral-clr-800;
+$form-bg: $neutral-clr-600;
 $tertiary-color: #C4D9FF;
 $btn-color: #C4D9FF;
 
 
 // Text colors for your palette
-$text-on-primary: #333333;       // Dark gray - excellent contrast on light primary
-$text-on-secondary: #006D8B;     // Deep teal - professional contrast on pale blue
-$text-on-tertiary: #003366;      // Navy blue - strong contrast on light blue
-$text-on-btn: #003366;           // Navy blue - clear visibility on button
-$text-on-btn-hover: #001A33;     // Darker navy - for hover states
+$text-on-primary: #333333;
+$text-on-secondary: #006D8B;
+$text-on-tertiary: #003366;
+$text-on-btn: #003366;
+$text-on-btn-hover: #001A33;
 
 // Alternative options (choose what works best)
-$alt-text-on-primary: #555555;    // Slightly lighter gray
-$alt-text-on-secondary: #004A63;  // Slightly lighter teal
-$alt-text-on-tertiary: #002952;   // Slightly lighter navy
+$alt-text-on-primary: #555555;
+$alt-text-on-secondary: #004A63;
+$alt-text-on-tertiary: #002952;

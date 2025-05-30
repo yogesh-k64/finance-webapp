@@ -73,7 +73,7 @@ body {
 }
 
 .add-button {
-    background-color: #4CAF50;
+    background-color: $btn-bg !important;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -84,7 +84,7 @@ body {
 }
 
 .add-button:hover {
-    background-color: #45a049;
+    background-color: $btn-grad !important;
 }
 
 .table-section {

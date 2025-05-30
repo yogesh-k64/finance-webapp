@@ -56,3 +56,34 @@ export const isNonEmpty = (variable: any) => {
 export const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
 } 
+
+export const formatDateToCustomString = (dateString: string): string => {
+  const months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+  
+  const [year, month, day] = dateString.split('-');
+  const monthName = months[parseInt(month, 10) - 1];
+  const shortYear = year.slice(-2);
+  const dayNumber = parseInt(day, 10);
+
+  // Add the appropriate suffix to the day
+  let suffix = 'th';
+  if (dayNumber < 11 || dayNumber > 13) {
+    switch (dayNumber % 10) {
+      case 1: suffix = 'st'; break;
+      case 2: suffix = 'nd'; break;
+      case 3: suffix = 'rd'; break;
+    }
+  }
+
+  return `${dayNumber}${suffix} ${monthName} ${shortYear}`;
+};
+
+export const formatDateRange = (dateRangeString: string): string => {
+  const [startDate, endDate] = dateRangeString.split(' ~ ');
+  if (!startDate || !endDate) return dateRangeString;
+  
+  return `${formatDateToCustomString(startDate)} - ${formatDateToCustomString(endDate)}`;
+};

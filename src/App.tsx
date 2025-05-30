@@ -8,10 +8,10 @@ import Customers from './pages/Customer';
 import Dashboard from './pages/DashBoard';
 import Handouts from './pages/Handouts';
 import HandoutsDetails from './pages/HandoutsDetails';
+import HomePage from './pages/HomePage';
 import { Provider } from 'react-redux';
 import { SCREENS } from './utils/constants';
 import SnackBar from './common/Snackbar';
-import SummaryPage from './pages/SummaryPage';
 import { store } from './store/store';
 
 const customTheme = createTheme({
@@ -28,7 +28,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} >
               <Route index element={<Navigate to={SCREENS.HOME} replace />} />
-              <Route index path={SCREENS.HOME} element={<SummaryPage />} />
+              <Route path={SCREENS.HOME} element={<HomePage />} />
               <Route path={SCREENS.CUSTOMERS} element={<Customers />} />
               <Route path={SCREENS.HANDOUTS} element={<Handouts />} />
               <Route path={SCREENS.HANDOUTS_DETAILS} element={<HandoutsDetails />} />

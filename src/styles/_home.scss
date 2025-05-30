@@ -1,3 +1,22 @@
+.main-container {
+    height: 100vh;
+
+    .drawer-section {
+        border-right: 0.6px solid $drawer-border-outline;
+        box-shadow: 0px 8px 28px 0px #0105114D;
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .collapse-icon {
+                transform: rotate(90deg);
+            }
+        }
+    }
+}
+
 .button-group {
     display: flex;
     justify-content: space-between;

@@ -1,4 +1,5 @@
 @import 'home';
+@import 'common';
 @import 'snackbar';
 
 body {
@@ -9,13 +10,6 @@ body {
     #root {
         width: 100%;
     }
-}
-
-#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0;
-    text-align: center;
 }
 
 .card {

@@ -9,10 +9,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 30px;
 
             .collapse-icon {
                 transform: rotate(90deg);
             }
+        }
+
+        .page-label{
+            font-size: 14px;
+            padding: 14px 14px;
+            color: $secondary-txt-color;
         }
     }
 

@@ -28,3 +28,29 @@
     outline: none !important;
     font-family: "Nunito", sans-serif !important;
 }
+
+// cursor styles
+.pointer {
+    cursor: pointer;
+}
+
+// button styles
+.action-btn {
+    border-radius: $border-radius;
+    background-color: $form-bg;
+    padding: 0 16px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+        color: $secondary-txt-color;
+    }
+}
+
+// common styles
+.hideVisible {
+    visibility: hidden;
+}

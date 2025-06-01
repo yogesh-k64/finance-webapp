@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import type { HeadCell } from '../utils/interface';
 import { SCREENS } from '../utils/constants';
 import TableComponentV1 from '../common/TableComponent';
 import { copyToClipboard } from '../utils/utilsFunction';
@@ -13,7 +14,12 @@ const HandoutsDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const handout = useSelector(useHandoutsList).find(item => item.id === id);
-  const headCell = ["name", "amount", "date", "handoutId"]
+  const headCell: HeadCell[] = [
+    { label: "name" },
+    { label: "amount" },
+    { label: "date" },
+    { label: "handoutId" },
+  ]
 
   if (!handout) {
     return (
@@ -53,8 +59,8 @@ const HandoutsDetails = () => {
           <DetailItem label="Nominee" value={handout.nominee} />
           <DetailItem label="Amount" value={`₹${handout.amount}`} />
           <DetailItem label="Date" value={handout.date} />
-          <DetailItem label="Id" value={handout.id} 
-          icon={<>{<ContentCopyIcon className='copy-icon' onClick={()=>copyToClipboard(handout.id)} />}</>} />
+          <DetailItem label="Id" value={handout.id}
+            icon={<>{<ContentCopyIcon className='copy-icon' onClick={() => copyToClipboard(handout.id)} />}</>} />
         </Box>
         <Box sx={{ mt: 3 }}>
           <DetailItem label="Address" value={handout.address} fullWidth />

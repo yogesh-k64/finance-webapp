@@ -1,9 +1,6 @@
 import { exportToJson, importFromJson } from '../utils/importExportFile';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Button } from '@mui/material';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import DownloadIcon from '@mui/icons-material/Download';
 import type { RootState } from '../store/store';
 
 const JsonStorageControls = () => {
@@ -20,16 +17,10 @@ const JsonStorageControls = () => {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '1rem', margin: '1rem 0', justifyContent: 'space-between' }}>
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<DownloadIcon />}
-        onClick={() => exportToJson(state)}
-      >
-        Export Data
-      </Button>
-      
+    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'space-between', marginRight: '2rem' }}>
+      <div className='action-btn' onClick={() => exportToJson(state)} >
+        <span>Export Data</span>
+      </div>
       <input
         accept=".json"
         style={{ display: 'none' }}
@@ -38,13 +29,9 @@ const JsonStorageControls = () => {
         onChange={handleImport}
       />
       <label htmlFor="json-upload">
-        <Button
-          variant="contained"
-          component="span"
-          startIcon={<CloudUploadIcon />}
-        >
-          Import Data
-        </Button>
+        <div className='action-btn' >
+          <span>Import Data</span>
+        </div>
       </label>
     </div>
   );

@@ -18,8 +18,19 @@ export interface collection {
   date: string;
 }
 
+export interface HeadCell {
+  label: string;
+  onDelete?: (item: any) => void;
+  onEdit?: (item: any) => void;
+}
+
 export interface TableComponentProps {
-  headCell: string[]
+  headCell: HeadCell[]
   list: Array<any>
   onClick?: (item: any) => void
+}
+
+export interface DrawerSectionProps {
+  isDrawerOpen: boolean
+  setOpenSideBar: React.Dispatch<React.SetStateAction<boolean>>
 }

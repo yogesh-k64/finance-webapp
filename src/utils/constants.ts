@@ -30,3 +30,15 @@ export const STATUS_TYPES = {
     PAID: 'PAID',
     CLOSED: 'CLOSED'
 }
+
+export const HEAD_CELL_ACTION = "action"
+
+export const initialFormData = {
+    name: '',
+    mobile: '',
+    nominee: '',
+    amount: '',
+    date: '',
+    address: '',
+    handoutId: ''
+}

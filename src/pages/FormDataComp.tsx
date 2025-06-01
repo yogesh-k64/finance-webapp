@@ -1,6 +1,9 @@
 import { Button, TextField } from '@mui/material'
 import { SCREENS, collectionPageIgnoreField, handoutsIgnoreField } from '../utils/constants'
+import { storeFormDetails, useFormData } from '../store/AppConfigReducer'
+import { useDispatch, useSelector } from 'react-redux'
 
+import { useEffect } from 'react'
 import useFormDataHooks from '../hooks/UseFormDataHooks'
 import { useLocation } from 'react-router-dom'
 
@@ -9,7 +12,11 @@ const FormDataComp = () => {
   const locationInfo = useLocation()
   const isCollectionPage = locationInfo.pathname === SCREENS.COLLECTION
   const isHandoutsPage = locationInfo.pathname === SCREENS.HANDOUTS
-  const { errors, formData, handleChange, handleSubmit } = useFormDataHooks({ isCollectionPage })
+  const { errors, formData, handleChange, handleSubmit,
+    handleEdit
+  } = useFormDataHooks({ isCollectionPage })
+  const formDetails = useSelector(useFormData) 
+  const dispatch = useDispatch() 
 
   const formFields = [
     {
@@ -65,6 +72,13 @@ const FormDataComp = () => {
     },
   ];
 
+  useEffect(() => {
+    if (formDetails && Object.keys(formDetails).length > 0) {
+      handleEdit(formDetails)
+      dispatch(storeFormDetails({}))
+    }
+  }, [JSON.stringify(formDetails)])
+
 
   return (
     <>
@@ -74,7 +88,6 @@ const FormDataComp = () => {
             return <></>
           if (isHandoutsPage && handoutsIgnoreField.some(item => item === field.name))
             return <></>
-          
           return <TextField
             key={field.name}
             fullWidth={true}

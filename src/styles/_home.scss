@@ -1,3 +1,70 @@
+.main-container {
+    height: 100vh;
+
+    .drawer-section {
+        border-right: 0.6px solid $drawer-border-outline;
+        box-shadow: 0px 8px 28px 0px #0105114D;
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+
+            .collapse-icon {
+                transform: rotate(90deg);
+            }
+
+            &.closed {
+                margin-bottom: 0;
+            }
+        }
+
+        .page-label {
+            font-size: 14px;
+            padding: 14px 14px;
+            color: $secondary-txt-color;
+
+            &.active {
+                background-color: $menu-active-bg;
+                border-radius: $border-radius;
+                border-left: 4px solid $btn-bg;
+                color: $primary-txt-color;
+            }
+        }
+    }
+
+    .content-section {
+        overflow: auto;
+        height: 100%;
+
+        &.closed {
+            height: calc(100% - 78px);
+        }
+
+        .header {
+            height: $header-height;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .heading {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                .MuiSvgIcon-root {
+                    font-size: 18px;
+                }
+            }
+
+            .range-selection {
+                display: flex;
+            }
+        }
+    }
+}
+
 .button-group {
     display: flex;
     justify-content: space-between;
@@ -9,8 +76,26 @@
 }
 
 .home-container {
-    max-width: 600px;
-    margin: auto;
+    .summay-item {
+        .item-box {
+            border-radius: $border-radius;
+            border: 0.6px solid $border-outline;
+            height: 52px;
+            margin: 24px;
+            padding: 24px;
+            background: $form-bg;
+
+            .title {
+                color: $secondary-txt-color;
+                font-size: 12px;
+            }
+
+            .value {
+                font-size: 24px;
+                color: $primary-txt-color;
+            }
+        }
+    }
 
     .filter-date {
         display: flex;
@@ -22,11 +107,6 @@
             font-size: 24px;
         }
 
-    }
-
-    .homepage-summary {
-        display: flex;
-        justify-content: space-around;
     }
 }
 
@@ -48,22 +128,6 @@
     }
 }
 
-.page-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-
-    .title {
-        margin: auto;
-    }
-
-    .back-link {
-        position: absolute;
-        left: 0;
-    }
-}
-
 .table-section {
     .header-section {
         display: flex;
@@ -75,11 +139,20 @@
             gap: 20px;
         }
 
-        .title {
-            font-weight: 600;
-            font-size: 24px;
-        }
+        .show-all-checkbox {
+            margin-right: 5%;
 
+            .MuiFormControlLabel-label {
+                font-size: 14px;
+            }
+
+            svg {
+                width: 20px;
+                height: 20px;
+                color: $checkbox-color;
+                opacity: 1;
+            }
+        }
 
     }
 
@@ -92,10 +165,12 @@
     .custom-table {
         .clickable-row {
             cursor: pointer;
+        }
 
-            &:hover {
-                background: $tertiary-color
-            }
+        .action-icon {
+            color: $checkbox-color;
+            font-size: 18px;
+            margin: 0 5px;
         }
     }
 }
@@ -104,13 +179,14 @@
 // date picker styles 
 
 .rmdp-input {
-    font-size: 16px;
-    border: 1px solid #c0c4d6;
-    border-radius: 5px;
+    font-size: 10px;
+    border: none !important;
+    border-radius: $border-radius;
     padding: 10px 20px !important;
-    background: $btn-color;
-    color: $text-on-btn;
+    background: $btn-bg;
+    color: $primary-txt-color;
     min-width: 215px;
+    font-family: "Nunito", sans-serif !important;
     text-align: center;
 }
 
@@ -142,5 +218,16 @@
     &-value {
         font-size: 1rem;
         margin-top: 4px;
+    }
+}
+
+.nodata-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    img {
+        height: 100px;
     }
 }

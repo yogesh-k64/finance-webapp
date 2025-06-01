@@ -1,0 +1,56 @@
+.main-title,
+.section-title,
+.label-title {
+    color: $primary-txt-color;
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.label-title {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.custom-datepicker-input {
+    font-size: 14px;
+    border: none !important;
+    border-radius: 4px;
+    background: #CB3CFF;
+    color: #FFFFFF;
+    outline: none !important;
+    font-family: "Nunito", sans-serif !important;
+}
+
+// cursor styles
+.pointer {
+    cursor: pointer;
+}
+
+// button styles
+.action-btn {
+    border-radius: $border-radius;
+    background-color: $form-bg;
+    padding: 0 16px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+        color: $secondary-txt-color;
+    }
+}
+
+// common styles
+.hideVisible {
+    visibility: hidden;
+}

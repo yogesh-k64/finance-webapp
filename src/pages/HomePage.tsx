@@ -1,19 +1,15 @@
-import { DATE_PICKER_FORMAT, INITIAL_FILTER_DATE, SCREENS } from '../utils/constants';
 import { getCollectionSummary, getHandoutSummary } from '../utils/utilsFunction';
 
-import DatePicker from 'react-multi-date-picker';
-import JsonStorageControls from './ImportComp';
+import { Grid } from '@mui/material';
 import { useCollectionList } from '../store/collectionSlice';
 import { useHandoutsList } from '../store/handoutsSlice';
-import { useNavigate } from 'react-router-dom';
+import { useHomeDateRange } from '../store/AppConfigReducer';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
 
-function HomePage() {
-  const navigate = useNavigate();
+const HomePage = () => {
   const allHandouts = useSelector(useHandoutsList);
   const allCollectionList = useSelector(useCollectionList);
-  const [values, setValues] = useState(INITIAL_FILTER_DATE)
+  const values = useSelector(useHomeDateRange)
 
   const [fromDate, endDate] = values
   const fromDateObj = new Date(fromDate?.toString())
@@ -31,42 +27,33 @@ function HomePage() {
 
   const getOverAllSummary = () => {
     return {
-      balance: collectionSummary.total - handoutsSummary.givenToCustomer 
+      balance: collectionSummary.total - handoutsSummary.givenToCustomer
     }
   }
+
+  const summaryList = [
+    { title: "Total Given", value: handoutsSummary.givenToCustomer },
+    { title: "Collection", value: collectionSummary.total },
+    { title: "Last week Balance", value: 0 },
+    { title: "Balance", value: getOverAllSummary().balance },
+  ]
+
   return (
     <div className="home-container">
-      <h1>Finance Manager</h1>
-      <div className="button-group">
-        <button onClick={() => navigate(SCREENS.CUSTOMERS)} className="nav-button">
-          Customers
-        </button>
-        <button onClick={() => navigate(SCREENS.HANDOUTS)} className="nav-button">
-          Handouts
-        </button>
-        <button onClick={() => navigate(SCREENS.COLLECTION)} className="nav-button">
-          Collection
-        </button>
-      </div>
-      <div className="filter-date">
-        <span className='title' >Select Dates</span>
-        <DatePicker
-          format={DATE_PICKER_FORMAT}
-          value={values}
-          onChange={setValues}
-          range
-          dateSeparator="  To  "
-        />
-      </div>
-      <div className='homepage-summary' >
-        <p>Total Given: {handoutsSummary.givenToCustomer}</p>
-        <p>Collection: {collectionSummary.total}</p>
-        <p>Last week Balance: {0}</p>
-        <p>Balance: {getOverAllSummary().balance}</p>
-      </div>
-      <JsonStorageControls />
+      <Grid container >
+        {summaryList.map(item => {
+          return <Grid size={12 / summaryList.length} key={item.title}
+            className="summay-item" >
+            <div className='item-box'>
+
+              <div className='title' >{item.title}</div>
+              <div className='value' >{item.value}</div>
+            </div>
+          </Grid>
+        })}
+      </Grid>
     </div>
   );
 }
 
-export default HomePage;
+export default HomePage

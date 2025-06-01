@@ -1,55 +1,99 @@
-# React + TypeScript + Vite
+# Finance Manager App - README
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+A modern financial management application for tracking customer handouts, collections, and balances with JSON import/export functionality.
 
-Currently, two official plugins are available:
+## Features
+- **Dashboard Overview**: Key financial metrics at a glance
+- **Customer Management**: Track customer information and transactions
+- **Handout Tracking**: Record and manage financial handouts
+- **Collection System**: Monitor payment collections
+- **Data Portability**: Full JSON import/export capabilities
+- **Date Filtering**: Analyze data by custom date ranges
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
+- **Frontend**: React.js with TypeScript
+- **UI Framework**: Material-UI (MUI)
+- **State Management**: Redux Toolkit
+- **Data Persistence**: JSON file storage
+- **Build Tool**: Vite
 
-## Expanding the ESLint configuration
+## Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/finance-manager.git
+   cd finance-manager
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Usage
+### Main Dashboard
+- View key financial metrics
+- Navigate between Customers, Handouts, and Collection sections
+- Filter data by date range
+
+### Data Management
+- **Export**: Click "EXPORT TO JSON" to save all data
+- **Import**: Click "IMPORT JSON" to load saved data
+
+## File Structure
+```
+src/
+├── components/       # Reusable UI components
+├── pages/            # Application screens
+├── store/            # Redux store configuration
+├── utils/            # Utility functions
+├── types/            # TypeScript type definitions
+├── App.tsx           # Main application component
+└── main.tsx          # Application entry point
+```
+
+## Configuration
+Create a `.env` file in the root directory with any environment variables:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+## Available Scripts
+- `npm run dev`: Start development server
+- `npm run build`: Create production build
+- `npm run lint`: Run ESLint
+- `npm run preview`: Preview production build
+
+## Data Structure
+Example JSON structure:
+```json
+{
+  "handouts": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "amount": 5000,
+      "date": "2025-05-01",
+      "collections": [
+        {
+          "amount": 2000,
+          "date": "2025-05-15"
+        }
+      ]
+    }
   ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+  "lastUpdated": "2025-05-20T12:00:00Z"
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## License
+MIT License
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
-# finance-webapp
+## Contact
+For support or questions, please contact: [your.email@example.com]

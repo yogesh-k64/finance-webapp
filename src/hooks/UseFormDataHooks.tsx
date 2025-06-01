@@ -1,26 +1,17 @@
-import type { Handout, collection } from '../utils/interface';
-import { STATUS_TYPES, collectionPageIgnoreField } from '../utils/constants';
+import type { collection } from '../utils/interface';
+import { STATUS_TYPES, collectionPageIgnoreField, initialFormData } from '../utils/constants';
 
 import React from 'react'
 import { addCollection } from '../store/collectionSlice';
-import { addHandout } from '../store/handoutsSlice';
-import { showSnackBar } from '../store/AppConfigReducer';
+import { addHandout, edithandout } from '../store/handoutsSlice';
+import { showSnackBar, type formDetailsType } from '../store/AppConfigReducer';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { isNonEmpty } from '../utils/utilsFunction';
 
 interface formDateHookProps {
   isCollectionPage?: boolean
-}
-
-const initialFormData = {
-  name: '',
-  mobile: '',
-  nominee: '',
-  amount: '',
-  date: '',
-  address: '',
-  handoutId: ''
 }
 
 const useFormDataHooks = (props: formDateHookProps) => {
@@ -39,6 +30,25 @@ const useFormDataHooks = (props: formDateHookProps) => {
     handoutId: false,
   });
 
+  const newHandout = {
+    id: isNonEmpty(formData.handoutId) ? formData.handoutId : uuidv4(),
+    name: formData.name.trim(),
+    mobile: formData.mobile.trim(),
+    nominee: formData.nominee.trim(),
+    amount: Number(formData.amount),
+    date: formData.date,
+    address: formData.address.trim(),
+    collection: [] as collection[],
+    status: STATUS_TYPES.ACTIVE
+  };
+
+  const newCollection = {
+    id: uuidv4(),
+    name: formData.name.trim(),
+    amount: Number(formData.amount),
+    date: formData.date,
+    handoutId: formData.handoutId,
+  } as collection
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -75,33 +85,20 @@ const useFormDataHooks = (props: formDateHookProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      const newHandout = {
-        id: uuidv4(),
-        name: formData.name.trim(),
-        mobile: formData.mobile.trim(),
-        nominee: formData.nominee.trim(),
-        amount: Number(formData.amount),
-        date: formData.date,
-        address: formData.address.trim(),
-        collection: [] as collection[],
-        status: STATUS_TYPES.ACTIVE
-      };
-
-      const newCollection = {
-        id: uuidv4(),
-        name: formData.name.trim(),
-        amount: Number(formData.amount),
-        date: formData.date,
-        handoutId: formData.handoutId,
-      } as collection
 
       if (isCollectionPage) {
         handleShowMsg("Collection added successfully");
         dispatch(addCollection(newCollection));
       }
       else {
-        handleShowMsg("Handout added successfully");
-        dispatch(addHandout(newHandout));
+        if (isNonEmpty(formData.handoutId)) {
+          dispatch(edithandout(newHandout));
+          handleShowMsg("Handout updated successfully");
+        }
+        else {
+          handleShowMsg("Handout added successfully");
+          dispatch(addHandout(newHandout));
+        }
       }
       setFormData({
         name: '',
@@ -115,7 +112,7 @@ const useFormDataHooks = (props: formDateHookProps) => {
     }
   };
 
-  const handleEdit = (item: collection | Handout) => {
+  const handleEdit = (item: formDetailsType) => {
     setFormData(Object.assign({}, initialFormData, item))
   }
 

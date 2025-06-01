@@ -10,10 +10,12 @@ $neutral-clr-100: #FFFFFF;
 
 // border color
 $border-outline: #343B4F;
+$drawer-border-outline: $neutral-clr-600;
 
 // button color
 $btn-grad: linear-gradient(128.49deg, #CB3CFF 19.86%, #7F25FB 68.34%);
 $btn-bg: #CB3CFF;
+$checkbox-color: $neutral-clr-400;
 
 // text color
 $primary-txt-color: #FFFFFF;
@@ -24,6 +26,7 @@ $tertiary-txt-color: #D1DBF9;
 // background color
 $app-bg: $neutral-clr-800;
 $form-bg: $neutral-clr-600;
+$menu-active-bg: $neutral-clr-700;
 $tertiary-color: #C4D9FF;
 $btn-color: #C4D9FF;
 

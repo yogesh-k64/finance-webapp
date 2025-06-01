@@ -1,4 +1,6 @@
 @import 'home';
+@import 'common';
+@import 'page';
 @import 'snackbar';
 
 body {
@@ -9,13 +11,6 @@ body {
     #root {
         width: 100%;
     }
-}
-
-#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0;
-    text-align: center;
 }
 
 .card {
@@ -57,10 +52,28 @@ body {
 
 .form-group {
     flex: 1;
+
+    .MuiOutlinedInput-root {
+        border: 1px solid $border-outline;
+
+        fieldset {
+            border: none;
+        }
+
+        &.Mui-focused {
+            border: 1px solid $border-outline;
+        }
+
+    }
 }
 
 .form-group label {
+    &.Mui-focused {
+        color: $secondary-txt-color;
+    }
+
     display: block;
+    color: $secondary-txt-color;
     margin-bottom: 5px;
     font-weight: 500;
 }
@@ -68,12 +81,12 @@ body {
 .form-group input {
     width: 100%;
     padding: 8px;
-    border: 1px solid #ddd;
+    color: $primary-txt-color;
     border-radius: 4px;
 }
 
 .add-button {
-    background-color: #4CAF50;
+    background-color: $btn-bg !important;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -84,7 +97,7 @@ body {
 }
 
 .add-button:hover {
-    background-color: #45a049;
+    background-color: $btn-grad !important;
 }
 
 .table-section {
@@ -95,25 +108,53 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
+    border-radius: 12px !important;
+
+    thead {
+        tr {
+            background: $form-bg;
+
+            &:hover {
+                background: $form-bg;
+            }
+
+            th {
+                color: $primary-txt-color;
+                border: none;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            background: $app-bg;
+
+            &:hover {
+                background: $app-bg;
+            }
+
+            &:nth-child(even) {
+                background-color: $form-bg;
+            }
+
+            td {
+                color: $primary-txt-color;
+                border: none;
+            }
+        }
+    }
 }
 
 .custom-table th,
 .custom-table td {
-    border: 1px solid #ddd;
     padding: 12px;
-    text-align: left;
 }
 
 .custom-table th {
-    background-color: #f2f2f2;
     font-weight: bold;
 }
 
-.custom-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.custom-table tr:hover {
+.custom-table .custom-table tr:hover {
     background-color: #f1f1f1;
 }
 

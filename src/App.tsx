@@ -26,6 +26,7 @@ function App() {
         <SnackBar />
         <Router basename="/finance-webapp" >
           <Routes>
+            <Route path="*" element={<Navigate to={SCREENS.HOME} replace />} />
             <Route path="/" element={<Dashboard />} >
               <Route index element={<Navigate to={SCREENS.HOME} replace />} />
               <Route path={SCREENS.HOME} element={<HomePage />} />

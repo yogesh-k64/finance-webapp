@@ -1,22 +1,30 @@
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 import type { HeadCell, collection } from '../utils/interface';
+import { removeCollection, useCollectionList } from '../store/collectionSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 import FormDataComp from './FormDataComp';
+import { HEAD_CELL_ACTION } from '../utils/constants';
 import TableComponentV1 from '../common/TableComponent';
 import { getCollectionSummary } from '../utils/utilsFunction';
-import { useCollectionList } from '../store/collectionSlice';
 import { useHomeDateRange } from '../store/AppConfigReducer';
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
 
 function Collection() {
 
   const allCollectionList = useSelector(useCollectionList);
+  const dispatch = useDispatch();
   const headCell: HeadCell[] = [
     { label: "name" },
     { label: "amount" },
     { label: "date" },
     { label: "handoutId" },
+    {
+      label: HEAD_CELL_ACTION,
+      onDelete: (item: collection) => {
+        dispatch(removeCollection(item.id));
+      }
+    }
   ]
   const values = useSelector(useHomeDateRange)
 

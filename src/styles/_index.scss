@@ -85,6 +85,10 @@ body {
     border-radius: 4px;
 }
 
+.form-group textarea {
+    color: $primary-txt-color;
+}
+
 .add-button {
     background-color: $btn-bg !important;
     color: white;

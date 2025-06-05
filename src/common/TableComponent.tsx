@@ -26,18 +26,18 @@ const TableComponentV1 = (props: TableComponentProps) => {
                                 {headCell.map(cell => {
                                     if (cell.label === HEAD_CELL_ACTION) {
                                         return <TableCell  >
-                                            <ModeEditSharpIcon onClick={(evt) => {
+                                            {cell.onEdit && <ModeEditSharpIcon onClick={(evt) => {
                                                 evt.stopPropagation();
                                                 if (cell.onEdit)
                                                     cell.onEdit(item)
                                             }}
-                                                className='action-icon' />
-                                            <DeleteOutlineSharpIcon onClick={(evt) => {
+                                                className='action-icon' />}
+                                            {cell.onDelete && <DeleteOutlineSharpIcon onClick={(evt) => {
                                                 evt.stopPropagation();
                                                 if (cell.onDelete)
                                                     cell.onDelete(item)
                                             }}
-                                                className='action-icon' />
+                                                className='action-icon' />}
                                         </TableCell>
                                     }
                                     return <TableCell>{item[cell.label as keyof typeof item] || "-"}</TableCell>

@@ -41,6 +41,22 @@ export const customerInitialFormData = {
   info: { value: "", errorMsg: "" },
 };
 
+export const handoutsInitialFormData = {
+  name: { value: "", errorMsg: "" },
+  mobile: { value: "", errorMsg: "" },
+  nominee: { value: "", errorMsg: "" },
+  amount: { value: "", errorMsg: "" },
+  date: { value: "", errorMsg: "" },
+  address: { value: "", errorMsg: "" },
+};
+
+export const collectionInitialFormData = {
+  name: { value: "", errorMsg: "" },
+  amount: { value: "", errorMsg: "" },
+  date: { value: "", errorMsg: "" },
+  handoutId: { value: "", errorMsg: "" },
+};
+
 export const initialFormData = {
   name: "",
   mobile: "",

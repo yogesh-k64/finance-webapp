@@ -1,45 +1,99 @@
 .main-container {
     height: 100vh;
+    overflow: hidden;
 
     .drawer-section {
         border-right: 0.6px solid $drawer-border-outline;
         box-shadow: 0px 8px 28px 0px #0105114D;
 
-        .title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 30px;
+        @media (max-width: $screen-md) {
+            display: none;
+        }
 
-            .collapse-icon {
-                transform: rotate(90deg);
+        .desktop-sidebar {
+            .title {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 30px;
             }
 
-            &.closed {
-                margin-bottom: 0;
+            .page-label {
+                font-size: 14px;
+                padding: 14px 14px;
+                color: $secondary-txt-color;
+
+                &.active {
+                    background-color: $menu-active-bg;
+                    border-radius: $border-radius;
+                    border-left: 4px solid $btn-bg;
+                    color: $primary-txt-color;
+                }
+            }
+
+            .sidebar-controls {
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 0.6px solid $drawer-border-outline;
+
+                > div {
+                    flex-direction: column;
+                    gap: 10px;
+                    margin-right: 0;
+
+                    .action-btn {
+                        width: 100%;
+                        justify-content: center;
+                    }
+                }
             }
         }
 
-        .page-label {
-            font-size: 14px;
-            padding: 14px 14px;
-            color: $secondary-txt-color;
+        .mobile-bottom-nav {
+            display: none;
+        }
+    }
 
-            &.active {
-                background-color: $menu-active-bg;
-                border-radius: $border-radius;
-                border-left: 4px solid $btn-bg;
-                color: $primary-txt-color;
+    // Mobile Bottom Navigation
+    .mobile-bottom-nav {
+        display: none !important;
+
+        @media (max-width: $screen-md) {
+            display: flex !important;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: $neutral-clr-700 !important;
+            border-top: 0.6px solid $drawer-border-outline;
+            box-shadow: 0px -4px 12px 0px rgba(1, 5, 17, 0.3);
+            z-index: 1000;
+
+            .MuiBottomNavigationAction-root {
+                color: $secondary-txt-color !important;
+                min-width: auto;
+
+                &.Mui-selected {
+                    color: $btn-bg !important;
+                }
+
+                .MuiSvgIcon-root {
+                    font-size: 24px;
+                }
             }
         }
     }
 
     .content-section {
-        overflow: auto;
-        height: 100%;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
 
-        &.closed {
-            height: calc(100% - 78px);
+        @media (max-width: $screen-md) {
+            height: calc(100vh - 60px);
+            padding-bottom: 0 !important;
         }
 
         .header {
@@ -47,11 +101,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
+
+            @media (max-width: $screen-md) {
+                flex-direction: column;
+                height: auto;
+                gap: 15px;
+                align-items: flex-start;
+                margin-bottom: 15px;
+            }
 
             .heading {
                 display: flex;
                 align-items: center;
                 gap: 10px;
+
+                @media (max-width: $screen-md) {
+                    font-size: 18px;
+                    width: 100%;
+                }
 
                 .MuiSvgIcon-root {
                     font-size: 18px;
@@ -60,7 +128,21 @@
 
             .range-selection {
                 display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+
+                @media (max-width: $screen-md) {
+                    width: 100%;
+                    justify-content: flex-start;
+                }
             }
+        }
+
+        // Make the outlet (page content) scrollable
+        > div:not(.header) {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
     }
 }
@@ -129,21 +211,39 @@
 }
 
 .table-section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    overflow: hidden;
+    width: 100%;
+
+    @media (max-width: $screen-md) {
+        margin-top: 15px;
+    }
+
     .header-section {
         display: flex;
         justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+        margin-bottom: 16px;
 
         @media (max-width: $screen-md) {
             flex-direction: column;
-            align-items: center;
-            gap: 20px;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .show-all-checkbox {
-            margin-right: 5%;
+            margin-right: 0;
 
             .MuiFormControlLabel-label {
                 font-size: 14px;
+                
+                @media (max-width: $screen-md) {
+                    font-size: 12px;
+                }
             }
 
             svg {
@@ -156,9 +256,25 @@
 
     }
 
+    // Make table container scrollable
+    .MuiTableContainer-root {
+        max-height: calc(100vh - 500px);
+        overflow-y: auto;
+        overflow-x: auto;
+        width: 100%;
+
+        @media (max-width: $screen-md) {
+            max-height: calc(100vh - 400px);
+        }
+    }
+
     thead {
         th {
             text-transform: capitalize;
+            position: sticky;
+            top: 0;
+            background: $form-bg;
+            z-index: 10;
         }
     }
 
@@ -171,7 +287,12 @@
             color: $checkbox-color;
             font-size: 18px;
             margin: 0 5px;
-            cursor: pointer;;
+            cursor: pointer;
+            
+            @media (max-width: $screen-md) {
+                font-size: 16px;
+                margin: 0 3px;
+            }
         }
     }
 }
@@ -189,6 +310,20 @@
     min-width: 215px;
     font-family: "Nunito", sans-serif !important;
     text-align: center;
+
+    @media (max-width: $screen-md) {
+        min-width: 150px;
+        padding: 8px 12px !important;
+        font-size: 9px;
+    }
+}
+
+.custom-datepicker-input {
+    @media (max-width: $screen-md) {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+        min-width: 150px;
+    }
 }
 
 // handout details 

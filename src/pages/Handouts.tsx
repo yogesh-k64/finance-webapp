@@ -1,135 +1,206 @@
-import { Checkbox, FormControlLabel, Grid } from "@mui/material";
-import { HEAD_CELL_ACTION, SCREENS, initialFormData } from "../utils/constants";
+import {
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+} from "@mui/material";
+import {
+  HEAD_CELL_ACTION,
+  SCREENS,
+  handoutsInitialFormData,
+  DATE_PICKER_FORMAT,
+} from "../utils/constants";
 import type { Handout, HeadCell } from "../utils/interface";
-import { useHandoutsList } from '../store/handoutsSlice';
-import { useHomeDateRange, showSnackBar } from "../store/AppConfigReducer";
-import { useDispatch, useSelector } from 'react-redux';
-import { isNonEmpty } from '../utils/utilsFunction';
+import { useHandoutsList, loadHandouts } from "../store/handoutsSlice";
+import {
+  useHomeDateRange,
+  showSnackBar,
+  storeHomePageDateRange,
+} from "../store/AppConfigReducer";
+import { useDispatch, useSelector } from "react-redux";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 
-import FormDataComp from './FormDataComp';
+import FormDataComp, { type FormField } from "./FormDataComp";
 import TableComponentV1 from "../common/TableComponent";
-import { getHandoutSummary } from "../utils/utilsFunction";
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { getHandoutSummary, formatDateRange } from "../utils/utilsFunction";
+import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import dummyHandouts from "../data/dummyHandouts.json";
 
 function Handouts() {
   const navigate = useNavigate();
   const allHandouts = useSelector(useHandoutsList);
-  const values = useSelector(useHomeDateRange)
+  const values = useSelector(useHomeDateRange);
   const dispatch = useDispatch();
-  const [checked, setChecked] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(true); // Default to Show All
+  const [openDialog, setOpenDialog] = useState(false);
+  const [formData, setFormData] = useState(handoutsInitialFormData);
+  const editId = useRef<number | null>(null);
+  const hasLoadedData = useRef(false);
 
-  // Form fields configuration (filter out handout-specific ignored fields)
-  const allFormFields = [
+  const updateDateRange = (dateRange: DateObject[]) => {
+    dispatch(storeHomePageDateRange(dateRange));
+  };
+
+  // Load dummy data on first mount if no handouts exist
+  useEffect(() => {
+    if (!hasLoadedData.current && allHandouts.length === 0) {
+      dispatch(loadHandouts({ items: dummyHandouts as any }));
+      hasLoadedData.current = true;
+    }
+  }, [allHandouts.length, dispatch]);
+
+  const ERROR_MSG = {
+    name: "Name is required",
+    mobile: "Valid 10-digit number required",
+    nominee: "Nominee is required",
+    amount: "Valid amount required",
+    date: "Date is required",
+    address: "Address is required",
+  };
+
+  const formFields: FormField[] = [
     {
-      name: 'name',
-      label: 'Name',
-      type: 'text',
+      name: "name",
+      label: "Name",
+      type: "text",
       required: true,
-      errorMsg: 'Name is required',
     },
     {
-      name: 'mobile',
-      label: 'Mobile',
-      type: 'text',
+      name: "mobile",
+      label: "Mobile",
+      type: "text",
       required: true,
-      errorMsg: 'Valid 10-digit number required',
     },
     {
-      name: 'nominee',
-      label: 'Nominee',
-      type: 'text',
+      name: "nominee",
+      label: "Nominee",
+      type: "text",
       required: false,
-      errorMsg: 'Nominee is required',
     },
     {
-      name: 'amount',
-      label: 'Amount',
-      type: 'number',
+      name: "amount",
+      label: "Amount",
+      type: "number",
       required: true,
-      errorMsg: 'Valid amount required',
     },
     {
-      name: 'date',
-      label: 'Date',
-      type: 'date',
+      name: "date",
+      label: "Date",
+      type: "date",
       required: true,
-      errorMsg: 'Date is required',
-      InputLabelProps: { shrink: true }
+      InputLabelProps: { shrink: true },
     },
     {
-      name: 'address',
-      label: 'Address',
-      type: 'text',
+      name: "address",
+      label: "Address",
+      type: "text",
       required: false,
-      errorMsg: 'Address is required',
       multiline: true,
     },
   ];
-  
-  const formFields = allFormFields; // Handouts uses all fields except handoutId
-
-  // Form state management for this component
-  const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: { value: value, errorMsg: "" },
+    }));
   };
 
-  // Form validation logic
   const validateForm = () => {
-    const newErrors = {
-      name: formData.name.trim() === '',
-      mobile: formData.mobile.trim() === '' || !/^\d{10}$/.test(formData.mobile),
-      nominee: false,
-      amount: formData.amount.trim() === '' || isNaN(Number(formData.amount)),
-      date: formData.date.trim() === '',
-      address: false,
-      handoutId: false // Handouts page doesn't require handoutId
-    };
-    return !Object.values(newErrors).some(error => error);
+    const isNameNotValid = formData.name.value.trim() === "";
+    const isMobileNotValid =
+      formData.mobile.value.trim() === "" ||
+      !/^\d{10}$/.test(formData.mobile.value);
+    const isAmountNotValid =
+      formData.amount.value.trim() === "" ||
+      isNaN(Number(formData.amount.value));
+    const isDateNotValid = formData.date.value.trim() === "";
+
+    setFormData((prev) => ({
+      ...prev,
+      name: {
+        value: prev.name.value,
+        errorMsg: isNameNotValid ? ERROR_MSG.name : "",
+      },
+      mobile: {
+        value: prev.mobile.value,
+        errorMsg: isMobileNotValid ? ERROR_MSG.mobile : "",
+      },
+      amount: {
+        value: prev.amount.value,
+        errorMsg: isAmountNotValid ? ERROR_MSG.amount : "",
+      },
+      date: {
+        value: prev.date.value,
+        errorMsg: isDateNotValid ? ERROR_MSG.date : "",
+      },
+    }));
+
+    return (
+      !isNameNotValid &&
+      !isMobileNotValid &&
+      !isAmountNotValid &&
+      !isDateNotValid
+    );
   };
 
-  // Form submission logic
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      
-
-      if (isNonEmpty(formData.handoutId)) {
-        dispatch(showSnackBar({ message: "Handout updated successfully", status: "success" }));
+      if (editId.current) {
+        dispatch(
+          showSnackBar({
+            message: "Handout updated successfully",
+            status: "success",
+          })
+        );
       } else {
-        dispatch(showSnackBar({ message: "Handout added successfully", status: "success" }));
+        dispatch(
+          showSnackBar({
+            message: "Handout added successfully",
+            status: "success",
+          })
+        );
       }
-      
-      // Reset form
-      setFormData({
-        name: '',
-        mobile: '',
-        nominee: '',
-        amount: '',
-        date: formData.date,
-        address: '',
-        handoutId: ''
-      });
+
+      setFormData(handoutsInitialFormData);
+      editId.current = null;
+      setOpenDialog(false);
     }
   };
 
-  const [fromDate, endDate] = values
-  const fromDateObj = new Date(fromDate?.toString())
-  const endDateObj = new Date(endDate?.toString())
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData(handoutsInitialFormData);
+    editId.current = null;
+  };
+
+  const [fromDate, endDate] = values;
+  const fromDateObj = new Date(fromDate?.toString());
+  const endDateObj = new Date(endDate?.toString());
 
   const handouts = allHandouts.reduce((acc, item) => {
-    if (checked)
-      acc.push(item)
-    else if (fromDateObj && endDateObj && new Date(item.date) >= fromDateObj &&
-      new Date(item.date) <= endDateObj) {
-      acc.push(item)
+    if (checked) acc.push(item);
+    else if (
+      fromDateObj &&
+      endDateObj &&
+      new Date(item.date) >= fromDateObj &&
+      new Date(item.date) <= endDateObj
+    ) {
+      acc.push(item);
     }
-    return acc
-  }, [] as Handout[])
-  const handoutsSummary = getHandoutSummary(handouts, fromDateObj, endDateObj)
+    return acc;
+  }, [] as Handout[]);
+  const handoutsSummary = getHandoutSummary(handouts, fromDateObj, endDateObj);
 
   const { total, givenToCustomer, profit } = handoutsSummary;
 
@@ -144,18 +215,27 @@ function Handouts() {
     {
       label: HEAD_CELL_ACTION,
       onDelete: (item: Handout) => {
-      console.log('item delete:', item);
+        console.log("item delete:", item);
         // dispatch(removeHandout(item.id));
       },
-      onEdit: (item: Handout) => {
-      console.log('item edit :', item);
-
-      }
-    }]
+      onEdit: (item: any) => {
+        editId.current = item.id;
+        setFormData({
+          name: { value: item.name || "", errorMsg: "" },
+          mobile: { value: String(item.mobile || ""), errorMsg: "" },
+          nominee: { value: item.nominee || "", errorMsg: "" },
+          amount: { value: String(item.amount || ""), errorMsg: "" },
+          date: { value: item.date || "", errorMsg: "" },
+          address: { value: item.address || "", errorMsg: "" },
+        });
+        setOpenDialog(true);
+      },
+    },
+  ];
 
   const handleClick = (item: Handout) => {
-    navigate(`${SCREENS.HANDOUTS}/${item.id}`)
-  }
+    navigate(`${SCREENS.HANDOUTS}/${item.id}`);
+  };
 
   const handleShowAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -164,43 +244,91 @@ function Handouts() {
   const summaryList = [
     { title: "Total Amount", value: total },
     { title: "Handout Amount", value: givenToCustomer },
-    { title: "Profit", value: profit }
-  ]
+    { title: "Profit", value: profit },
+  ];
 
   return (
     <div className="handouts-container">
-      <div className="form-section">
-        <h2>Add New Handout</h2>
-        <FormDataComp 
-          formData={formData as any}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          formFields={formFields}
-          buttonText="Add Handout"
-        />
-      </div>
-      <Grid container justifyContent={"space-between"} >
-        {summaryList.map(item => {
-          return <Grid size={3} key={item.title}
-            className="summay-item" >
-            <div className='item-box'>
-              <div className='title' >{item.title}</div>
-              <div className='value' >{item.value}</div>
-            </div>
-          </Grid>
+      <Grid container justifyContent={"space-between"}>
+        {summaryList.map((item) => {
+          return (
+            <Grid size={3} key={item.title} className="summay-item">
+              <div className="item-box">
+                <div className="title">{item.title}</div>
+                <div className="value">{item.value}</div>
+              </div>
+            </Grid>
+          );
         })}
       </Grid>
       <div className="table-section">
-        <div className="header-section" >
-          <span className="title label-title" >Handouts Records</span>
-          <div className="show-all-checkbox">
-            <FormControlLabel control={<Checkbox checked={checked} onChange={handleShowAll} />}
-              label="Show All" />
+        <div className="header-section">
+          <span className="title label-title">Handouts Records</span>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <FormControlLabel
+              control={<Checkbox checked={checked} onChange={handleShowAll} />}
+              label="Show All"
+              className="show-all-checkbox"
+            />
+            <DatePicker
+              format={DATE_PICKER_FORMAT}
+              value={values}
+              onChange={updateDateRange}
+              range
+              render={(value: string, openCalendar: () => void) => {
+                return (
+                  <button
+                    onClick={openCalendar}
+                    className="custom-datepicker-input"
+                  >
+                    {formatDateRange(value)}
+                  </button>
+                );
+              }}
+            />
+            <Button
+              variant="contained"
+              className="action-btn"
+              onClick={handleOpenDialog}
+            >
+              Add New Handout
+            </Button>
           </div>
         </div>
-        <TableComponentV1 headCell={headCell} list={handouts} onClick={handleClick} />
-
+        <TableComponentV1
+          headCell={headCell}
+          list={handouts}
+          onClick={handleClick}
+        />
       </div>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="lg"
+        fullWidth
+        className="custom-dialog"
+      >
+        <DialogTitle>
+          {editId.current ? "Update Handout" : "Add New Handout"}
+        </DialogTitle>
+        <DialogContent>
+          <FormDataComp
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            formFields={formFields}
+            buttonText={editId.current ? "Update Handout" : "Add Handout"}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

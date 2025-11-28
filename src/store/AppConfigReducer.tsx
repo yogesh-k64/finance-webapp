@@ -3,67 +3,81 @@ import { INITIAL_FILTER_DATE } from "../utils/constants";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface snackBarPropType {
-    show: boolean
-    message: string
-    status: "success" | "error" | "warning" | "info"
+  show: boolean;
+  message: string;
+  status: "success" | "error" | "warning" | "info";
 }
 
 interface AppConfigProps {
-    snackBar: snackBarPropType
-    homePageDateRange: DateObject[]
-    loader: boolean
+  snackBar: snackBarPropType;
+  homePageDateRange: DateObject[];
+  loader: boolean;
+  isMobile: boolean;
 }
 
 const initialSnackBar: snackBarPropType = {
-    show: false,
-    message: "",
-    status: "error"
+  show: false,
+  message: "",
+  status: "error",
 };
 
 const initialState: AppConfigProps = {
-    snackBar: initialSnackBar,
-    loader: false,
-    homePageDateRange: INITIAL_FILTER_DATE
+  snackBar: initialSnackBar,
+  loader: false,
+  homePageDateRange: INITIAL_FILTER_DATE,
+  isMobile: window.innerWidth <= 768,
 };
 
 const AppConfigSlice = createSlice({
-    name: "AppConfigReducer",
-    initialState,
-    reducers: {
-        hideSnackBar: (state) => {
-            return Object.assign({}, state, {
-                snackBar: Object.assign({}, state.snackBar, {
-                    show: false
-                })
-            });
+  name: "AppConfigReducer",
+  initialState,
+  reducers: {
+    hideSnackBar: (state) => {
+      return Object.assign({}, state, {
+        snackBar: Object.assign({}, state.snackBar, {
+          show: false,
+        }),
+      });
+    },
+    showSnackBar: (state, action) => {
+      return Object.assign({}, state, {
+        snackBar: {
+          show: true,
+          message: action.payload.message,
+          status: action.payload.status
+            ? action.payload.status
+            : initialSnackBar.status,
         },
-        showSnackBar: (state, action) => {
-            return Object.assign({}, state, {
-                snackBar: {
-                    show: true,
-                    message: action.payload.message,
-                    status: action.payload.status ? action.payload.status : initialSnackBar.status
-                }
-            });
-        },
-        storeLoader: (state, action) => {
-            state.loader = action.payload;
-        },
-        storeHomePageDateRange: (state, action) => {
-            state.homePageDateRange = action.payload;
-        }
-    }
+      });
+    },
+    storeLoader: (state, action) => {
+      state.loader = action.payload;
+    },
+    storeHomePageDateRange: (state, action) => {
+      state.homePageDateRange = action.payload;
+    },
+    setIsMobile: (state, action) => {
+      state.isMobile = action.payload;
+    },
+  },
 });
 
-export const { showSnackBar, hideSnackBar, storeHomePageDateRange } = AppConfigSlice.actions;
+export const {
+  showSnackBar,
+  hideSnackBar,
+  storeHomePageDateRange,
+  setIsMobile,
+} = AppConfigSlice.actions;
 
 export const useConfigStoreByKey = (key: keyof AppConfigProps) => {
-    return (state: { AppConfigReducer: AppConfigProps }) => {
-        return state.AppConfigReducer[key];
-    };
+  return (state: { AppConfigReducer: AppConfigProps }) => {
+    return state.AppConfigReducer[key];
+  };
 };
 
-export const useHomeDateRange = (state: { AppConfigReducer: AppConfigProps }) => state.AppConfigReducer.homePageDateRange;
-
+export const useHomeDateRange = (state: { AppConfigReducer: AppConfigProps }) =>
+  state.AppConfigReducer.homePageDateRange;
+export const useIsMobile = (state: { AppConfigReducer: AppConfigProps }) =>
+  state.AppConfigReducer.isMobile;
 
 export default AppConfigSlice.reducer;

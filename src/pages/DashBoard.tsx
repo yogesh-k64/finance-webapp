@@ -1,48 +1,34 @@
-import { DATE_PICKER_FORMAT, SCREENS } from "../utils/constants";
-import DatePicker, { DateObject } from "react-multi-date-picker";
-import { Outlet, useLocation } from "react-router-dom";
-import { formatDateRange, isNonEmpty } from "../utils/utilsFunction";
-import {
-  storeHomePageDateRange,
-  useHomeDateRange,
-} from "../store/AppConfigReducer";
+import { SCREENS } from "../utils/constants";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { setIsMobile, useIsMobile } from "../store/AppConfigReducer";
 import { useDispatch, useSelector } from "react-redux";
 
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import DrawerSection from "../components/DrawerSection";
-import { Grid } from "@mui/material";
-import JsonStorageControls from "./ImportComp";
+import { Grid, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import PeopleOutlineSharpIcon from "@mui/icons-material/PeopleOutlineSharp";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { storeRefreshUser, useRefreshUsers } from "../store/RefreshReducer";
 import useUserApi from "../hooks/useUserApi";
 
 const DashBoard = () => {
-  const homeDateRange = useSelector(useHomeDateRange);
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  const [openSideBar, setOpenSideBar] = useState(true);
+  const navigate = useNavigate();
   const refreshUser = useSelector(useRefreshUsers);
+  const isMobile = useSelector(useIsMobile);
   const { getUsers } = useUserApi();
-  const updateDateRange = (dateRange: DateObject[]) => {
-    dispatch(storeHomePageDateRange(dateRange));
-  };
 
-  const title = {
-    [SCREENS.HANDOUTS]: {
-      title: "Handouts Management",
-      icon: <DescriptionRoundedIcon />,
-    },
-    [SCREENS.COLLECTION]: {
-      title: "Collection Management",
-      icon: <AccountBalanceWalletRoundedIcon />,
-    },
-    [SCREENS.CUSTOMERS]: {
-      title: "Customer Management",
-      icon: <PeopleOutlineSharpIcon />,
-    },
-  };
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      dispatch(setIsMobile(window.innerWidth <= 768));
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [dispatch]);
 
   useEffect(() => {
     getUsers();
@@ -56,48 +42,62 @@ const DashBoard = () => {
   }, [refreshUser]);
 
   return (
-    <Grid container className="main-container">
-      <Grid size={openSideBar ? 2 : 12} p={3} className={`drawer-section`}>
-        <DrawerSection
-          isDrawerOpen={openSideBar}
-          setOpenSideBar={setOpenSideBar}
-        />
+    <>
+      <Grid container className="main-container">
+        <Grid size={{ xs: 0, md: 2 }} p={3} className="drawer-section">
+          <DrawerSection />
+        </Grid>
+        <Grid size={{ xs: 12, md: 10 }} p={3} className="content-section">
+          <Outlet />
+        </Grid>
       </Grid>
-      <Grid
-        size={openSideBar ? 10 : 12}
-        p={3}
-        className={`content-section ${openSideBar ? "" : "closed"}`}
-      >
-        <div className="header">
-          <div
-            className={`heading ${isNonEmpty(title[pathname]) ? "" : "hideVisible"}`}
-          >
-            {title[pathname]?.icon}
-            <span>{title[pathname]?.title}</span>
-          </div>
-          <div className="range-selection">
-            <JsonStorageControls />
-            <DatePicker
-              format={DATE_PICKER_FORMAT}
-              value={homeDateRange}
-              onChange={updateDateRange}
-              range
-              render={(value: string, openCalendar: () => void) => {
-                return (
-                  <button
-                    onClick={openCalendar}
-                    className="custom-datepicker-input"
-                  >
-                    {formatDateRange(value)}
-                  </button>
-                );
-              }}
-            />
-          </div>
-        </div>
-        <Outlet />
-      </Grid>
-    </Grid>
+
+      {/* Mobile Bottom Navigation */}
+      {isMobile && (
+        <BottomNavigation
+          value={pathname}
+          onChange={(_event, newValue) => {
+            navigate(newValue);
+          }}
+          className="mobile-bottom-nav"
+          showLabels={false}
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "60px",
+            backgroundColor: "#0B1739",
+            borderTop: "0.6px solid #343B4F",
+            boxShadow: "0px -4px 12px 0px rgba(1, 5, 17, 0.3)",
+            zIndex: 1000,
+            "& .MuiBottomNavigationAction-root": {
+              color: "#AEB9E1",
+              minWidth: "auto",
+              "&.Mui-selected": {
+                color: "#CB3CFF",
+              },
+              "& .MuiSvgIcon-root": {
+                fontSize: "24px",
+              },
+            },
+          }}
+        >
+          <BottomNavigationAction
+            value={SCREENS.HANDOUTS}
+            icon={<DescriptionRoundedIcon />}
+          />
+          <BottomNavigationAction
+            value={SCREENS.COLLECTION}
+            icon={<AccountBalanceWalletRoundedIcon />}
+          />
+          <BottomNavigationAction
+            value={SCREENS.CUSTOMERS}
+            icon={<PeopleOutlineSharpIcon />}
+          />
+        </BottomNavigation>
+      )}
+    </>
   );
 };
 

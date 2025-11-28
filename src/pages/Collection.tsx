@@ -1,104 +1,182 @@
-import { Checkbox, FormControlLabel, Grid } from '@mui/material';
-import type { HeadCell, collection } from '../utils/interface';
-import { removeCollection, useCollectionList } from '../store/collectionSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { addCollection } from '../store/collectionSlice';
-import { showSnackBar } from '../store/AppConfigReducer';
-import { v4 as uuidv4 } from 'uuid';
+import {
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+} from "@mui/material";
+import type { HeadCell, collection } from "../utils/interface";
+import {
+  removeCollection,
+  useCollectionList,
+  loadCollection,
+} from "../store/collectionSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addCollection } from "../store/collectionSlice";
+import {
+  showSnackBar,
+  useHomeDateRange,
+  storeHomePageDateRange,
+} from "../store/AppConfigReducer";
+import { v4 as uuidv4 } from "uuid";
+import DatePicker, { DateObject } from "react-multi-date-picker";
 
-import FormDataComp from './FormDataComp';
-import { HEAD_CELL_ACTION, initialFormData } from '../utils/constants';
-import TableComponentV1 from '../common/TableComponent';
-import { getCollectionSummary } from '../utils/utilsFunction';
-import { useHomeDateRange } from '../store/AppConfigReducer';
-import { useState } from 'react';
+import FormDataComp, { type FormField } from "./FormDataComp";
+import {
+  HEAD_CELL_ACTION,
+  collectionInitialFormData,
+  DATE_PICKER_FORMAT,
+} from "../utils/constants";
+import TableComponentV1 from "../common/TableComponent";
+import { getCollectionSummary, formatDateRange } from "../utils/utilsFunction";
+import { useState, useRef, useEffect } from "react";
+import dummyCollections from "../data/dummyCollections.json";
 
 function Collection() {
-
   const allCollectionList = useSelector(useCollectionList);
   const dispatch = useDispatch();
-  
-  const allFormFields = [
+  const values = useSelector(useHomeDateRange);
+  const [checked, setChecked] = useState<boolean>(true); // Default to Show All
+  const [openDialog, setOpenDialog] = useState(false);
+  const [formData, setFormData] = useState(collectionInitialFormData);
+  const editId = useRef<string | null>(null);
+  const hasLoadedData = useRef(false);
+
+  const updateDateRange = (dateRange: DateObject[]) => {
+    dispatch(storeHomePageDateRange(dateRange));
+  };
+
+  // Load dummy data on first mount if no collections exist
+  useEffect(() => {
+    if (!hasLoadedData.current && allCollectionList.length === 0) {
+      dispatch(loadCollection({ items: dummyCollections as any }));
+      hasLoadedData.current = true;
+    }
+  }, [allCollectionList.length, dispatch]);
+
+  const ERROR_MSG = {
+    name: "Name is required",
+    amount: "Valid amount required",
+    date: "Date is required",
+    handoutId: "HandoutId is required",
+  };
+
+  const formFields: FormField[] = [
     {
-      name: 'name',
-      label: 'Name',
-      type: 'text',
+      name: "name",
+      label: "Name",
+      type: "text",
       required: true,
-      errorMsg: 'Name is required',
     },
     {
-      name: 'amount',
-      label: 'Amount',
-      type: 'number',
+      name: "amount",
+      label: "Amount",
+      type: "number",
       required: true,
-      errorMsg: 'Valid amount required',
     },
     {
-      name: 'date',
-      label: 'Date',
-      type: 'date',
+      name: "date",
+      label: "Date",
+      type: "date",
       required: true,
-      errorMsg: 'Date is required',
-      InputLabelProps: { shrink: true }
+      InputLabelProps: { shrink: true },
     },
     {
-      name: 'handoutId',
-      label: 'HandoutId',
-      type: 'text',
+      name: "handoutId",
+      label: "HandoutId",
+      type: "text",
       required: true,
-      errorMsg: 'HandoutId is required',
     },
   ];
-  
-  const formFields = allFormFields; 
-  const [formData, setFormData] = useState(initialFormData);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: { value: value, errorMsg: "" },
+    }));
   };
 
-  // Form validation logic
   const validateForm = () => {
-    const newErrors = {
-      name: formData.name.trim() === '',
-      mobile: false, // Not used in collection
-      nominee: false, // Not used in collection
-      amount: formData.amount.trim() === '' || isNaN(Number(formData.amount)),
-      date: formData.date.trim() === '',
-      address: false, // Not used in collection
-      handoutId: formData.handoutId.trim() === '' // Required for collection
-    };
-    
-    return !Object.values(newErrors).some(error => error);
+    const isNameNotValid = formData.name.value.trim() === "";
+    const isAmountNotValid =
+      formData.amount.value.trim() === "" ||
+      isNaN(Number(formData.amount.value));
+    const isDateNotValid = formData.date.value.trim() === "";
+    const isHandoutIdNotValid = formData.handoutId.value.trim() === "";
+
+    setFormData((prev) => ({
+      ...prev,
+      name: {
+        value: prev.name.value,
+        errorMsg: isNameNotValid ? ERROR_MSG.name : "",
+      },
+      amount: {
+        value: prev.amount.value,
+        errorMsg: isAmountNotValid ? ERROR_MSG.amount : "",
+      },
+      date: {
+        value: prev.date.value,
+        errorMsg: isDateNotValid ? ERROR_MSG.date : "",
+      },
+      handoutId: {
+        value: prev.handoutId.value,
+        errorMsg: isHandoutIdNotValid ? ERROR_MSG.handoutId : "",
+      },
+    }));
+
+    return (
+      !isNameNotValid &&
+      !isAmountNotValid &&
+      !isDateNotValid &&
+      !isHandoutIdNotValid
+    );
   };
 
-  // Form submission logic
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
       const newCollection = {
-        id: uuidv4(),
-        name: formData.name.trim(),
-        amount: Number(formData.amount),
-        date: formData.date,
-        handoutId: formData.handoutId,
+        id: editId.current || uuidv4(),
+        name: formData.name.value.trim(),
+        amount: Number(formData.amount.value),
+        date: formData.date.value,
+        handoutId: formData.handoutId.value,
       } as collection;
 
-      dispatch(showSnackBar({ message: "Collection added successfully", status: "success" }));
+      if (editId.current) {
+        dispatch(
+          showSnackBar({
+            message: "Collection updated successfully",
+            status: "success",
+          })
+        );
+      } else {
+        dispatch(
+          showSnackBar({
+            message: "Collection added successfully",
+            status: "success",
+          })
+        );
+      }
       dispatch(addCollection(newCollection));
-      
-      // Reset form
-      setFormData({
-        name: '',
-        mobile: '',
-        nominee: '',
-        amount: '',
-        date: formData.date,
-        address: '',
-        handoutId: ''
-      });
+
+      setFormData(collectionInitialFormData);
+      editId.current = null;
+      setOpenDialog(false);
     }
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData(collectionInitialFormData);
+    editId.current = null;
   };
   const headCell: HeadCell[] = [
     { label: "name" },
@@ -109,69 +187,126 @@ function Collection() {
       label: HEAD_CELL_ACTION,
       onDelete: (item: collection) => {
         dispatch(removeCollection(item.id));
-      }
-    }
-  ]
-  const values = useSelector(useHomeDateRange)
+      },
+      onEdit: (item: collection) => {
+        editId.current = item.id;
+        setFormData({
+          name: { value: item.name || "", errorMsg: "" },
+          amount: { value: String(item.amount || ""), errorMsg: "" },
+          date: { value: item.date || "", errorMsg: "" },
+          handoutId: { value: item.handoutId || "", errorMsg: "" },
+        });
+        setOpenDialog(true);
+      },
+    },
+  ];
 
-  const [checked, setChecked] = useState<boolean>(false);
-
-  const [fromDate, endDate] = values
-  const fromDateObj = new Date(fromDate?.toString())
-  const endDateObj = new Date(endDate?.toString())
+  const [fromDate, endDate] = values;
+  const fromDateObj = new Date(fromDate?.toString());
+  const endDateObj = new Date(endDate?.toString());
 
   const collectionList = allCollectionList.reduce((acc, item) => {
-    if (checked)
-      acc.push(item)
-    else if (fromDateObj && endDateObj && new Date(item.date) >= fromDateObj &&
-      new Date(item.date) <= endDateObj) {
-      acc.push(item)
+    if (checked) acc.push(item);
+    else if (
+      fromDateObj &&
+      endDateObj &&
+      new Date(item.date) >= fromDateObj &&
+      new Date(item.date) <= endDateObj
+    ) {
+      acc.push(item);
     }
-    return acc
-  }, [] as collection[])
-  const { total } = getCollectionSummary(collectionList, fromDateObj, endDateObj);
+    return acc;
+  }, [] as collection[]);
+  const { total } = getCollectionSummary(
+    collectionList,
+    fromDateObj,
+    endDateObj
+  );
 
   const handleShowAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
 
-  const summaryList = [
-    { title: "Collected Amount", value: total }
-  ]
+  const summaryList = [{ title: "Collected Amount", value: total }];
 
   return (
-    <div className='handouts-container' >
-      <div className="form-section">
-        <h2>Add New Collection</h2>
-        <FormDataComp 
-          formData={formData as any}
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          formFields={formFields}
-          buttonText="Add Collection"
-        />
-      </div>
-      <Grid container justifyContent={"space-between"} >
-        {summaryList.map(item => {
-          return <Grid size={3} key={item.title}
-            className="summay-item" >
-            <div className='item-box'>
-              <div className='title' >{item.title}</div>
-              <div className='value' >{item.value}</div>
-            </div>
-          </Grid>
+    <div className="handouts-container">
+      <Grid container justifyContent={"space-between"}>
+        {summaryList.map((item) => {
+          return (
+            <Grid size={3} key={item.title} className="summay-item">
+              <div className="item-box">
+                <div className="title">{item.title}</div>
+                <div className="value">{item.value}</div>
+              </div>
+            </Grid>
+          );
         })}
       </Grid>
       <div className="table-section">
-        <div className="header-section" >
-          <span className="title" >Collection Records</span>
-          <div className="show-all-checkbox" >
-            <FormControlLabel control={<Checkbox checked={checked} onChange={handleShowAll} />}
-              label="Show All" />
+        <div className="header-section">
+          <span className="title label-title">Collection Records</span>
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <FormControlLabel
+              control={<Checkbox checked={checked} onChange={handleShowAll} />}
+              label="Show All"
+              className="show-all-checkbox"
+            />
+            <DatePicker
+              format={DATE_PICKER_FORMAT}
+              value={values}
+              onChange={updateDateRange}
+              range
+              render={(value: string, openCalendar: () => void) => {
+                return (
+                  <button
+                    onClick={openCalendar}
+                    className="custom-datepicker-input"
+                  >
+                    {formatDateRange(value)}
+                  </button>
+                );
+              }}
+            />
+            <Button
+              variant="contained"
+              className="action-btn"
+              onClick={handleOpenDialog}
+            >
+              Add New Collection
+            </Button>
           </div>
         </div>
         <TableComponentV1 headCell={headCell} list={collectionList} />
       </div>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="lg"
+        fullWidth
+        className="custom-dialog"
+      >
+        <DialogTitle>
+          {editId.current ? "Update Collection" : "Add New Collection"}
+        </DialogTitle>
+        <DialogContent>
+          <FormDataComp
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            formFields={formFields}
+            buttonText={editId.current ? "Update Collection" : "Add Collection"}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

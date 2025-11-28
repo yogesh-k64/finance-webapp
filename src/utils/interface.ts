@@ -19,11 +19,6 @@ export interface TableComponentProps {
   onClick?: (item: any) => void;
 }
 
-export interface DrawerSectionProps {
-  isDrawerOpen: boolean;
-  setOpenSideBar: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 export interface User {
   id: number;
   name: string;

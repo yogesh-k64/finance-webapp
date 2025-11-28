@@ -48,6 +48,12 @@
     border: none;
     outline: none;
 
+    @media (max-width: $screen-md) {
+        padding: 0 12px;
+        height: 32px;
+        font-size: 14px;
+    }
+
     &:hover {
         background: $btn-grad !important;
     }

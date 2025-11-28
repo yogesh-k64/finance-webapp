@@ -7,9 +7,14 @@ body {
     color: $primary-txt-color;
     background: $app-bg;
     font-family: "Nunito", sans-serif !important;
+    margin: 0;
+    overflow: hidden;
+    height: 100vh;
 
     #root {
         width: 100%;
+        height: 100vh;
+        overflow: hidden;
     }
 }
 
@@ -20,8 +25,15 @@ body {
 /* Handouts Page Styles */
 .handouts-container {
     padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+
+    @media (max-width: $screen-md) {
+        padding: 10px;
+    }
 }
 
 .back-link {
@@ -158,7 +170,11 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
-    border-radius: 12px !important;
+    border-radius: 0 !important;
+
+    @media (max-width: $screen-md) {
+        font-size: 14px;
+    }
 
     thead {
         tr {
@@ -171,6 +187,12 @@ body {
             th {
                 color: $primary-txt-color;
                 border: none;
+                white-space: nowrap;
+                
+                @media (max-width: $screen-md) {
+                    padding: 8px 6px;
+                    font-size: 12px;
+                }
             }
         }
     }
@@ -190,6 +212,11 @@ body {
             td {
                 color: $primary-txt-color;
                 border: none;
+                
+                @media (max-width: $screen-md) {
+                    padding: 8px 6px;
+                    font-size: 12px;
+                }
             }
         }
     }

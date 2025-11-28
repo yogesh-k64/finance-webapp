@@ -108,6 +108,52 @@ body {
     margin-top: 30px;
 }
 
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h2 {
+        margin: 0;
+    }
+}
+
+.custom-dialog {
+    .MuiDialog-paper {
+        background-color: $form-bg;
+        border: 0.6px solid $border-outline;
+        border-radius: 8px;
+    }
+
+    .MuiDialogTitle-root {
+        color: $primary-txt-color;
+        border-bottom: 1px solid $border-outline;
+        font-weight: 600;
+    }
+
+    .MuiDialogContent-root {
+        padding-top: 20px;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding-top: 10px;
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group-full {
+            grid-column: 1 / -1;
+        }
+    }
+}
+
 .custom-table {
     width: 100%;
     border-collapse: collapse;

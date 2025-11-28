@@ -37,16 +37,25 @@
 // button styles
 .action-btn {
     border-radius: $border-radius;
-    background-color: $form-bg;
+    background-color: $btn-bg !important;
+    color: $primary-txt-color !important;
     padding: 0 16px;
     height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    border: none;
+    outline: none;
 
     &:hover {
-        color: $secondary-txt-color;
+        background: $btn-grad !important;
+    }
+
+    &:focus,
+    &:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
     }
 }
 

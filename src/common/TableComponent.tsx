@@ -5,7 +5,7 @@ import { HEAD_CELL_ACTION } from '../utils/constants'
 import ModeEditSharpIcon from '@mui/icons-material/ModeEditSharp';
 import Nodata from '../components/Nodata'
 import type { TableComponentProps } from '../utils/interface'
-import { isNonEmpty } from '../utils/utilsFunction'
+import { isNonEmpty, getValueByKey } from '../utils/utilsFunction'
 
 const TableComponentV1 = (props: TableComponentProps) => {
     const { headCell, list, onClick } = props
@@ -40,7 +40,7 @@ const TableComponentV1 = (props: TableComponentProps) => {
                                                 className='action-icon' />}
                                         </TableCell>
                                     }
-                                    return <TableCell>{item[cell.label as keyof typeof item] || "-"}</TableCell>
+                                    return <TableCell>{getValueByKey(item, cell.renderValue || cell.label) || "-"}</TableCell>
                                 })}
                             </TableRow>
                         ))}

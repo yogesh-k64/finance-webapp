@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 const HandoutsDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const handout = useSelector(useHandoutsList).find(item => item.id === id);
+  const handout = useSelector(useHandoutsList).find(item => item.getHandout().getId() === parseInt(id || ""))?.getHandout()
   const headCell: HeadCell[] = [
     { label: "name" },
     { label: "amount" },
@@ -54,28 +54,25 @@ const HandoutsDetails = () => {
 
       <Paper elevation={3} sx={{ p: 3 }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-          <DetailItem label="Name" value={handout.name} />
-          <DetailItem label="Mobile" value={handout.mobile} />
-          <DetailItem label="Nominee" value={handout.nominee} />
-          <DetailItem label="Amount" value={`₹${handout.amount}`} />
-          <DetailItem label="Date" value={handout.date} />
-          <DetailItem label="Id" value={handout.id}
-            icon={<>{<ContentCopyIcon className='copy-icon' onClick={() => copyToClipboard(handout.id)} />}</>} />
+          <DetailItem label="Amount" value={`₹${handout.getAmount()}`} />
+          <DetailItem label="Date" value={handout.getDateStr()} />
+          <DetailItem label="Id" value={handout.getId()}
+            icon={<>{<ContentCopyIcon className='copy-icon' onClick={() => copyToClipboard(handout.getId())} />}</>} />
         </Box>
-        <Box sx={{ mt: 3 }}>
+        {/* <Box sx={{ mt: 3 }}>
           <DetailItem label="Address" value={handout.address} fullWidth />
-        </Box>
+        </Box> */}
       </Paper>
       <Box sx={{ mt: 3, mb: 2 }}>
         <span className="title" >Collection Records</span>
       </Box>
-      <TableComponentV1 headCell={headCell} list={handout.collection} />
+      <TableComponentV1 headCell={headCell} list={[]} />
     </Box>
   );
 };
 
 const DetailItem = ({ label, value, fullWidth = false, icon }: {
-  label: string, value: string, fullWidth?: boolean,
+  label: string, value: string | number, fullWidth?: boolean,
   icon?: React.ReactNode
 }) => (
   <Box sx={{ gridColumn: fullWidth ? '1 / -1' : 'auto' }}>

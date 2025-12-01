@@ -67,8 +67,8 @@ export const isNonEmpty = (variable: any) => {
   return !isEmpty(variable);
 };
 
-export const copyToClipboard = (text: string) => {
-  navigator.clipboard.writeText(text);
+export const copyToClipboard = (text: string | number) => {
+  navigator.clipboard.writeText(String(text));
 };
 
 export const formatDateToCustomString = (dateString: string): string => {

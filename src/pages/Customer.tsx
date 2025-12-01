@@ -1,6 +1,6 @@
 import TableComponentV1 from "../common/TableComponent";
 import FormDataComp, { type FormField } from "./FormDataComp";
-import { customerInitialFormData, HEAD_CELL_ACTION } from "../utils/constants";
+import { customerInitialFormData } from "../utils/constants";
 import { useRef, useState } from "react";
 import type { HeadCell } from "../utils/interface";
 import { UserClass } from "../responseClass/UserClass";
@@ -24,26 +24,6 @@ function Customers() {
     { label: "mobile", renderValue: "getMobile" },
     { label: "createdAt", renderValue: "getCreatedAt" },
     { label: "updatedAt", renderValue: "getUpdatedAt" },
-    {
-      label: HEAD_CELL_ACTION,
-      onDelete: (item: UserClass) => {
-        deleteUser(item.getId())
-      },
-      onEdit: (item: UserClass) => {
-        editId.current = item.getId()
-        setFormData(prev=>{
-          return {
-          ...prev,
-          name: {value: item.getName(), errorMsg:""},
-          mobile: {value: String(item.getMobile()), errorMsg:""},
-          address: {value: item.getAddress(), errorMsg:""},
-          info: {value: item.getInfo(), errorMsg:""},
-          referredBy: {value: "", errorMsg:""}
-          }
-        })
-        setOpenDialog(true);
-      },
-    },
   ];
 
   const ERROR_MSG = {
@@ -170,7 +150,24 @@ function Customers() {
             Add New Customer
           </Button>
         </div>
-        <TableComponentV1 headCell={headCell} list={userList} />
+        <TableComponentV1 headCell={headCell} list={userList} 
+        onDelete={(item: UserClass) => {
+        deleteUser(item.getId())
+      }}
+      onEdit={(item: UserClass) => {
+        editId.current = item.getId()
+        setFormData(prev=>{
+          return {
+          ...prev,
+          name: {value: item.getName(), errorMsg:""},
+          mobile: {value: String(item.getMobile()), errorMsg:""},
+          address: {value: item.getAddress(), errorMsg:""},
+          info: {value: item.getInfo(), errorMsg:""},
+          referredBy: {value: "", errorMsg:""}
+          }
+        })
+        setOpenDialog(true);
+      }}/>
       </div>
 
       <Dialog 

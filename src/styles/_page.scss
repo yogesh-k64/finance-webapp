@@ -1,25 +1,26 @@
 .handouts-container {
-    .summay-item {
-        .item-box {
-            border-radius: $border-radius;
-            border: 0.6px solid $border-outline;
-            height: 52px;
-            margin: 24px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background: $form-bg;
+  .summary-grid {
+    background: $form-bg;
 
-            .title {
-                color: $primary-txt-color;
-                font-size: 16px;
-            }
+    .summary-item {
+      .item-box {
+        height: 52px;
+        text-align: center;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
 
-            .value {
-                color: $secondary-txt-color;
-                font-size: 12px;
-            }
+        .title {
+          color: $primary-txt-color;
+          font-size: 16px;
         }
+
+        .value {
+          color: $secondary-txt-color;
+          font-size: 12px;
+        }
+      }
     }
+  }
 }

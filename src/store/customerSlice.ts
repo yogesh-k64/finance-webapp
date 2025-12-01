@@ -1,5 +1,5 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { UserClass } from '../responseClass/UserClass';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { UserClass } from "../responseClass/UserClass";
 
 interface UsersState {
   items: UserClass[];
@@ -10,12 +10,10 @@ const initialState: UsersState = {
 };
 
 export const usersSlice = createSlice({
-  name: 'users',
+  name: "users",
   initialState,
   reducers: {
     setUsers: (state, action: PayloadAction<UserClass[]>) => {
-    console.log('state :', state);
-    console.log('action :', action);
       state.items = action.payload;
     },
     clearUser: (state) => {

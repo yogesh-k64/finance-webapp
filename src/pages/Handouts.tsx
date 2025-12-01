@@ -8,78 +8,75 @@ import {
   Button,
 } from "@mui/material";
 import {
-  HEAD_CELL_ACTION,
   SCREENS,
   handoutsInitialFormData,
   DATE_PICKER_FORMAT,
 } from "../utils/constants";
-import type { Handout, HeadCell } from "../utils/interface";
-import { useHandoutsList, loadHandouts } from "../store/handoutsSlice";
+import type { CreateHandoutReq, HeadCell } from "../utils/interface";
+import { useHandoutsList } from "../store/handoutsSlice";
 import {
   useHomeDateRange,
-  showSnackBar,
   storeHomePageDateRange,
 } from "../store/AppConfigReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { useUserList } from "../store/customerSlice";
 import DatePicker, { DateObject } from "react-multi-date-picker";
 
 import FormDataComp, { type FormField } from "./FormDataComp";
 import TableComponentV1 from "../common/TableComponent";
-import { getHandoutSummary, formatDateRange } from "../utils/utilsFunction";
+import {
+  getHandoutSummary,
+  formatDateRange,
+  formatNumber,
+} from "../utils/utilsFunction";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
-import dummyHandouts from "../data/dummyHandouts.json";
+import { useState, useRef } from "react";
+import { HandoutRespClass } from "../responseClass/HandoutResp";
+import useHandoutApi from "../hooks/useHandoutApi";
 
 function Handouts() {
   const navigate = useNavigate();
   const allHandouts = useSelector(useHandoutsList);
+  const userList = useSelector(useUserList);
   const values = useSelector(useHomeDateRange);
   const dispatch = useDispatch();
-  const [checked, setChecked] = useState<boolean>(true); // Default to Show All
+  const [checked, setChecked] = useState<boolean>(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState(handoutsInitialFormData);
   const editId = useRef<number | null>(null);
-  const hasLoadedData = useRef(false);
+  const { createHandout, updateHandout } = useHandoutApi();
 
   const updateDateRange = (dateRange: DateObject[]) => {
     dispatch(storeHomePageDateRange(dateRange));
   };
 
-  // Load dummy data on first mount if no handouts exist
-  useEffect(() => {
-    if (!hasLoadedData.current && allHandouts.length === 0) {
-      dispatch(loadHandouts({ items: dummyHandouts as any }));
-      hasLoadedData.current = true;
-    }
-  }, [allHandouts.length, dispatch]);
-
   const ERROR_MSG = {
-    name: "Name is required",
-    mobile: "Valid 10-digit number required",
-    nominee: "Nominee is required",
+    user: "User is required",
     amount: "Valid amount required",
     date: "Date is required",
-    address: "Address is required",
+  };
+
+  const handleSelectChange = (evt: any) => {
+    const {
+      target: { value, name },
+    } = evt;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: { value: value, errorMsg: "" },
+    }));
   };
 
   const formFields: FormField[] = [
     {
-      name: "name",
-      label: "Name",
-      type: "text",
+      name: "user",
+      label: "User",
+      type: "dropDown",
       required: true,
-    },
-    {
-      name: "mobile",
-      label: "Mobile",
-      type: "text",
-      required: true,
-    },
-    {
-      name: "nominee",
-      label: "Nominee",
-      type: "text",
-      required: false,
+      options: userList.map((item) => ({
+        value: String(item.getId()),
+        label: item.getName(),
+      })),
+      handleSelectChange: handleSelectChange,
     },
     {
       name: "amount",
@@ -94,13 +91,6 @@ function Handouts() {
       required: true,
       InputLabelProps: { shrink: true },
     },
-    {
-      name: "address",
-      label: "Address",
-      type: "text",
-      required: false,
-      multiline: true,
-    },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,10 +102,7 @@ function Handouts() {
   };
 
   const validateForm = () => {
-    const isNameNotValid = formData.name.value.trim() === "";
-    const isMobileNotValid =
-      formData.mobile.value.trim() === "" ||
-      !/^\d{10}$/.test(formData.mobile.value);
+    const isUserNotValid = formData.user.value.trim() === "";
     const isAmountNotValid =
       formData.amount.value.trim() === "" ||
       isNaN(Number(formData.amount.value));
@@ -123,13 +110,9 @@ function Handouts() {
 
     setFormData((prev) => ({
       ...prev,
-      name: {
-        value: prev.name.value,
-        errorMsg: isNameNotValid ? ERROR_MSG.name : "",
-      },
-      mobile: {
-        value: prev.mobile.value,
-        errorMsg: isMobileNotValid ? ERROR_MSG.mobile : "",
+      user: {
+        value: prev.user.value,
+        errorMsg: isUserNotValid ? ERROR_MSG.user : "",
       },
       amount: {
         value: prev.amount.value,
@@ -141,31 +124,21 @@ function Handouts() {
       },
     }));
 
-    return (
-      !isNameNotValid &&
-      !isMobileNotValid &&
-      !isAmountNotValid &&
-      !isDateNotValid
-    );
+    return !isUserNotValid && !isAmountNotValid && !isDateNotValid;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
+      const handoutObj: CreateHandoutReq = {
+        amount: Number(formData.amount.value),
+        date: formData.date.value,
+        userId: Number(formData.user.value),
+      };
       if (editId.current) {
-        dispatch(
-          showSnackBar({
-            message: "Handout updated successfully",
-            status: "success",
-          })
-        );
+        updateHandout(editId.current, handoutObj);
       } else {
-        dispatch(
-          showSnackBar({
-            message: "Handout added successfully",
-            status: "success",
-          })
-        );
+        createHandout(handoutObj);
       }
 
       setFormData(handoutsInitialFormData);
@@ -188,54 +161,38 @@ function Handouts() {
   const fromDateObj = new Date(fromDate?.toString());
   const endDateObj = new Date(endDate?.toString());
 
-  const handouts = allHandouts.reduce((acc, item) => {
+  const handoutsRespList = allHandouts.map(
+    (item) => new HandoutRespClass(item)
+  );
+
+  const filteredHandouts = handoutsRespList.reduce((acc, item) => {
+    const handoutDate = item.getHandout().getDate();
     if (checked) acc.push(item);
     else if (
       fromDateObj &&
       endDateObj &&
-      new Date(item.date) >= fromDateObj &&
-      new Date(item.date) <= endDateObj
+      handoutDate >= fromDateObj &&
+      handoutDate <= endDateObj
     ) {
       acc.push(item);
     }
     return acc;
-  }, [] as Handout[]);
-  const handoutsSummary = getHandoutSummary(handouts, fromDateObj, endDateObj);
+  }, [] as HandoutRespClass[]);
+
+  const handoutsSummary = getHandoutSummary(filteredHandouts, fromDateObj, endDateObj);
 
   const { total, givenToCustomer, profit } = handoutsSummary;
 
   const headCell: HeadCell[] = [
-    { label: "name" },
-    { label: "mobile" },
-    { label: "nominee" },
-    { label: "amount" },
-    { label: "date" },
-    { label: "id" },
-    { label: "address" },
-    {
-      label: HEAD_CELL_ACTION,
-      onDelete: (item: Handout) => {
-        console.log("item delete:", item);
-        // dispatch(removeHandout(item.id));
-      },
-      onEdit: (item: any) => {
-        editId.current = item.id;
-        setFormData({
-          name: { value: item.name || "", errorMsg: "" },
-          mobile: { value: String(item.mobile || ""), errorMsg: "" },
-          nominee: { value: item.nominee || "", errorMsg: "" },
-          amount: { value: String(item.amount || ""), errorMsg: "" },
-          date: { value: item.date || "", errorMsg: "" },
-          address: { value: item.address || "", errorMsg: "" },
-        });
-        setOpenDialog(true);
-      },
-    },
+    { label: "Handout ID", renderValue: "getHandout.getId" },
+    { label: "User Name", renderValue: "getUser.getName" },
+    { label: "User ID", renderValue: "getUser.getId" },
+    { label: "Mobile", renderValue: "getUser.getMobile" },
+    { label: "Amount", renderValue: "getHandout.getAmount" },
+    { label: "Date", renderValue: "getHandout.getDateStr" },
+    { label: "Created At", renderValue: "getHandout.getCreatedAt" },
+    { label: "Updated At", renderValue: "getHandout.getUpdatedAt" }
   ];
-
-  const handleClick = (item: Handout) => {
-    navigate(`${SCREENS.HANDOUTS}/${item.id}`);
-  };
 
   const handleShowAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -249,13 +206,15 @@ function Handouts() {
 
   return (
     <div className="handouts-container">
-      <Grid container justifyContent={"space-between"}>
+      <Grid container justifyContent={"space-between"} className="summary-grid">
         {summaryList.map((item) => {
           return (
-            <Grid size={3} key={item.title} className="summay-item">
+            <Grid size={3} key={item.title} className="summary-item">
               <div className="item-box">
                 <div className="title">{item.title}</div>
-                <div className="value">{item.value}</div>
+                <div className="value">
+                  {formatNumber(item.value, { lakh: false })}
+                </div>
               </div>
             </Grid>
           );
@@ -304,8 +263,29 @@ function Handouts() {
         </div>
         <TableComponentV1
           headCell={headCell}
-          list={handouts}
-          onClick={handleClick}
+          list={filteredHandouts}
+          onEdit={(item: HandoutRespClass) => {
+        editId.current = item.getHandout().getId();
+        setFormData({
+          user: { value: String(item.getUser().getId()), errorMsg: "" },
+          amount: {
+            value: String(item.getHandout().getAmount()),
+            errorMsg: "",
+          },
+          date: {
+            value: item.getHandout().getDate().toISOString().split("T")[0],
+            errorMsg: "",
+          },
+        });
+        setOpenDialog(true);
+      }}
+          onDelete={(item: HandoutRespClass) => {
+            console.log("item delete:", item);
+            // dispatch(removeHandout(item.getHandout().getId()));
+          }}
+          onClick={(item: HandoutRespClass) =>
+            navigate(`${SCREENS.HANDOUTS}/${item.getHandout().getId()}`)
+          }
         />
       </div>
 

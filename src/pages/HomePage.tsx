@@ -8,6 +8,7 @@ import { useCollectionList } from "../store/collectionSlice";
 import { useHandoutsList } from "../store/handoutsSlice";
 import { useHomeDateRange } from "../store/AppConfigReducer";
 import { useSelector } from "react-redux";
+import type { HandoutRespClass } from "../responseClass/HandoutResp";
 
 const HomePage = () => {
   const allHandouts = useSelector(useHandoutsList);
@@ -17,9 +18,10 @@ const HomePage = () => {
   const [fromDate, endDate] = values;
   const fromDateObj = new Date(fromDate?.toString());
   const endDateObj = new Date(endDate?.toString());
-  const handouts = allHandouts.filter((item) => {
+  const handouts = allHandouts.filter((item: HandoutRespClass) => {
+    const handoutDate = item.getHandout().getDate()
     return (
-      new Date(item.date) >= fromDateObj && new Date(item.date) <= endDateObj
+      handoutDate >= fromDateObj && handoutDate <= endDateObj
     );
   });
   const collectionList = allCollectionList.filter((item) => {
@@ -49,17 +51,17 @@ const HomePage = () => {
 
   return (
     <div className="home-container">
-      <Grid container>
+      <Grid container className="summary-grid">
         {summaryList.map((item) => {
           return (
             <Grid
               size={12 / summaryList.length}
               key={item.title}
-              className="summay-item"
+              className="summary-item"
             >
               <div className="item-box">
                 <div className="title">{item.title}</div>
-                <div className="value">{item.value}</div>
+                <div className="value">{item.value.toFixed(2)}</div>
               </div>
             </Grid>
           );

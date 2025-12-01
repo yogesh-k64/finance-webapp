@@ -1,39 +1,34 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import services, { type ApiResponse, type ApiError } from "../api/apiServices";
-import { showSnackBar } from '../store/AppConfigReducer';
-import type { CreateHandoutRequest, Handout, HandoutResp, UpdateHandoutRequest } from "../utils/interface";
-
-
-
+import { showSnackBar } from "../store/AppConfigReducer";
+import type {
+  CreateHandoutReq,
+  Handout,
+  HandoutResp,
+} from "../utils/interface";
+import { clearHandouts, setHandouts } from "../store/handoutsSlice";
+import { storeRefreshHandouts } from "../store/RefreshReducer";
+import { HandoutRespClass } from "../responseClass/HandoutResp";
 
 const useHandoutApi = () => {
-  const [handoutList, setHandoutList] = useState<Handout[]>([]);
-  const [selectedHandout, setSelectedHandout] = useState<HandoutResp | null>(
-    null
-  );
-  const [handoutCollections, setHandoutCollections] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   const clearSelectedHandout = () => {
-    setSelectedHandout(null);
+    dispatch(clearHandouts());
   };
 
   // Success callbacks
-  const getHandoutsSuccessCallback = (response: ApiResponse<Handout[]>) => {
-    setHandoutList(response.data);
+  const getHandoutsSuccessCallback = (response: ApiResponse<HandoutRespClass[]>) => {
+    const handoutsResp = response.data.map(item=>new HandoutRespClass(item));
+    dispatch(setHandouts(handoutsResp));
     setLoading(false);
-    console.log(
-      "Handouts fetched successfully:",
-      response.message || "Success"
-    );
   };
 
   const getHandoutByIdSuccessCallback = (
     response: ApiResponse<HandoutResp>
   ) => {
-    setSelectedHandout(response.data);
     setLoading(false);
     console.log(
       "Handout fetched successfully:",
@@ -44,7 +39,6 @@ const useHandoutApi = () => {
   const getHandoutCollectionsSuccessCallback = (
     response: ApiResponse<any[]>
   ) => {
-    setHandoutCollections(response.data);
     setLoading(false);
     console.log(
       "Handout collections fetched successfully:",
@@ -53,9 +47,6 @@ const useHandoutApi = () => {
   };
 
   const createHandoutSuccessCallback = (response: ApiResponse<Handout>) => {
-    if (response.data) {
-      setHandoutList((prev) => [...prev, response.data]);
-    }
     setLoading(false);
     console.log(
       "Handout created successfully:",
@@ -63,85 +54,92 @@ const useHandoutApi = () => {
     );
   };
 
-  const updateHandoutSuccessCallback = (response: ApiResponse<Handout>) => {
-    setHandoutList((prev) =>
-      prev.map((handout) =>
-        handout.id === response.data.id ? { ...handout, ...response.data } : handout
-      )
-    );
-
+  const updateHandoutSuccessCallback = (response: ApiResponse<ApiResponse>) => {
     setLoading(false);
-    console.log(
-      "Handout updated successfully:",
-      response.message || "Handout updated"
+    dispatch(
+      showSnackBar({
+        message: response.message,
+        status: "success",
+      })
     );
   };
 
-  const deleteHandoutSuccessCallback = (response: ApiResponse<any>, handoutId: number) => {
-    setHandoutList((prev) => prev.filter((handout) => handout.id !== handoutId));
-
-    if (selectedHandout && selectedHandout.handout.id === handoutId) {
-      setSelectedHandout(null);
-    }
-
+  const deleteHandoutSuccessCallback = (
+    response: ApiResponse<ApiResponse>,
+  ) => {
+    dispatch(storeRefreshHandouts(true))
     setLoading(false);
-    console.log(
-      "Handout deleted successfully:",
-      response.message || "Handout deleted"
+    dispatch(
+      showSnackBar({
+        message: response.message,
+        status: "success",
+      })
     );
   };
 
   // Error callbacks
   const getHandoutsErrorCallback = (error: ApiError) => {
-    dispatch(showSnackBar({
-      message: error.message,
-      status: "error"
-    }));
+    dispatch(
+      showSnackBar({
+        message: error.message,
+        status: "error",
+      })
+    );
     console.error("API Error:", error);
     setLoading(false);
   };
 
   const getHandoutByIdErrorCallback = (error: ApiError) => {
-    dispatch(showSnackBar({
-      message: error.message,
-      status: "error"
-    }));
+    dispatch(
+      showSnackBar({
+        message: error.message,
+        status: "error",
+      })
+    );
     console.error("API Error:", error);
     setLoading(false);
   };
 
   const getHandoutCollectionsErrorCallback = (error: ApiError) => {
-    dispatch(showSnackBar({
-      message: error.message,
-      status: "error"
-    }));
+    dispatch(
+      showSnackBar({
+        message: error.message,
+        status: "error",
+      })
+    );
     console.error("API Error:", error);
     setLoading(false);
   };
 
   const createHandoutErrorCallback = (error: ApiError) => {
-    dispatch(showSnackBar({
-      message: error.message,
-      status: "error"
-    }));
+    dispatch(
+      showSnackBar({
+        message: error.message,
+        status: "error",
+      })
+    );
     console.error("API Error:", error);
     setLoading(false);
   };
 
   const updateHandoutErrorCallback = (error: ApiError) => {
-    dispatch(showSnackBar({
-      message: error.message,
-      status: "error"
-    }));
+    dispatch(
+      showSnackBar({
+        message: error.message,
+        status: "error",
+      })
+    );
     console.error("API Error:", error);
     setLoading(false);
   };
 
   const deleteHandoutErrorCallback = (error: ApiError) => {
-    dispatch(showSnackBar({
-      message: error.message,
-      status: "error"
-    }));
+    dispatch(
+      showSnackBar({
+        message: error.message,
+        status: "error",
+      })
+    );
     console.error("API Error:", error);
     setLoading(false);
   };
@@ -174,7 +172,7 @@ const useHandoutApi = () => {
     );
   };
 
-  const createHandout = (handoutData: CreateHandoutRequest) => {
+  const createHandout = (handoutData: CreateHandoutReq) => {
     setLoading(true);
     services.PostRequest(
       "/handouts",
@@ -184,7 +182,7 @@ const useHandoutApi = () => {
     );
   };
 
-  const updateHandout = (id: number, handoutData: UpdateHandoutRequest) => {
+  const updateHandout = (id: number, handoutData: CreateHandoutReq) => {
     setLoading(true);
     services.PutRequest(
       `/handouts/${id}`,
@@ -198,19 +196,14 @@ const useHandoutApi = () => {
     setLoading(true);
     services.DeleteRequest(
       `/handouts/${id}`,
-      (response) => deleteHandoutSuccessCallback(response, id),
+      deleteHandoutSuccessCallback,
       deleteHandoutErrorCallback
     );
   };
 
   return {
-    // State
-    handoutList,
-    selectedHandout,
-    handoutCollections,
     loading,
 
-    // Actions
     getHandouts,
     getHandoutById,
     getHandoutCollections,

@@ -42,12 +42,9 @@ export const customerInitialFormData = {
 };
 
 export const handoutsInitialFormData = {
-  name: { value: "", errorMsg: "" },
-  mobile: { value: "", errorMsg: "" },
-  nominee: { value: "", errorMsg: "" },
+  user: { value: "", errorMsg: "" },
   amount: { value: "", errorMsg: "" },
   date: { value: "", errorMsg: "" },
-  address: { value: "", errorMsg: "" },
 };
 
 export const collectionInitialFormData = {
@@ -66,3 +63,5 @@ export const initialFormData = {
   address: "",
   handoutId: "",
 };
+
+export const MAX_MOBILE_WIDTH = 768

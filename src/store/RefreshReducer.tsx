@@ -19,12 +19,18 @@ const refreshSlice = createSlice({
     storeRefreshUser: (state, action) => {
       state.refreshUsers = action.payload;
     },
+    storeRefreshHandouts: (state, action) => {
+      state.refreshHandouts = action.payload;
+    },
   },
 });
 
-export const { storeRefreshUser } = refreshSlice.actions;
+export const { storeRefreshUser, storeRefreshHandouts } = refreshSlice.actions;
 
 export const useRefreshUsers = (state: { refreshStore: RefreshSliceProps }) =>
   state.refreshStore.refreshUsers;
+
+export const useRefreshHandouts = (state: { refreshStore: RefreshSliceProps }) =>
+  state.refreshStore.refreshHandouts;
 
 export default refreshSlice.reducer;

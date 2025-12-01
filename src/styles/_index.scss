@@ -1,310 +1,308 @@
-@import 'home';
-@import 'common';
-@import 'page';
-@import 'snackbar';
+@import "home";
+@import "common";
+@import "page";
+@import "snackbar";
 
 body {
-    color: $primary-txt-color;
-    background: $app-bg;
-    font-family: "Nunito", sans-serif !important;
-    margin: 0;
-    overflow: hidden;
-    height: 100vh;
+  color: $primary-txt-color;
+  background: $app-bg;
+  font-family: "Nunito", sans-serif !important;
+  margin: 0;
+  overflow: hidden;
+  height: 100vh;
 
-    #root {
-        width: 100%;
-        height: 100vh;
-        overflow: hidden;
-    }
+  #root {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+  }
 }
 
 .card {
-    padding: 2em;
+  padding: 2em;
 }
 
 /* Handouts Page Styles */
 .handouts-container {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-    width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  width: 100%;
 
-    @media (max-width: $screen-md) {
-        padding: 10px;
-    }
+  @media (max-width: $screen-md) {
+    padding: 10px;
+  }
 }
 
 .back-link {
-    display: inline-block;
-    color: #4CAF50;
-    text-decoration: none;
-    font-weight: bold;
+  display: inline-block;
+  color: #4caf50;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .back-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .form-section {
-    background-color: $form-bg;
-    ;
-    padding: 20px;
-    border: 0.6px solid $border-outline;
-    border-radius: 8px;
-    margin-bottom: 30px;
+  background-color: $form-bg;
+  padding: 20px;
+  border: 0.6px solid $border-outline;
+  border-radius: 8px;
+  margin-bottom: 30px;
 }
 
 .form-row {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 15px;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
 }
 
 .form-group {
-    flex: 1;
+  flex: 1;
 
-    .MuiOutlinedInput-root {
-        border: 1px solid $border-outline;
+  .MuiOutlinedInput-root {
+    border: 1px solid $border-outline;
 
-        fieldset {
-            border: none;
-        }
-
-        &.Mui-focused {
-            border: 1px solid $border-outline;
-        }
-
+    fieldset {
+      border: none;
     }
+
+    &.Mui-focused {
+      border: 1px solid $border-outline;
+    }
+  }
 }
 
 .form-group label {
-    &.Mui-focused {
-        color: $secondary-txt-color;
-    }
-
-    display: block;
+  &.Mui-focused {
     color: $secondary-txt-color;
-    margin-bottom: 5px;
-    font-weight: 500;
+  }
+
+  display: block;
+  color: $secondary-txt-color;
+  margin-bottom: 5px;
+  font-weight: 500;
 }
 
 .form-group input {
-    width: 100%;
-    padding: 8px;
-    color: $primary-txt-color;
-    border-radius: 4px;
+  width: 100%;
+  padding: 8px;
+  color: $primary-txt-color;
+  border-radius: 4px;
 }
 
 .form-group textarea {
-    color: $primary-txt-color;
+  color: $primary-txt-color;
 }
 
 .add-button {
-    background-color: $btn-bg !important;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
+  background-color: $btn-bg !important;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
 }
 
 .add-button:hover {
-    background-color: $btn-grad !important;
+  background-color: $btn-grad !important;
 }
 
 .table-section {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .table-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 
-    h2 {
-        margin: 0;
-    }
+  h2 {
+    margin: 0;
+  }
 }
 
 .custom-dialog {
-    .MuiDialog-paper {
-        background-color: $form-bg;
-        border: 0.6px solid $border-outline;
-        border-radius: 8px;
+  .MuiDialog-paper {
+    background-color: $form-bg;
+    border: 0.6px solid $border-outline;
+    border-radius: 8px;
+  }
+
+  .MuiDialogTitle-root {
+    color: $primary-txt-color;
+    border-bottom: 1px solid $border-outline;
+    font-weight: 600;
+  }
+
+  .MuiDialogContent-root {
+    padding-top: 20px;
+  }
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 10px;
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    .MuiDialogTitle-root {
-        color: $primary-txt-color;
-        border-bottom: 1px solid $border-outline;
-        font-weight: 600;
+    .form-group-full {
+      grid-column: 1 / -1;
     }
-
-    .MuiDialogContent-root {
-        padding-top: 20px;
-    }
-
-    .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        padding-top: 10px;
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group-full {
-            grid-column: 1 / -1;
-        }
-    }
+  }
 }
 
 .custom-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    border-radius: 0 !important;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  border-radius: 0 !important;
 
-    @media (max-width: $screen-md) {
-        font-size: 14px;
-    }
+  @media (max-width: $screen-md) {
+    font-size: 14px;
+  }
 
-    thead {
-        tr {
-            background: $form-bg;
+  thead {
+    tr {
+      background: $form-bg;
 
-            &:hover {
-                background: $form-bg;
-            }
+      &:hover {
+        background: $form-bg;
+      }
 
-            th {
-                color: $primary-txt-color;
-                border: none;
-                white-space: nowrap;
-                
-                @media (max-width: $screen-md) {
-                    padding: 8px 6px;
-                    font-size: 12px;
-                }
-            }
+      th {
+        color: $primary-txt-color;
+        border: none;
+        white-space: nowrap;
+
+        @media (max-width: $screen-md) {
+          padding: 8px 6px;
+          font-size: 12px;
         }
+      }
     }
+  }
 
-    tbody {
-        tr {
-            background: $app-bg;
+  tbody {
+    tr {
+      background: $app-bg;
 
-            &:hover {
-                background: $app-bg;
-            }
+      &:hover {
+        background: $app-bg;
+      }
 
-            &:nth-child(even) {
-                background-color: $form-bg;
-            }
+      &:nth-child(even) {
+        background-color: $form-bg;
+      }
 
-            td {
-                color: $primary-txt-color;
-                border: none;
-                
-                @media (max-width: $screen-md) {
-                    padding: 8px 6px;
-                    font-size: 12px;
-                }
-            }
+      td {
+        color: $primary-txt-color;
+        border: none;
+
+        @media (max-width: $screen-md) {
+          padding: 8px 6px;
+          font-size: 12px;
         }
+      }
     }
+  }
 }
 
 .custom-table th,
 .custom-table td {
-    padding: 12px;
+  padding: 24px 12px;
 }
 
 .custom-table th {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .custom-table .custom-table tr:hover {
-    background-color: #f1f1f1;
+  background-color: #f1f1f1;
 }
 
 :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
 }
 
 a:hover {
-    color: #535bf2;
+  color: #535bf2;
 }
 
 body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
 h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
+  font-size: 3.2em;
+  line-height: 1.1;
 }
 
 button {
-    border-radius: 8px;
-    border: 1px solid transparent;
-    padding: 0.6em 1.2em;
-    font-size: 1em;
-    font-weight: 500;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
 }
 
 button:hover {
-    border-color: #646cff;
+  border-color: #646cff;
 }
 
 button:focus,
 button:focus-visible {
-    outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
 
-    a:hover {
-        color: #747bff;
-    }
+  a:hover {
+    color: #747bff;
+  }
 
-    button {
-        background-color: #f9f9f9;
-    }
+  button {
+    background-color: #f9f9f9;
+  }
 }

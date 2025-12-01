@@ -25,12 +25,11 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 
 import FormDataComp, { type FormField } from "./FormDataComp";
 import {
-  HEAD_CELL_ACTION,
   collectionInitialFormData,
   DATE_PICKER_FORMAT,
 } from "../utils/constants";
 import TableComponentV1 from "../common/TableComponent";
-import { getCollectionSummary, formatDateRange } from "../utils/utilsFunction";
+import { getCollectionSummary, formatDateRange, formatNumber } from "../utils/utilsFunction";
 import { useState, useRef, useEffect } from "react";
 import dummyCollections from "../data/dummyCollections.json";
 
@@ -183,22 +182,6 @@ function Collection() {
     { label: "amount" },
     { label: "date" },
     { label: "handoutId" },
-    {
-      label: HEAD_CELL_ACTION,
-      onDelete: (item: collection) => {
-        dispatch(removeCollection(item.id));
-      },
-      onEdit: (item: collection) => {
-        editId.current = item.id;
-        setFormData({
-          name: { value: item.name || "", errorMsg: "" },
-          amount: { value: String(item.amount || ""), errorMsg: "" },
-          date: { value: item.date || "", errorMsg: "" },
-          handoutId: { value: item.handoutId || "", errorMsg: "" },
-        });
-        setOpenDialog(true);
-      },
-    },
   ];
 
   const [fromDate, endDate] = values;
@@ -231,13 +214,13 @@ function Collection() {
 
   return (
     <div className="handouts-container">
-      <Grid container justifyContent={"space-between"}>
+      <Grid container justifyContent={"space-between"} className="summary-grid">
         {summaryList.map((item) => {
           return (
-            <Grid size={3} key={item.title} className="summay-item">
+            <Grid size={3} key={item.title} className="summary-item">
               <div className="item-box">
                 <div className="title">{item.title}</div>
-                <div className="value">{item.value}</div>
+                <div className="value">{formatNumber(item.value)}</div>
               </div>
             </Grid>
           );
@@ -284,7 +267,23 @@ function Collection() {
             </Button>
           </div>
         </div>
-        <TableComponentV1 headCell={headCell} list={collectionList} />
+        <TableComponentV1
+          headCell={headCell}
+          list={collectionList}
+          onDelete={(item: collection) => {
+            dispatch(removeCollection(item.id));
+          }}
+          onEdit={(item: collection) => {
+            editId.current = item.id;
+            setFormData({
+              name: { value: item.name || "", errorMsg: "" },
+              amount: { value: String(item.amount || ""), errorMsg: "" },
+              date: { value: item.date || "", errorMsg: "" },
+              handoutId: { value: item.handoutId || "", errorMsg: "" },
+            });
+            setOpenDialog(true);
+          }}
+        />
       </div>
 
       <Dialog

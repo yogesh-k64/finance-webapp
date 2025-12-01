@@ -1,14 +1,13 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 
 import DeleteOutlineSharpIcon from '@mui/icons-material/DeleteOutlineSharp';
-import { HEAD_CELL_ACTION } from '../utils/constants'
 import ModeEditSharpIcon from '@mui/icons-material/ModeEditSharp';
 import Nodata from '../components/Nodata'
 import type { TableComponentProps } from '../utils/interface'
 import { isNonEmpty, getValueByKey } from '../utils/utilsFunction'
 
 const TableComponentV1 = (props: TableComponentProps) => {
-    const { headCell, list, onClick } = props
+    const { headCell, list, onClick, onEdit, onDelete } = props
 
     if (isNonEmpty(list))
         return (
@@ -16,32 +15,34 @@ const TableComponentV1 = (props: TableComponentProps) => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            {headCell.map(item => <TableCell>{item.label}</TableCell>)}
+                            {headCell.map((item, idx) => <TableCell key={idx}>{item.label}</TableCell>)}
+                            {(onEdit || onDelete) && <TableCell>Actions</TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {list.map((item, index) => (
                             <TableRow key={index} onClick={() => onClick && onClick(item)}
                                 className={`handout-row  ${onClick ? "clickable-row" : ""}`} >
-                                {headCell.map(cell => {
-                                    if (cell.label === HEAD_CELL_ACTION) {
-                                        return <TableCell  >
-                                            {cell.onEdit && <ModeEditSharpIcon onClick={(evt) => {
-                                                evt.stopPropagation();
-                                                if (cell.onEdit)
-                                                    cell.onEdit(item)
-                                            }}
-                                                className='action-icon' />}
-                                            {cell.onDelete && <DeleteOutlineSharpIcon onClick={(evt) => {
-                                                evt.stopPropagation();
-                                                if (cell.onDelete)
-                                                    cell.onDelete(item)
-                                            }}
-                                                className='action-icon' />}
-                                        </TableCell>
+                                {headCell.map((cell, cellIndex) => {
+                                    if (cell.view) {
+                                        return <TableCell key={cellIndex}>{cell.view(item)}</TableCell>
                                     }
-                                    return <TableCell>{getValueByKey(item, cell.renderValue || cell.label) || "-"}</TableCell>
+                                    return <TableCell key={cellIndex}>{getValueByKey(item, cell.renderValue || cell.label) || "-"}</TableCell>
                                 })}
+                                {(onEdit || onDelete) && (
+                                    <TableCell>
+                                        {onEdit && <ModeEditSharpIcon onClick={(evt) => {
+                                            evt.stopPropagation();
+                                            onEdit(item)
+                                        }}
+                                            className='action-icon' />}
+                                        {onDelete && <DeleteOutlineSharpIcon onClick={(evt) => {
+                                            evt.stopPropagation();
+                                            onDelete(item)
+                                        }}
+                                            className='action-icon' />}
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))}
                     </TableBody>

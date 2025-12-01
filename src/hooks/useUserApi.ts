@@ -51,7 +51,7 @@ const useUserApi = () => {
     console.log("User updated successfully:", response.message || "User updated");
   };
 
-  const deleteUserSuccessCallback = (response: ApiResponse<any>) => {
+  const deleteUserSuccessCallback = (response: ApiResponse<ApiResponse>) => {
     setLoading(false);
     dispatch(storeRefreshUser(true));
     dispatch(

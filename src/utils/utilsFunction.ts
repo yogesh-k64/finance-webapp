@@ -1,24 +1,27 @@
-import type { Handout, collection } from "./interface";
+import type { HandoutRespClass } from "../responseClass/HandoutResp";
+import type { IndianNumberFormatOptions, collection } from "./interface";
 
 export const getHandoutSummary = (
-  list: Handout[],
+  list: HandoutRespClass[],
   fromDate?: Date,
   endDate?: Date
 ) => {
   return list.reduce(
     (acc, item) => {
-      const bondAmt = item.amount <= 5000 ? 50 : 100;
-      const profit = item.amount / 10 + bondAmt;
-      const dateObj = new Date(item.date);
+      const handout = item.getHandout();
+      const amount = handout.getAmount();
+      const bondAmt = amount <= 5000 ? 50 : 100;
+      const profit = amount / 10 + bondAmt;
+      const dateObj = new Date(handout.getDate());
       if (fromDate && endDate) {
         if (dateObj >= fromDate && dateObj <= endDate) {
-          acc.total += item.amount;
-          acc.givenToCustomer += item.amount - profit;
+          acc.total += amount;
+          acc.givenToCustomer += amount - profit;
           acc.profit += profit;
         }
       } else {
-        acc.total += item.amount;
-        acc.givenToCustomer += item.amount - profit;
+        acc.total += amount;
+        acc.givenToCustomer += amount - profit;
         acc.profit += profit;
       }
       return acc;
@@ -118,6 +121,23 @@ export const formatDateRange = (dateRangeString: string): string => {
 export const getValueByKey = (obj: any, key: string): any => {
   if (isEmpty(obj) || isEmpty(key)) return undefined;
 
+  // Handle nested method calls like "getHandout.getId"
+  if (key.includes('.')) {
+    const keys = key.split('.');
+    let value = obj;
+    for (const k of keys) {
+      if (value === undefined || value === null) return undefined;
+      if (typeof value[k] === "function") {
+        value = value[k]();
+      } else if (k in value) {
+        value = value[k];
+      } else {
+        return undefined;
+      }
+    }
+    return value;
+  }
+
   if (typeof obj[key] === "function") {
     return obj[key]();
   }
@@ -128,3 +148,85 @@ export const getValueByKey = (obj: any, key: string): any => {
 
   return undefined;
 };
+
+export function formatNumber(
+  num: number | string,
+  options: IndianNumberFormatOptions = {}
+): string {
+  const config = {
+    lakh: true,
+    crore: true,
+    comma: true,
+    decimalPrecision: 2,
+    ...options
+  };
+
+  const number = typeof num === 'string' ? parseFloat(num) : num;
+  
+  if (isNaN(number)) {
+    return 'Invalid number';
+  }
+
+  const isNegative = number < 0;
+  const absoluteNum = Math.abs(number);
+
+  let result: string;
+  let suffix = '';
+
+  if (config.crore && absoluteNum >= 10000000) {
+    const croreValue = absoluteNum / 10000000;
+    result = formatWithPrecision(croreValue, config.decimalPrecision);
+    suffix = ' Cr';
+  }
+  else if (config.lakh && absoluteNum >= 100000) {
+    const lakhValue = absoluteNum / 100000;
+    result = formatWithPrecision(lakhValue, config.decimalPrecision);
+    suffix = ' L';
+  }
+
+  else {
+    result = formatWithPrecision(absoluteNum, config.decimalPrecision);
+  }
+
+  result = result + suffix;
+
+  if (config.comma) {
+    result = addIndianCommas(result);
+  }
+
+  return isNegative ? `-${result}` : result;
+}
+
+function formatWithPrecision(num: number, precision: number): string {
+  if (precision === 0) {
+    return Math.round(num).toString();
+  }
+  
+  const rounded = num.toFixed(precision);
+  return parseFloat(rounded).toString();
+}
+
+function addIndianCommas(numStr: string): string {
+  const suffixMatch = numStr.match(/\s+(Cr|L)$/);
+  let suffix = '';
+  let valuePart = numStr;
+  
+  if (suffixMatch) {
+    suffix = suffixMatch[0];
+    valuePart = numStr.substring(0, numStr.length - suffix.length);
+  }
+  
+  const parts = valuePart.split('.');
+  let integerPart = parts[0];
+  const decimalPart = parts.length > 1 ? `.${parts[1]}` : '';
+  
+  const lastThree = integerPart.slice(-3);
+  const otherNumbers = integerPart.slice(0, -3);
+  
+  if (otherNumbers !== '') {
+    const formattedOther = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',');
+    integerPart = `${formattedOther},${lastThree}`;
+  }
+  
+  return `${integerPart}${decimalPart}${suffix}`;
+}

@@ -1,4 +1,4 @@
-import { SCREENS } from "../utils/constants";
+import { MAX_MOBILE_WIDTH, SCREENS } from "../utils/constants";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { setIsMobile, useIsMobile } from "../store/AppConfigReducer";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,21 +9,29 @@ import DrawerSection from "../components/DrawerSection";
 import { Grid, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import PeopleOutlineSharpIcon from "@mui/icons-material/PeopleOutlineSharp";
 import { useEffect } from "react";
-import { storeRefreshUser, useRefreshUsers } from "../store/RefreshReducer";
+import {
+  storeRefreshHandouts,
+  storeRefreshUser,
+  useRefreshHandouts,
+  useRefreshUsers,
+} from "../store/RefreshReducer";
 import useUserApi from "../hooks/useUserApi";
+import useHandoutApi from "../hooks/useHandoutApi";
 
 const DashBoard = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const refreshUser = useSelector(useRefreshUsers);
+  const refreshHandouts = useSelector(useRefreshHandouts);
   const isMobile = useSelector(useIsMobile);
   const { getUsers } = useUserApi();
+  const { getHandouts } = useHandoutApi();
 
   // Handle window resize
   useEffect(() => {
     const handleResize = () => {
-      dispatch(setIsMobile(window.innerWidth <= 768));
+      dispatch(setIsMobile(window.innerWidth <= MAX_MOBILE_WIDTH));
     };
 
     window.addEventListener("resize", handleResize);
@@ -32,6 +40,7 @@ const DashBoard = () => {
 
   useEffect(() => {
     getUsers();
+    getHandouts();
   }, []);
 
   useEffect(() => {
@@ -40,6 +49,13 @@ const DashBoard = () => {
       dispatch(storeRefreshUser(false));
     }
   }, [refreshUser]);
+
+  useEffect(() => {
+    if (refreshHandouts) {
+      getHandouts();
+      dispatch(storeRefreshHandouts(false));
+    }
+  }, [refreshHandouts]);
 
   return (
     <>

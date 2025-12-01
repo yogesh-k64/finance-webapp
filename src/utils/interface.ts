@@ -9,14 +9,15 @@ export interface collection {
 export interface HeadCell {
   label: string;
   renderValue?: string;
-  onDelete?: (item: any) => void;
-  onEdit?: (item: any) => void;
+  view?: (item: any) => React.ReactNode;
 }
 
 export interface TableComponentProps {
   headCell: HeadCell[];
   list: Array<any>;
   onClick?: (item: any) => void;
+  onEdit?: (item: any) => void;
+  onDelete?: (item: any) => void;
 }
 
 export interface User {
@@ -45,14 +46,13 @@ export interface Handout {
   id: number;
   amount: number;
   date: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface HandoutResp {
   handout: Handout;
   user: User;
-  nominee: User;
 }
 
 export interface User {
@@ -66,16 +66,15 @@ export interface User {
   updated_at: string;
 }
 
-export interface CreateHandoutRequest {
+export interface CreateHandoutReq {
   amount: number;
   date: string;
   userId: number;
-  nomineeId: number;
 }
 
-export interface UpdateHandoutRequest {
-  amount?: number;
-  date?: string;
-  userId?: number;
-  nomineeId?: number;
+export interface IndianNumberFormatOptions {
+  lakh?: boolean;
+  crore?: boolean;
+  comma?: boolean;
+  decimalPrecision?: number;
 }

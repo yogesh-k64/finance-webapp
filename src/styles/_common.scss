@@ -1,71 +1,75 @@
 .main-title,
 .section-title,
 .label-title {
-    color: $primary-txt-color;
+  color: $primary-txt-color;
 }
 
 .main-title {
-    font-size: 24px;
-    font-weight: 600;
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .section-title {
-    font-size: 20px;
-    font-weight: 600;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .label-title {
-    font-weight: 500;
-    font-size: 16px;
+  font-weight: 500;
+  font-size: 16px;
 }
 
 .custom-datepicker-input {
-    font-size: 14px;
-    border: none !important;
-    border-radius: 4px;
-    background: #CB3CFF;
-    color: #FFFFFF;
-    outline: none !important;
-    font-family: "Nunito", sans-serif !important;
+  font-size: 14px;
+  border: none !important;
+  border-radius: 4px;
+  background: #cb3cff;
+  color: #ffffff;
+  outline: none !important;
+  font-family: "Nunito", sans-serif !important;
 }
 
 // cursor styles
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 // button styles
 .action-btn {
-    border-radius: $border-radius;
-    background-color: $btn-bg !important;
-    color: $primary-txt-color !important;
-    padding: 0 16px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: none;
-    outline: none;
+  border-radius: $border-radius;
+  background-color: $btn-bg !important;
+  color: $primary-txt-color !important;
+  padding: 0 16px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  outline: none;
 
-    @media (max-width: $screen-md) {
-        padding: 0 12px;
-        height: 32px;
-        font-size: 14px;
-    }
+  @media (max-width: $screen-md) {
+    padding: 0 12px;
+    height: 32px;
+    font-size: 14px;
+  }
 
-    &:hover {
-        background: $btn-grad !important;
-    }
+  &:hover {
+    background: $btn-grad !important;
+  }
 
-    &:focus,
-    &:focus-visible {
-        outline: none !important;
-        box-shadow: none !important;
-    }
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 }
 
 // common styles
 .hideVisible {
-    visibility: hidden;
+  visibility: hidden;
+}
+
+.MuiInputBase-input {
+  color: $primary-txt-color !important;
 }

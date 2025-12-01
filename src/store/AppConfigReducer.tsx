@@ -1,5 +1,5 @@
 import type { DateObject } from "react-multi-date-picker";
-import { INITIAL_FILTER_DATE } from "../utils/constants";
+import { INITIAL_FILTER_DATE, MAX_MOBILE_WIDTH } from "../utils/constants";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface snackBarPropType {
@@ -25,7 +25,7 @@ const initialState: AppConfigProps = {
   snackBar: initialSnackBar,
   loader: false,
   homePageDateRange: INITIAL_FILTER_DATE,
-  isMobile: window.innerWidth <= 768,
+  isMobile: window.innerWidth <= MAX_MOBILE_WIDTH,
 };
 
 const AppConfigSlice = createSlice({

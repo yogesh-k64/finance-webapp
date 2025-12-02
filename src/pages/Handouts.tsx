@@ -22,7 +22,7 @@ import {
   formatNumber,
 } from "../utils/utilsFunction";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { HandoutRespClass } from "../responseClass/HandoutResp";
 import useHandoutApi from "../hooks/useHandoutApi";
 
@@ -60,7 +60,7 @@ function Handouts() {
     date: "Date is required",
   };
 
-  const handleSelectChange = (evt: any) => {
+  const handleSelectChange = useCallback((evt: any) => {
     const {
       target: { value, name },
     } = evt;
@@ -68,18 +68,22 @@ function Handouts() {
       ...prev,
       [name]: { value: value, errorMsg: "" },
     }));
-  };
+  }, []);
 
-  const formFields: FormField[] = [
+  const userOptions = useMemo(() => 
+    userList.map((item) => ({
+      value: String(item.getId()),
+      label: item.getName(),
+    }))
+  , [userList]);
+
+  const formFields: FormField[] = useMemo(() => [
     {
       name: "user",
       label: "User",
       type: "dropDown",
       required: true,
-      options: userList.map((item) => ({
-        value: String(item.getId()),
-        label: item.getName(),
-      })),
+      options: userOptions,
       handleSelectChange: handleSelectChange,
     },
     {
@@ -95,15 +99,15 @@ function Handouts() {
       required: true,
       InputLabelProps: { shrink: true },
     },
-  ];
+  ], [userOptions, handleSelectChange]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: { value: value, errorMsg: "" },
     }));
-  };
+  }, []);
 
   const validateForm = () => {
     const isUserNotValid = formData.user.value.trim() === "";

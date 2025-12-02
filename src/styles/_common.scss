@@ -74,10 +74,27 @@
   color: $primary-txt-color !important;
 }
 
+.MuiButton-root{
+  text-transform: none !important;
+}
+
 // Popover content styles (portaled outside component tree)
 .filter-popover-content {
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+// Remove outline from icon buttons
+button {
+  &:focus,
+  &:focus-visible {
+    outline: none !important;
+  }
+}
+
+// Color dropdown arrow to match form text
+.MuiSelect-icon {
+  color: $primary-txt-color !important;
 }

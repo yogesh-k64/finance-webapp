@@ -9,10 +9,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
     rel="stylesheet">
+  <script>
+    // Handle redirect from 404.html
+    (function () {
+      const originalPath = sessionStorage.getItem('originalPath');
+      if (originalPath) {
+        sessionStorage.removeItem('originalPath');
+
+        // Navigate to the original path
+        window.history.replaceState(null, '', originalPath);
+
+        // Trigger router to update
+        window.addEventListener('DOMContentLoaded', () => {
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        });
+      }
+    })();
+  </script>
 </head>
 
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
+
 </html>

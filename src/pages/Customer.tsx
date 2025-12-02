@@ -2,7 +2,7 @@ import TableComponentV1 from "../common/TableComponent";
 import DialogComponent from "../common/DialogComponent";
 import FormDataComp, { type FormField } from "./FormDataComp";
 import { customerInitialFormData } from "../utils/constants";
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 import type { HeadCell } from "../utils/interface";
 import { UserClass } from "../responseClass/UserClass";
 import { useSelector } from "react-redux";
@@ -37,7 +37,7 @@ function Customers() {
     info: "Info is required",
     referredBy: "Referred by is required",
   };
-  const handleSelectChange = (evt: any) => {
+  const handleSelectChange = useCallback((evt: any) => {
     const {
       target: { value, name },
     } = evt;
@@ -45,9 +45,16 @@ function Customers() {
       ...prev,
       [name]: { value: value, errorMsg: "" },
     }));
-  };
+  }, []);
 
-  const formFields: FormField[] = [
+  const userOptions = useMemo(() => {
+    return userList.map((item) => ({
+      value: String(item.getId()),
+      label: item.getName(),
+    }))}
+  , [userList]);
+
+  const formFields: FormField[] = useMemo(() => [
     {
       name: "name",
       label: "Name",
@@ -79,22 +86,19 @@ function Customers() {
       label: "Referred By",
       type: "dropDown",
       required: false,
-      options: userList.map((item) => ({
-        value: String(item.getId()),
-        label: item.getName(),
-      })),
+      options: userOptions,
       handleSelectChange: handleSelectChange,
       multiline: true,
     },
-  ];
+  ], [userOptions, handleSelectChange]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: { value: value, errorMsg: "" },
     }));
-  };
+  }, []);
 
   const validateForm = () => {
     const isNameNotValid = formData.name.value.trim() === "";

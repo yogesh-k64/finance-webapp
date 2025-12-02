@@ -1,5 +1,6 @@
 import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material'
 import { isNonEmpty } from '../utils/utilsFunction';
+import { memo } from 'react';
 
 export interface FormField {
   name: string;
@@ -20,7 +21,7 @@ interface FormDataCompProps {
   buttonText: string;
 }
 
-const FormDataComp: React.FC<FormDataCompProps> = ({ formData, handleChange, handleSubmit, formFields, buttonText }) => {
+const FormDataComp: React.FC<FormDataCompProps> = memo(({ formData, handleChange, handleSubmit, formFields, buttonText }) => {
 
   return (
     <>
@@ -137,6 +138,8 @@ const FormDataComp: React.FC<FormDataCompProps> = ({ formData, handleChange, han
       </form>
     </>
   )
-}
+})
+
+FormDataComp.displayName = 'FormDataComp';
 
 export default FormDataComp

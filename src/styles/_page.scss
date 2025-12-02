@@ -2,6 +2,18 @@
   .summary-grid {
     background: $form-bg;
 
+    @media (max-width: $screen-md) {
+      flex-direction: column;
+      .summary-item {
+        width: 100%;
+        .item-box {
+          flex-direction: row !important;
+          align-items: center;
+          padding: 0 20px !important;
+        }
+      }
+    }
+
     .summary-item {
       .item-box {
         height: 52px;
@@ -22,5 +34,50 @@
         }
       }
     }
+  }
+
+  .filter-controls-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: $screen-md) {
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+
+  .mobile-detail-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px 0;
+    width: 100%;
+  }
+
+  .mobile-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobile-detail-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .mobile-contact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .copy-icon-small {
+    font-size: 16px;
+    cursor: pointer;
   }
 }

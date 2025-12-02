@@ -1,12 +1,10 @@
 import {
-  Checkbox,
-  FormControlLabel,
   Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Button,
+  Popover,
+  IconButton,
 } from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import type { HeadCell, collection } from "../utils/interface";
 import {
   removeCollection,
@@ -19,17 +17,20 @@ import {
   showSnackBar,
   useHomeDateRange,
   storeHomePageDateRange,
+  useIsMobile,
 } from "../store/AppConfigReducer";
 import { v4 as uuidv4 } from "uuid";
-import DatePicker, { DateObject } from "react-multi-date-picker";
+import type { DateObject } from "react-multi-date-picker";
 
 import FormDataComp, { type FormField } from "./FormDataComp";
+import FilterControls from "../components/FilterControls";
+import DialogComponent from "../common/DialogComponent";
 import {
   collectionInitialFormData,
-  DATE_PICKER_FORMAT,
 } from "../utils/constants";
 import TableComponentV1 from "../common/TableComponent";
-import { getCollectionSummary, formatDateRange, formatNumber } from "../utils/utilsFunction";
+import { collectionMobileHeadCell } from "../utils/mobileTableCells";
+import { getCollectionSummary, formatNumber } from "../utils/utilsFunction";
 import { useState, useRef, useEffect } from "react";
 import dummyCollections from "../data/dummyCollections.json";
 
@@ -37,11 +38,23 @@ function Collection() {
   const allCollectionList = useSelector(useCollectionList);
   const dispatch = useDispatch();
   const values = useSelector(useHomeDateRange);
+  const isMobile = useSelector(useIsMobile);
   const [checked, setChecked] = useState<boolean>(true); // Default to Show All
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState(collectionInitialFormData);
   const editId = useRef<string | null>(null);
   const hasLoadedData = useRef(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
 
   const updateDateRange = (dateRange: DateObject[]) => {
     dispatch(storeHomePageDateRange(dateRange));
@@ -229,46 +242,58 @@ function Collection() {
       <div className="table-section">
         <div className="header-section">
           <span className="title label-title">Collection Records</span>
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <FormControlLabel
-              control={<Checkbox checked={checked} onChange={handleShowAll} />}
-              label="Show All"
-              className="show-all-checkbox"
-            />
-            <DatePicker
-              format={DATE_PICKER_FORMAT}
-              value={values}
-              onChange={updateDateRange}
-              range
-              render={(value: string, openCalendar: () => void) => {
-                return (
-                  <button
-                    onClick={openCalendar}
-                    className="custom-datepicker-input"
-                  >
-                    {formatDateRange(value)}
-                  </button>
-                );
-              }}
-            />
+          <div className="filter-controls-wrapper">
+            {isMobile ? (
+              <>
+                <IconButton
+                  onClick={handleOpenPopover}
+                  className="filter-icon-btn"
+                  color="primary"
+                >
+                  <FilterListIcon />
+                </IconButton>
+                <Popover
+                  open={openPopover}
+                  anchorEl={anchorEl}
+                  onClose={handleClosePopover}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                >
+                  <div className="filter-popover-content">
+                    <FilterControls
+                      checked={checked}
+                      onShowAllChange={handleShowAll}
+                      dateValues={values}
+                      onDateChange={updateDateRange}
+                    />
+                  </div>
+                </Popover>
+              </>
+            ) : (
+              <FilterControls
+                checked={checked}
+                onShowAllChange={handleShowAll}
+                dateValues={values}
+                onDateChange={updateDateRange}
+              />
+            )}
             <Button
               variant="contained"
               className="action-btn"
               onClick={handleOpenDialog}
             >
-              Add New Collection
+              {isMobile ? "Add" : "Add New Collection"}
             </Button>
           </div>
         </div>
         <TableComponentV1
-          headCell={headCell}
+          headCell={isMobile ? collectionMobileHeadCell : headCell}
           list={collectionList}
           onDelete={(item: collection) => {
             dispatch(removeCollection(item.id));
@@ -286,26 +311,19 @@ function Collection() {
         />
       </div>
 
-      <Dialog
+      <DialogComponent
         open={openDialog}
         onClose={handleCloseDialog}
-        maxWidth="lg"
-        fullWidth
-        className="custom-dialog"
+        title={editId.current ? "Update Collection" : "Add New Collection"}
       >
-        <DialogTitle>
-          {editId.current ? "Update Collection" : "Add New Collection"}
-        </DialogTitle>
-        <DialogContent>
-          <FormDataComp
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            formFields={formFields}
-            buttonText={editId.current ? "Update Collection" : "Add Collection"}
-          />
-        </DialogContent>
-      </Dialog>
+        <FormDataComp
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          formFields={formFields}
+          buttonText={editId.current ? "Update Collection" : "Add Collection"}
+        />
+      </DialogComponent>
     </div>
   );
 }

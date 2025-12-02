@@ -29,10 +29,11 @@ body {
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
-  width: 100%;
+  // width: calc(100% - 48px);
 
   @media (max-width: $screen-md) {
     padding: 10px;
+    // width: 100%;
   }
 }
 
@@ -90,7 +91,6 @@ body {
 
 .form-group input {
   width: 100%;
-  padding: 8px;
   color: $primary-txt-color;
   border-radius: 4px;
 }
@@ -130,6 +130,11 @@ body {
 }
 
 .custom-dialog {
+  .dialog-title{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
   .MuiDialog-paper {
     background-color: $form-bg;
     border: 0.6px solid $border-outline;

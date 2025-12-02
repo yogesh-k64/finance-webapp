@@ -1,32 +1,24 @@
-import {
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
-} from "@mui/material";
-import {
-  SCREENS,
-  handoutsInitialFormData,
-  DATE_PICKER_FORMAT,
-} from "../utils/constants";
+import { Grid, Button, Popover, IconButton } from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import { SCREENS, handoutsInitialFormData } from "../utils/constants";
 import type { CreateHandoutReq, HeadCell } from "../utils/interface";
 import { useHandoutsList } from "../store/handoutsSlice";
 import {
   useHomeDateRange,
   storeHomePageDateRange,
+  useIsMobile,
 } from "../store/AppConfigReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useUserList } from "../store/customerSlice";
-import DatePicker, { DateObject } from "react-multi-date-picker";
+import type { DateObject } from "react-multi-date-picker";
 
 import FormDataComp, { type FormField } from "./FormDataComp";
 import TableComponentV1 from "../common/TableComponent";
+import DialogComponent from "../common/DialogComponent";
+import FilterControls from "../components/FilterControls";
+import { handoutMobileHeadCell } from "../utils/mobileTableCells";
 import {
   getHandoutSummary,
-  formatDateRange,
   formatNumber,
 } from "../utils/utilsFunction";
 import { useNavigate } from "react-router-dom";
@@ -39,12 +31,24 @@ function Handouts() {
   const allHandouts = useSelector(useHandoutsList);
   const userList = useSelector(useUserList);
   const values = useSelector(useHomeDateRange);
+  const isMobile = useSelector(useIsMobile);
   const dispatch = useDispatch();
   const [checked, setChecked] = useState<boolean>(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState(handoutsInitialFormData);
   const editId = useRef<number | null>(null);
   const { createHandout, updateHandout } = useHandoutApi();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
 
   const updateDateRange = (dateRange: DateObject[]) => {
     dispatch(storeHomePageDateRange(dateRange));
@@ -179,7 +183,11 @@ function Handouts() {
     return acc;
   }, [] as HandoutRespClass[]);
 
-  const handoutsSummary = getHandoutSummary(filteredHandouts, fromDateObj, endDateObj);
+  const handoutsSummary = getHandoutSummary(
+    filteredHandouts,
+    fromDateObj,
+    endDateObj
+  );
 
   const { total, givenToCustomer, profit } = handoutsSummary;
 
@@ -191,7 +199,7 @@ function Handouts() {
     { label: "Amount", renderValue: "getHandout.getAmount" },
     { label: "Date", renderValue: "getHandout.getDateStr" },
     { label: "Created At", renderValue: "getHandout.getCreatedAt" },
-    { label: "Updated At", renderValue: "getHandout.getUpdatedAt" }
+    { label: "Updated At", renderValue: "getHandout.getUpdatedAt" },
   ];
 
   const handleShowAll = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -223,62 +231,74 @@ function Handouts() {
       <div className="table-section">
         <div className="header-section">
           <span className="title label-title">Handouts Records</span>
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              alignItems: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <FormControlLabel
-              control={<Checkbox checked={checked} onChange={handleShowAll} />}
-              label="Show All"
-              className="show-all-checkbox"
-            />
-            <DatePicker
-              format={DATE_PICKER_FORMAT}
-              value={values}
-              onChange={updateDateRange}
-              range
-              render={(value: string, openCalendar: () => void) => {
-                return (
-                  <button
-                    onClick={openCalendar}
-                    className="custom-datepicker-input"
-                  >
-                    {formatDateRange(value)}
-                  </button>
-                );
-              }}
-            />
+          <div className="filter-controls-wrapper">
+            {isMobile ? (
+              <>
+                <IconButton
+                  onClick={handleOpenPopover}
+                  className="filter-icon-btn"
+                  color="primary"
+                >
+                  <FilterListIcon />
+                </IconButton>
+                <Popover
+                  open={openPopover}
+                  anchorEl={anchorEl}
+                  onClose={handleClosePopover}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                >
+                  <div className="filter-popover-content">
+                    <FilterControls
+                      checked={checked}
+                      onShowAllChange={handleShowAll}
+                      dateValues={values}
+                      onDateChange={updateDateRange}
+                    />
+                  </div>
+                </Popover>
+              </>
+            ) : (
+              <FilterControls
+                checked={checked}
+                onShowAllChange={handleShowAll}
+                dateValues={values}
+                onDateChange={updateDateRange}
+              />
+            )}
             <Button
               variant="contained"
               className="action-btn"
               onClick={handleOpenDialog}
             >
-              Add New Handout
+              {isMobile ? "Add" : "Add New Handout"}
             </Button>
           </div>
         </div>
         <TableComponentV1
-          headCell={headCell}
+          headCell={isMobile ? handoutMobileHeadCell : headCell}
           list={filteredHandouts}
           onEdit={(item: HandoutRespClass) => {
-        editId.current = item.getHandout().getId();
-        setFormData({
-          user: { value: String(item.getUser().getId()), errorMsg: "" },
-          amount: {
-            value: String(item.getHandout().getAmount()),
-            errorMsg: "",
-          },
-          date: {
-            value: item.getHandout().getDate().toISOString().split("T")[0],
-            errorMsg: "",
-          },
-        });
-        setOpenDialog(true);
-      }}
+            editId.current = item.getHandout().getId();
+            setFormData({
+              user: { value: String(item.getUser().getId()), errorMsg: "" },
+              amount: {
+                value: String(item.getHandout().getAmount()),
+                errorMsg: "",
+              },
+              date: {
+                value: item.getHandout().getDate().toISOString().split("T")[0],
+                errorMsg: "",
+              },
+            });
+            setOpenDialog(true);
+          }}
           onDelete={(item: HandoutRespClass) => {
             console.log("item delete:", item);
             // dispatch(removeHandout(item.getHandout().getId()));
@@ -289,26 +309,19 @@ function Handouts() {
         />
       </div>
 
-      <Dialog
+      <DialogComponent
         open={openDialog}
         onClose={handleCloseDialog}
-        maxWidth="lg"
-        fullWidth
-        className="custom-dialog"
+        title={editId.current ? "Update Handout" : "Add New Handout"}
       >
-        <DialogTitle>
-          {editId.current ? "Update Handout" : "Add New Handout"}
-        </DialogTitle>
-        <DialogContent>
-          <FormDataComp
-            formData={formData}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
-            formFields={formFields}
-            buttonText={editId.current ? "Update Handout" : "Add Handout"}
-          />
-        </DialogContent>
-      </Dialog>
+        <FormDataComp
+          formData={formData}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          formFields={formFields}
+          buttonText={editId.current ? "Update Handout" : "Add Handout"}
+        />
+      </DialogComponent>
     </div>
   );
 }

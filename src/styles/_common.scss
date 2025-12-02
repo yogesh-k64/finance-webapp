@@ -73,3 +73,11 @@
 .MuiInputBase-input {
   color: $primary-txt-color !important;
 }
+
+// Popover content styles (portaled outside component tree)
+.filter-popover-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

@@ -63,7 +63,11 @@ const DashBoard = () => {
         <Grid size={{ xs: 0, md: 2 }} p={3} className="drawer-section">
           <DrawerSection />
         </Grid>
-        <Grid size={{ xs: 12, md: 10 }} p={3} className="content-section">
+        <Grid
+          size={{ xs: 12, md: 10 }}
+          p={{ xs: 1, md: 3 }}
+          className="content-section"
+        >
           <Outlet />
         </Grid>
       </Grid>

@@ -9,11 +9,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
     rel="stylesheet">
-  <script type="module" crossorigin src="/finance-webapp/assets/index-CKwXJhAB.js"></script>
-  <link rel="stylesheet" crossorigin href="/finance-webapp/assets/index-CEJEKi-H.css">
+  <script>
+    // Handle redirect from 404.html
+    (function () {
+      const originalPath = sessionStorage.getItem('originalPath');
+      if (originalPath) {
+        sessionStorage.removeItem('originalPath');
+
+        // Navigate to the original path
+        window.history.replaceState(null, '', originalPath);
+
+        // Trigger router to update
+        window.addEventListener('DOMContentLoaded', () => {
+          window.dispatchEvent(new PopStateEvent('popstate'));
+        });
+      }
+    })();
+  </script>
+  <script type="module" crossorigin src="/finance-webapp/assets/index-Dr6zoKqt.js"></script>
+  <link rel="stylesheet" crossorigin href="/finance-webapp/assets/index-p3tifRw2.css">
 </head>
 
 <body>
   <div id="root"></div>
 </body>
+
 </html>

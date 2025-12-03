@@ -1,8 +1,9 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import type { HeadCell, collection } from "./interface";
+import type { HeadCell } from "./interface";
 import { HandoutRespClass } from "../responseClass/HandoutResp";
 import { UserClass } from "../responseClass/UserClass";
 import { copyToClipboard } from "./utilsFunction";
+import type { CollectionClass } from "../responseClass/CollectionClass";
 
 export const handoutMobileHeadCell: HeadCell[] = [
   {
@@ -74,15 +75,14 @@ export const customerMobileHeadCell: HeadCell[] = [
 export const collectionMobileHeadCell: HeadCell[] = [
   {
     label: "Collection Details",
-    view: (item: collection) => (
+    view: (item: CollectionClass) => (
       <div className="mobile-detail-container">
         <div className="mobile-detail-row">
-          <span>{item.name}</span>
-          <span>{item.amount}</span>
+          <span>{item.getAmount()}</span>
         </div>
         <div className="mobile-detail-row">
-          <span>{item.date}</span>
-          <span>Handout: {item.handoutId}</span>
+          <span>{item.getDateStr()}</span>
+          <span>Handout: {item.getHandoutId()}</span>
         </div>
       </div>
     ),

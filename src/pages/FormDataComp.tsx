@@ -11,6 +11,7 @@ export interface FormField {
   multiline?: boolean;
   options?: Array<{ value: string; label: string }>;
   handleSelectChange?: (e: any) => void;
+  className?: string;
 }
 
 interface FormDataCompProps {
@@ -22,64 +23,14 @@ interface FormDataCompProps {
 }
 
 const FormDataComp: React.FC<FormDataCompProps> = memo(({ formData, handleChange, handleSubmit, formFields, buttonText }) => {
-
   return (
     <>
       <form onSubmit={handleSubmit} className='form-container' >
-        <div className="form-row">
-          {formFields.slice(0, 2).map((field) => {
-            const formFieldItem = formData[field.name]
-            const isError = isNonEmpty(formFieldItem?.errorMsg)
-            if (field.type === 'dropDown') {
-              return (
-                <FormControl 
-                  key={field.name} 
-                  fullWidth 
-                  error={isError}
-                  required={field.required}
-                  className='form-group'
-                >
-                  <InputLabel>{field.label}</InputLabel>
-                  <Select
-                    name={field.name}
-                    value={formFieldItem?.value || ''}
-                    onChange={field.handleSelectChange}
-                    label={field.label}
-                  >
-                    {field.options?.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {isNonEmpty(formFieldItem.errorMsg) && (
-                    <FormHelperText>{formFieldItem?.errorMsg}</FormHelperText>
-                  )}
-                </FormControl>
-              );
-            }
-
-            return <TextField
-              key={field.name}
-              fullWidth={true}
-              label={field.label}
-              name={field.name}
-              type={field.type}
-              value={formFieldItem?.value || ''}
-              onChange={handleChange}
-              error={isError}
-              helperText={formFieldItem.errorMsg ? formFieldItem?.errorMsg : ''}
-              required={field.required}
-              className={`form-group`}
-              InputLabelProps={field.InputLabelProps}
-              multiline={field.multiline}
-              variant="outlined"
-            />
-          })}
-        </div>
-        {formFields.slice(2).map((field) => {
+        {formFields.map((field) => {
           const formFieldItem = formData[field.name]
           const isError = isNonEmpty(formFieldItem?.errorMsg)
+          const fieldClassName = `form-group ${field.className ? field.className : ''}`
+          
           if (field.type === 'dropDown') {
             return (
               <FormControl 
@@ -87,7 +38,7 @@ const FormDataComp: React.FC<FormDataCompProps> = memo(({ formData, handleChange
                 fullWidth 
                 error={isError}
                 required={field.required}
-                className='form-group form-group-full'
+                className={fieldClassName}
               >
                 <InputLabel>{field.label}</InputLabel>
                 <Select
@@ -120,7 +71,7 @@ const FormDataComp: React.FC<FormDataCompProps> = memo(({ formData, handleChange
             error={isError}
             helperText={formFieldItem.errorMsg ? formFieldItem?.errorMsg : ''}
             required={field.required}
-            className={`form-group form-group-full`}
+            className={fieldClassName}
             InputLabelProps={field.InputLabelProps}
             multiline={field.multiline}
             variant="outlined"

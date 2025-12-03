@@ -98,6 +98,7 @@ function Handouts() {
         type: "date",
         required: true,
         InputLabelProps: { shrink: true },
+        className: "form-group-full",
       },
     ],
     [userOptions, handleSelectChange]
@@ -204,7 +205,6 @@ function Handouts() {
     { label: "Mobile", renderValue: "getUser.getMobile" },
     { label: "Amount", renderValue: "getHandout.getAmount" },
     { label: "Date", renderValue: "getHandout.getDateStr" },
-    { label: "Created At", renderValue: "getHandout.getCreatedAt" },
     { label: "Updated At", renderValue: "getHandout.getUpdatedAt" },
   ];
 

@@ -149,7 +149,6 @@ function Collection() {
     { label: "Amount", renderValue: "getAmount" },
     { label: "Date", renderValue: "getDateStr" },
     { label: "Handout ID", renderValue: "getHandoutId" },
-    { label: "Created At", renderValue: "getCreatedAt" },
     { label: "Updated At", renderValue: "getUpdatedAt" },
   ];
 

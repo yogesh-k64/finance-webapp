@@ -17,7 +17,7 @@ const DialogComponent = ({
   onClose,
   title,
   children,
-  maxWidth = "lg",
+  maxWidth = "md",
   fullWidth = true
 }: DialogComponentProps) => {
   const isMobile = useSelector(useIsMobile);

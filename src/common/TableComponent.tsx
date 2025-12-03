@@ -1,7 +1,8 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Menu, MenuItem } from '@mui/material'
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Menu, MenuItem, IconButton } from '@mui/material'
 
 import DeleteOutlineSharpIcon from '@mui/icons-material/DeleteOutlineSharp';
 import ModeEditSharpIcon from '@mui/icons-material/ModeEditSharp';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Nodata from '../components/Nodata'
 import type { TableComponentProps } from '../utils/interface'
 import { isNonEmpty, getValueByKey } from '../utils/utilsFunction'
@@ -10,9 +11,10 @@ import { useSelector } from 'react-redux'
 import { useIsMobile } from '../store/AppConfigReducer'
 
 const TableComponentV1 = (props: TableComponentProps) => {
-    const { headCell, list, onClick, onEdit, onDelete } = props
+    const { headCell, list, onClick, onEdit, onDelete, moreOptions } = props
     const isMobile = useSelector(useIsMobile)
     const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number; item: any } | null>(null)
+    const [moreOptionsAnchor, setMoreOptionsAnchor] = useState<{ anchorEl: HTMLElement; item: any } | null>(null)
     const longPressTimer = useRef<NodeJS.Timeout | null>(null)
     
     const activeHeadCell = headCell
@@ -54,6 +56,22 @@ const TableComponentV1 = (props: TableComponentProps) => {
         handleContextMenuClose()
     }
 
+    const handleMoreOptionsClick = (event: React.MouseEvent<HTMLElement>, item: any) => {
+        event.stopPropagation()
+        setMoreOptionsAnchor({ anchorEl: event.currentTarget, item })
+    }
+
+    const handleMoreOptionsClose = () => {
+        setMoreOptionsAnchor(null)
+    }
+
+    const handleMoreOptionSelect = (option: any) => {
+        if (moreOptionsAnchor) {
+            option.onClick(moreOptionsAnchor.item)
+        }
+        handleMoreOptionsClose()
+    }
+
     if (isNonEmpty(list))
         return (
             <TableContainer component={Paper} className={`custom-table`}>
@@ -61,7 +79,7 @@ const TableComponentV1 = (props: TableComponentProps) => {
                     <TableHead>
                         <TableRow>
                             {activeHeadCell.map((item, idx) => <TableCell key={idx}>{item.label}</TableCell>)}
-                            {(onEdit || onDelete) && !isMobile && <TableCell>Actions</TableCell>}
+                            {(onEdit || onDelete || moreOptions) && !isMobile && <TableCell>Actions</TableCell>}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -82,18 +100,37 @@ const TableComponentV1 = (props: TableComponentProps) => {
                                     }
                                     return <TableCell key={cellIndex}>{getValueByKey(item, cell.renderValue || cell.label) || "-"}</TableCell>
                                 })}
-                                {(onEdit || onDelete) && !isMobile && (
+                                {(onEdit || onDelete || moreOptions) && !isMobile && (
                                     <TableCell>
-                                        {onEdit && <ModeEditSharpIcon onClick={(evt) => {
-                                            evt.stopPropagation();
-                                            onEdit(item)
-                                        }}
-                                            className='action-icon' />}
-                                        {onDelete && <DeleteOutlineSharpIcon onClick={(evt) => {
-                                            evt.stopPropagation();
-                                            onDelete(item)
-                                        }}
-                                            className='action-icon' />}
+                                        {onEdit && <IconButton
+                                            onClick={(evt) => {
+                                                evt.stopPropagation();
+                                                onEdit(item)
+                                            }}
+                                            className='action-icon'
+                                            size="small"
+                                        >
+                                            <ModeEditSharpIcon />
+                                        </IconButton>}
+                                        {onDelete && <IconButton
+                                            onClick={(evt) => {
+                                                evt.stopPropagation();
+                                                onDelete(item)
+                                            }}
+                                            className='action-icon'
+                                            size="small"
+                                        >
+                                            <DeleteOutlineSharpIcon />
+                                        </IconButton>}
+                                        {moreOptions && moreOptions.length > 0 && (
+                                            <IconButton
+                                                onClick={(evt) => handleMoreOptionsClick(evt, item)}
+                                                className='action-icon'
+                                                size="small"
+                                            >
+                                                <MoreVertIcon />
+                                            </IconButton>
+                                        )}
                                     </TableCell>
                                 )}
                             </TableRow>
@@ -120,6 +157,27 @@ const TableComponentV1 = (props: TableComponentProps) => {
                             <DeleteOutlineSharpIcon style={{ marginRight: 8 }} /> Delete
                         </MenuItem>
                     )}
+                    {moreOptions && moreOptions.map((option, idx) => (
+                        <MenuItem key={idx} onClick={() => {
+                            if (contextMenu) {
+                                option.onClick(contextMenu.item)
+                            }
+                            handleContextMenuClose()
+                        }}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+                </Menu>
+                <Menu
+                    open={moreOptionsAnchor !== null}
+                    onClose={handleMoreOptionsClose}
+                    anchorEl={moreOptionsAnchor?.anchorEl}
+                >
+                    {moreOptions && moreOptions.map((option, idx) => (
+                        <MenuItem key={idx} onClick={() => handleMoreOptionSelect(option)}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
                 </Menu>
             </TableContainer>
         )

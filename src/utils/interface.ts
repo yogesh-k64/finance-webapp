@@ -12,12 +12,18 @@ export interface HeadCell {
   view?: (item: any) => React.ReactNode;
 }
 
+export interface MoreOption {
+  label: string;
+  onClick: (item: any) => void;
+}
+
 export interface TableComponentProps {
   headCell: HeadCell[];
   list: Array<any>;
   onClick?: (item: any) => void;
   onEdit?: (item: any) => void;
   onDelete?: (item: any) => void;
+  moreOptions?: MoreOption[];
 }
 
 export interface User {

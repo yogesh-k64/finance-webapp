@@ -36,7 +36,6 @@ export const HEAD_CELL_ACTION = "action";
 export const customerInitialFormData = {
   name: { value: "", errorMsg: "" },
   mobile: { value: "", errorMsg: "" },
-  referredBy: { value: "", errorMsg: "" },
   address: { value: "", errorMsg: "" },
   info: { value: "", errorMsg: "" },
 };
@@ -51,6 +50,10 @@ export const collectionInitialFormData = {
   amount: { value: "", errorMsg: "" },
   date: { value: "", errorMsg: "" },
   handoutId: { value: "", errorMsg: "" },
+};
+
+export const linkUserInitialFormData = {
+  referredBy: { value: "", errorMsg: "" },
 };
 
 export const initialFormData = {

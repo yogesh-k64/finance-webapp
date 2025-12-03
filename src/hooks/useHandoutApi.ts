@@ -20,8 +20,12 @@ const useHandoutApi = () => {
   };
 
   // Success callbacks
-  const getHandoutsSuccessCallback = (response: ApiResponse<HandoutRespClass[]>) => {
-    const handoutsResp = response.data.map(item=>new HandoutRespClass(item));
+  const getHandoutsSuccessCallback = (
+    response: ApiResponse<HandoutRespClass[]>
+  ) => {
+    const handoutsResp = response.data.map(
+      (item) => new HandoutRespClass(item)
+    );
     dispatch(setHandouts(handoutsResp));
     setLoading(false);
   };
@@ -48,14 +52,7 @@ const useHandoutApi = () => {
 
   const createHandoutSuccessCallback = (response: ApiResponse<Handout>) => {
     setLoading(false);
-    console.log(
-      "Handout created successfully:",
-      response.message || "Handout created"
-    );
-  };
-
-  const updateHandoutSuccessCallback = (response: ApiResponse<ApiResponse>) => {
-    setLoading(false);
+    dispatch(storeRefreshHandouts(true));
     dispatch(
       showSnackBar({
         message: response.message,
@@ -64,10 +61,19 @@ const useHandoutApi = () => {
     );
   };
 
-  const deleteHandoutSuccessCallback = (
-    response: ApiResponse<ApiResponse>,
-  ) => {
-    dispatch(storeRefreshHandouts(true))
+  const updateHandoutSuccessCallback = (response: ApiResponse<ApiResponse>) => {
+    setLoading(false);
+    dispatch(storeRefreshHandouts(true));
+    dispatch(
+      showSnackBar({
+        message: response.message,
+        status: "success",
+      })
+    );
+  };
+
+  const deleteHandoutSuccessCallback = (response: ApiResponse<ApiResponse>) => {
+    dispatch(storeRefreshHandouts(true));
     setLoading(false);
     dispatch(
       showSnackBar({
@@ -85,7 +91,6 @@ const useHandoutApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -96,7 +101,6 @@ const useHandoutApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -107,7 +111,6 @@ const useHandoutApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -118,7 +121,6 @@ const useHandoutApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -129,7 +131,6 @@ const useHandoutApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -140,7 +141,6 @@ const useHandoutApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 

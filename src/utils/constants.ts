@@ -48,7 +48,6 @@ export const handoutsInitialFormData = {
 };
 
 export const collectionInitialFormData = {
-  name: { value: "", errorMsg: "" },
   amount: { value: "", errorMsg: "" },
   date: { value: "", errorMsg: "" },
   handoutId: { value: "", errorMsg: "" },

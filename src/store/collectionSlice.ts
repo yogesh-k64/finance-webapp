@@ -1,49 +1,31 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { LOCAL_STORAGE_KEY } from '../utils/constants';
-import type { RootState } from './store';
-import type { collection } from '../utils/interface';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { RootState } from "./store";
+import type { CollectionClass } from "../responseClass/CollectionClass";
 
 export interface collectionState {
-  items: collection[];
+  items: CollectionClass[];
 }
 
 const defaultInitValue = {
-  items: []
-}
-
-const loadFromLocalStorage = (): collectionState => {
-  try {
-    const serializedState = localStorage.getItem(LOCAL_STORAGE_KEY.COLLECTION);
-    if (serializedState === null) return defaultInitValue;
-    return JSON.parse(serializedState);
-  } catch (e) {
-    console.warn('Failed to load handouts from localStorage', e);
-    return defaultInitValue;
-  }
+  items: [],
 };
 
-const initialState: collectionState = loadFromLocalStorage();
+const initialState: collectionState = defaultInitValue;
 
 export const collectionSlice = createSlice({
-  name: 'collectionSlice',
+  name: "collectionSlice",
   initialState,
   reducers: {
-    addCollection: (state, action: PayloadAction<collection>) => {
-      state.items.push(action.payload);
-      localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
+    setCollections: (state, action: PayloadAction<CollectionClass[]>) => {
+      state.items = action.payload;
     },
-    removeCollection: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter(item => item.id !== action.payload);
-      localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
+    clearCollections: (state) => {
+      state.items = [];
     },
-    loadCollection: (state, action: PayloadAction<collectionState>) => {
-      state.items = action.payload.items;
-      localStorage.setItem(LOCAL_STORAGE_KEY.COLLECTION, JSON.stringify(state));
-    }
   },
 });
 
-export const { addCollection, removeCollection, loadCollection } = collectionSlice.actions;
+export const { setCollections, clearCollections } = collectionSlice.actions;
 
 export const useCollectionList = (state: RootState) => state.collection.items;
 

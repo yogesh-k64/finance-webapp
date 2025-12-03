@@ -1,38 +1,27 @@
-import {
-  Grid,
-  Button,
-  Popover,
-  IconButton,
-} from "@mui/material";
+import { Grid, Button, Popover, IconButton } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import type { HeadCell, collection } from "../utils/interface";
-import {
-  removeCollection,
-  useCollectionList,
-  loadCollection,
-} from "../store/collectionSlice";
+import type { HeadCell } from "../utils/interface";
+import { useCollectionList } from "../store/collectionSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { addCollection } from "../store/collectionSlice";
 import {
-  showSnackBar,
   useHomeDateRange,
   storeHomePageDateRange,
   useIsMobile,
 } from "../store/AppConfigReducer";
-import { v4 as uuidv4 } from "uuid";
 import type { DateObject } from "react-multi-date-picker";
 
 import FormDataComp, { type FormField } from "./FormDataComp";
 import FilterControls from "../components/FilterControls";
 import DialogComponent from "../common/DialogComponent";
-import {
-  collectionInitialFormData,
-} from "../utils/constants";
+import { collectionInitialFormData } from "../utils/constants";
 import TableComponentV1 from "../common/TableComponent";
 import { collectionMobileHeadCell } from "../utils/mobileTableCells";
 import { getCollectionSummary, formatNumber } from "../utils/utilsFunction";
-import { useState, useRef, useEffect } from "react";
-import dummyCollections from "../data/dummyCollections.json";
+import { useState, useRef } from "react";
+import useCollectionApi, {
+  type CreateCollectionRequest,
+} from "../hooks/useCollectionApi";
+import type { CollectionClass } from "../responseClass/CollectionClass";
 
 function Collection() {
   const allCollectionList = useSelector(useCollectionList);
@@ -42,9 +31,10 @@ function Collection() {
   const [checked, setChecked] = useState<boolean>(true); // Default to Show All
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState(collectionInitialFormData);
-  const editId = useRef<string | null>(null);
-  const hasLoadedData = useRef(false);
+  const editId = useRef<number | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const { createCollection, updateCollection, deleteCollection } =
+    useCollectionApi();
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -60,14 +50,6 @@ function Collection() {
     dispatch(storeHomePageDateRange(dateRange));
   };
 
-  // Load dummy data on first mount if no collections exist
-  useEffect(() => {
-    if (!hasLoadedData.current && allCollectionList.length === 0) {
-      dispatch(loadCollection({ items: dummyCollections as any }));
-      hasLoadedData.current = true;
-    }
-  }, [allCollectionList.length, dispatch]);
-
   const ERROR_MSG = {
     name: "Name is required",
     amount: "Valid amount required",
@@ -76,12 +58,6 @@ function Collection() {
   };
 
   const formFields: FormField[] = [
-    {
-      name: "name",
-      label: "Name",
-      type: "text",
-      required: true,
-    },
     {
       name: "amount",
       label: "Amount",
@@ -112,7 +88,6 @@ function Collection() {
   };
 
   const validateForm = () => {
-    const isNameNotValid = formData.name.value.trim() === "";
     const isAmountNotValid =
       formData.amount.value.trim() === "" ||
       isNaN(Number(formData.amount.value));
@@ -121,10 +96,6 @@ function Collection() {
 
     setFormData((prev) => ({
       ...prev,
-      name: {
-        value: prev.name.value,
-        errorMsg: isNameNotValid ? ERROR_MSG.name : "",
-      },
       amount: {
         value: prev.amount.value,
         errorMsg: isAmountNotValid ? ERROR_MSG.amount : "",
@@ -139,41 +110,23 @@ function Collection() {
       },
     }));
 
-    return (
-      !isNameNotValid &&
-      !isAmountNotValid &&
-      !isDateNotValid &&
-      !isHandoutIdNotValid
-    );
+    return !isAmountNotValid && !isDateNotValid && !isHandoutIdNotValid;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
       const newCollection = {
-        id: editId.current || uuidv4(),
-        name: formData.name.value.trim(),
         amount: Number(formData.amount.value),
-        date: formData.date.value,
-        handoutId: formData.handoutId.value,
-      } as collection;
+        date: new Date(formData.date.value).toISOString(),
+        handoutId: Number(formData.handoutId.value),
+      } as CreateCollectionRequest;
 
       if (editId.current) {
-        dispatch(
-          showSnackBar({
-            message: "Collection updated successfully",
-            status: "success",
-          })
-        );
+        updateCollection(Number(editId.current), newCollection);
       } else {
-        dispatch(
-          showSnackBar({
-            message: "Collection added successfully",
-            status: "success",
-          })
-        );
+        createCollection(newCollection);
       }
-      dispatch(addCollection(newCollection));
 
       setFormData(collectionInitialFormData);
       editId.current = null;
@@ -190,11 +143,14 @@ function Collection() {
     setFormData(collectionInitialFormData);
     editId.current = null;
   };
+
   const headCell: HeadCell[] = [
-    { label: "name" },
-    { label: "amount" },
-    { label: "date" },
-    { label: "handoutId" },
+    { label: "ID", renderValue: "getId" },
+    { label: "Amount", renderValue: "getAmount" },
+    { label: "Date", renderValue: "getDateStr" },
+    { label: "Handout ID", renderValue: "getHandoutId" },
+    { label: "Created At", renderValue: "getCreatedAt" },
+    { label: "Updated At", renderValue: "getUpdatedAt" },
   ];
 
   const [fromDate, endDate] = values;
@@ -206,13 +162,13 @@ function Collection() {
     else if (
       fromDateObj &&
       endDateObj &&
-      new Date(item.date) >= fromDateObj &&
-      new Date(item.date) <= endDateObj
+      new Date(item.getDate()) >= fromDateObj &&
+      new Date(item.getDate()) <= endDateObj
     ) {
       acc.push(item);
     }
     return acc;
-  }, [] as collection[]);
+  }, [] as CollectionClass[]);
   const { total } = getCollectionSummary(
     collectionList,
     fromDateObj,
@@ -295,16 +251,21 @@ function Collection() {
         <TableComponentV1
           headCell={isMobile ? collectionMobileHeadCell : headCell}
           list={collectionList}
-          onDelete={(item: collection) => {
-            dispatch(removeCollection(item.id));
+          onDelete={(item: CollectionClass) => {
+            deleteCollection(item.getId());
           }}
-          onEdit={(item: collection) => {
-            editId.current = item.id;
+          onEdit={(item: CollectionClass) => {
+            editId.current = item.getId();
             setFormData({
-              name: { value: item.name || "", errorMsg: "" },
-              amount: { value: String(item.amount || ""), errorMsg: "" },
-              date: { value: item.date || "", errorMsg: "" },
-              handoutId: { value: item.handoutId || "", errorMsg: "" },
+              amount: { value: String(item.getAmount() || ""), errorMsg: "" },
+              date: {
+                value: item.getDate().toISOString().split("T")[0] || "",
+                errorMsg: "",
+              },
+              handoutId: {
+                value: String(item.getHandoutId()) || "",
+                errorMsg: "",
+              },
             });
             setOpenDialog(true);
           }}

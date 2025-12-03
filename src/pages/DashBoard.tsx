@@ -10,13 +10,16 @@ import { Grid, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import PeopleOutlineSharpIcon from "@mui/icons-material/PeopleOutlineSharp";
 import { useEffect } from "react";
 import {
+  storeRefreshCollections,
   storeRefreshHandouts,
   storeRefreshUser,
+  useRefreshCollections,
   useRefreshHandouts,
   useRefreshUsers,
 } from "../store/RefreshReducer";
 import useUserApi from "../hooks/useUserApi";
 import useHandoutApi from "../hooks/useHandoutApi";
+import useCollectionApi from "../hooks/useCollectionApi";
 
 const DashBoard = () => {
   const dispatch = useDispatch();
@@ -24,9 +27,11 @@ const DashBoard = () => {
   const navigate = useNavigate();
   const refreshUser = useSelector(useRefreshUsers);
   const refreshHandouts = useSelector(useRefreshHandouts);
+  const refreshCollections = useSelector(useRefreshCollections);
   const isMobile = useSelector(useIsMobile);
   const { getUsers } = useUserApi();
   const { getHandouts } = useHandoutApi();
+  const { getCollections } = useCollectionApi();
 
   // Handle window resize
   useEffect(() => {
@@ -41,6 +46,7 @@ const DashBoard = () => {
   useEffect(() => {
     getUsers();
     getHandouts();
+    getCollections();
   }, []);
 
   useEffect(() => {
@@ -56,6 +62,13 @@ const DashBoard = () => {
       dispatch(storeRefreshHandouts(false));
     }
   }, [refreshHandouts]);
+
+  useEffect(() => {
+    if (refreshCollections) {
+      getCollections();
+      dispatch(storeRefreshCollections(false));
+    }
+  }, [refreshCollections]);
 
   return (
     <>

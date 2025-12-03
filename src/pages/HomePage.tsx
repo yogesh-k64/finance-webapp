@@ -26,7 +26,7 @@ const HomePage = () => {
   });
   const collectionList = allCollectionList.filter((item) => {
     return (
-      new Date(item.date) >= fromDateObj && new Date(item.date) <= endDateObj
+      new Date(item.getDate()) >= fromDateObj && new Date(item.getDate()) <= endDateObj
     );
   });
   const handoutsSummary = getHandoutSummary(handouts, fromDateObj, endDateObj);

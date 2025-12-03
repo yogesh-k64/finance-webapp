@@ -17,10 +17,7 @@ import TableComponentV1 from "../common/TableComponent";
 import DialogComponent from "../common/DialogComponent";
 import FilterControls from "../components/FilterControls";
 import { handoutMobileHeadCell } from "../utils/mobileTableCells";
-import {
-  getHandoutSummary,
-  formatNumber,
-} from "../utils/utilsFunction";
+import { getHandoutSummary, formatNumber } from "../utils/utilsFunction";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useCallback, useMemo } from "react";
 import { HandoutRespClass } from "../responseClass/HandoutResp";
@@ -37,7 +34,7 @@ function Handouts() {
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState(handoutsInitialFormData);
   const editId = useRef<number | null>(null);
-  const { createHandout, updateHandout } = useHandoutApi();
+  const { createHandout, updateHandout, deleteHandout } = useHandoutApi();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -70,36 +67,41 @@ function Handouts() {
     }));
   }, []);
 
-  const userOptions = useMemo(() => 
-    userList.map((item) => ({
-      value: String(item.getId()),
-      label: item.getName(),
-    }))
-  , [userList]);
+  const userOptions = useMemo(
+    () =>
+      userList.map((item) => ({
+        value: String(item.getId()),
+        label: item.getName(),
+      })),
+    [userList]
+  );
 
-  const formFields: FormField[] = useMemo(() => [
-    {
-      name: "user",
-      label: "User",
-      type: "dropDown",
-      required: true,
-      options: userOptions,
-      handleSelectChange: handleSelectChange,
-    },
-    {
-      name: "amount",
-      label: "Amount",
-      type: "number",
-      required: true,
-    },
-    {
-      name: "date",
-      label: "Date",
-      type: "date",
-      required: true,
-      InputLabelProps: { shrink: true },
-    },
-  ], [userOptions, handleSelectChange]);
+  const formFields: FormField[] = useMemo(
+    () => [
+      {
+        name: "user",
+        label: "User",
+        type: "dropDown",
+        required: true,
+        options: userOptions,
+        handleSelectChange: handleSelectChange,
+      },
+      {
+        name: "amount",
+        label: "Amount",
+        type: "number",
+        required: true,
+      },
+      {
+        name: "date",
+        label: "Date",
+        type: "date",
+        required: true,
+        InputLabelProps: { shrink: true },
+      },
+    ],
+    [userOptions, handleSelectChange]
+  );
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -140,7 +142,7 @@ function Handouts() {
     if (validateForm()) {
       const handoutObj: CreateHandoutReq = {
         amount: Number(formData.amount.value),
-        date: formData.date.value,
+        date: new Date(formData.date.value).toISOString(),
         userId: Number(formData.user.value),
       };
       if (editId.current) {
@@ -304,8 +306,7 @@ function Handouts() {
             setOpenDialog(true);
           }}
           onDelete={(item: HandoutRespClass) => {
-            console.log("item delete:", item);
-            // dispatch(removeHandout(item.getHandout().getId()));
+            deleteHandout(item.getHandout().getId());
           }}
           onClick={(item: HandoutRespClass) =>
             navigate(`${SCREENS.HANDOUTS}/${item.getHandout().getId()}`)

@@ -20,23 +20,23 @@ const useUserApi = () => {
     setLoading(false);
   };
 
-  const getUserByIdSuccessCallback = (response: ApiResponse<User>) => {
+  const getUserByIdSuccessCallback = () => {
     setLoading(false);
-    console.log("User fetched successfully:", response.message || "User retrieved");
   };
 
-  const getUserHandoutsSuccessCallback = (response: ApiResponse<any[]>) => {
+  const getUserHandoutsSuccessCallback = () => {
     setLoading(false);
-    console.log(
-      "User handouts fetched successfully:",
-      response.message || "Handouts retrieved"
-    );
   };
 
   const createUserSuccessCallback = (response: ApiResponse<User>) => {
     setLoading(false);
     dispatch(storeRefreshUser(true));
-    console.log("User created successfully:", response.message || "User created");
+    dispatch(
+      showSnackBar({
+        message: response.message,
+        status: "success",
+      })
+    );
   };
 
   const updateUserSuccessCallback = (response: ApiResponse<User>) => {
@@ -48,7 +48,6 @@ const useUserApi = () => {
       })
     );
     dispatch(storeRefreshUser(true));
-    console.log("User updated successfully:", response.message || "User updated");
   };
 
   const deleteUserSuccessCallback = (response: ApiResponse<ApiResponse>) => {
@@ -60,19 +59,11 @@ const useUserApi = () => {
         status: "success",
       })
     );
-    console.log("User deleted successfully:", response.message || "User deleted");
   };
 
-  const linkReferralSuccessCallback = (
-    response: ApiResponse<any>,
-    userId: number
-  ) => {
+  const linkReferralSuccessCallback = () => {
     setLoading(false);
-    console.log(
-      "User referral linked successfully:",
-      response.message || "Referral linked"
-    );
-    getUserById(userId);
+    dispatch(storeRefreshUser(true));
   };
 
   // Error callbacks
@@ -84,7 +75,6 @@ const useUserApi = () => {
       })
     );
     dispatch(setUsers([]));
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -95,7 +85,6 @@ const useUserApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -106,7 +95,6 @@ const useUserApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -117,7 +105,6 @@ const useUserApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -128,7 +115,6 @@ const useUserApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -139,7 +125,6 @@ const useUserApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
@@ -150,14 +135,12 @@ const useUserApi = () => {
         status: "error",
       })
     );
-    console.error("API Error:", error);
     setLoading(false);
   };
 
   // API functions
   const getUsers = () => {
     setLoading(true);
-    console.log("Fetching users...");
     services.GetRequest(
       "/users",
       getUsersSuccessCallback,
@@ -233,7 +216,7 @@ const useUserApi = () => {
     services.PostRequest(
       `/users/${id}/referral`,
       referralData,
-      (response) => linkReferralSuccessCallback(response, id),
+      linkReferralSuccessCallback,
       linkReferralErrorCallback
     );
   };

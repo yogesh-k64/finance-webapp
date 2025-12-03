@@ -1,19 +1,21 @@
 import { isNonEmpty } from "../utils/utilsFunction";
 
-export class HandoutClass {
+export class CollectionClass {
   private id: number = 0;
   private amount: number = 0;
+  private handoutId: number = 0;
   private date: Date = new Date();
   private createdAt: Date = new Date();
   private updatedAt: Date = new Date();
 
-  constructor(handout?: any) {
-    if (handout) {
-      if (isNonEmpty(handout.id)) this.id = handout.id;
-      if (isNonEmpty(handout.amount)) this.amount = handout.amount;
-      if (isNonEmpty(handout.date)) this.date = new Date(handout.date);
-      if (isNonEmpty(handout.createdAt)) this.createdAt = new Date(handout.createdAt);
-      if (isNonEmpty(handout.updatedAt)) this.updatedAt = new Date(handout.updatedAt);
+  constructor(collection?: any) {
+    if (collection) {
+      if (isNonEmpty(collection.id)) this.id = collection.id;
+      if (isNonEmpty(collection.amount)) this.amount = collection.amount;
+      if (isNonEmpty(collection.handoutId)) this.handoutId = collection.handoutId;
+      if (isNonEmpty(collection.date)) this.date = new Date(collection.date);
+      if (isNonEmpty(collection.createdAt)) this.createdAt = new Date(collection.createdAt);
+      if (isNonEmpty(collection.updatedAt)) this.updatedAt = new Date(collection.updatedAt);
     }
   }
 
@@ -31,6 +33,14 @@ export class HandoutClass {
 
   public setAmount(amount: number) {
     this.amount = amount;
+  }
+
+  public getHandoutId(): number {
+    return this.handoutId;
+  }
+
+  public setHandoutId(handoutId: number) {
+    this.handoutId = handoutId;
   }
 
   public getDate(): Date {

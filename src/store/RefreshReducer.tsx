@@ -22,15 +22,27 @@ const refreshSlice = createSlice({
     storeRefreshHandouts: (state, action) => {
       state.refreshHandouts = action.payload;
     },
+    storeRefreshCollections: (state, action) => {
+      state.refreshCollections = action.payload;
+    },
   },
 });
 
-export const { storeRefreshUser, storeRefreshHandouts } = refreshSlice.actions;
+export const {
+  storeRefreshUser,
+  storeRefreshHandouts,
+  storeRefreshCollections,
+} = refreshSlice.actions;
 
 export const useRefreshUsers = (state: { refreshStore: RefreshSliceProps }) =>
   state.refreshStore.refreshUsers;
 
-export const useRefreshHandouts = (state: { refreshStore: RefreshSliceProps }) =>
-  state.refreshStore.refreshHandouts;
+export const useRefreshHandouts = (state: {
+  refreshStore: RefreshSliceProps;
+}) => state.refreshStore.refreshHandouts;
+
+export const useRefreshCollections = (state: {
+  refreshStore: RefreshSliceProps;
+}) => state.refreshStore.refreshCollections;
 
 export default refreshSlice.reducer;

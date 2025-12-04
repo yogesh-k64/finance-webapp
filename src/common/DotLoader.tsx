@@ -1,5 +1,3 @@
-import React from "react";
-
 const DotLoader = () => {
   return (
     <span className="three-dots-loader">

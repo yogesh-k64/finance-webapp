@@ -2,14 +2,17 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import services, { type ApiResponse, type ApiError } from "../api/apiServices";
 import { showSnackBar } from "../store/AppConfigReducer";
-import type { LinkUserReferralRequest, User } from "../utils/interface";
+import type { LinkUserReferralRequest, User, Handout } from "../utils/interface";
 import { setUsers } from "../store/customerSlice";
 import { UserClass } from "../responseClass/UserClass";
+import { HandoutClass } from "../responseClass/HandoutClass";
 import { isNonEmpty } from "../utils/utilsFunction";
 import { storeRefreshUser } from "../store/RefreshReducer";
 
 const useUserApi = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [userHandouts, setUserHandouts] = useState<HandoutClass[]>([]);
+  const [userReferredBy, setUserReferredBy] = useState<UserClass | null>(null);
   const dispatch = useDispatch();
 
   // Success callbacks
@@ -24,7 +27,10 @@ const useUserApi = () => {
     setLoading(false);
   };
 
-  const getUserHandoutsSuccessCallback = () => {
+  const getUserHandoutsSuccessCallback = (response: ApiResponse<Handout[]>) => {
+    const handouts = response.data;
+    const handoutObjArr = handouts.map((handout) => new HandoutClass(handout));
+    setUserHandouts(handoutObjArr);
     setLoading(false);
   };
 
@@ -66,6 +72,12 @@ const useUserApi = () => {
     dispatch(storeRefreshUser(true));
   };
 
+  const getUserReferredBySuccessCallback = (response: ApiResponse<User>) => {
+    const user = response.data;
+    setUserReferredBy(new UserClass(user));
+    setLoading(false);
+  };
+
   // Error callbacks
   const getUsersErrorCallback = (error: ApiError) => {
     dispatch(
@@ -95,6 +107,7 @@ const useUserApi = () => {
         status: "error",
       })
     );
+    setUserHandouts([]);
     setLoading(false);
   };
 
@@ -135,6 +148,17 @@ const useUserApi = () => {
         status: "error",
       })
     );
+    setLoading(false);
+  };
+
+  const getUserReferredByErrorCallback = (error: ApiError) => {
+    dispatch(
+      showSnackBar({
+        message: error.message,
+        status: "error",
+      })
+    );
+    setUserReferredBy(null);
     setLoading(false);
   };
 
@@ -221,13 +245,25 @@ const useUserApi = () => {
     );
   };
 
+  const getUserReferredBy = (id: number) => {
+    setLoading(true);
+    services.GetRequest(
+      `/users/${id}/referred-by`,
+      getUserReferredBySuccessCallback,
+      getUserReferredByErrorCallback
+    );
+  };
+
   return {
     loading,
+    userHandouts,
+    userReferredBy,
 
     // Actions
     getUsers,
     getUserById,
     getUserHandouts,
+    getUserReferredBy,
     createUser,
     updateUser,
     deleteUser,

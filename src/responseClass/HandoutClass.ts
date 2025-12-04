@@ -1,4 +1,4 @@
-import { isNonEmpty } from "../utils/utilsFunction";
+import { formatNumber, isNonEmpty } from "../utils/utilsFunction";
 
 export class HandoutClass {
   private id: number = 0;
@@ -12,8 +12,10 @@ export class HandoutClass {
       if (isNonEmpty(handout.id)) this.id = handout.id;
       if (isNonEmpty(handout.amount)) this.amount = handout.amount;
       if (isNonEmpty(handout.date)) this.date = new Date(handout.date);
-      if (isNonEmpty(handout.createdAt)) this.createdAt = new Date(handout.createdAt);
-      if (isNonEmpty(handout.updatedAt)) this.updatedAt = new Date(handout.updatedAt);
+      if (isNonEmpty(handout.createdAt))
+        this.createdAt = new Date(handout.createdAt);
+      if (isNonEmpty(handout.updatedAt))
+        this.updatedAt = new Date(handout.updatedAt);
     }
   }
 
@@ -27,6 +29,10 @@ export class HandoutClass {
 
   public getAmount(): number {
     return this.amount;
+  }
+
+  public getDispAmount(): string {
+    return formatNumber(this.amount);
   }
 
   public setAmount(amount: number) {

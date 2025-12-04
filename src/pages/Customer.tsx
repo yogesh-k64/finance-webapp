@@ -6,6 +6,7 @@ import {
   linkUserInitialFormData,
 } from "../utils/constants";
 import { useRef, useState, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import type { HeadCell, MoreOption } from "../utils/interface";
 import { UserClass } from "../responseClass/UserClass";
 import { useSelector } from "react-redux";
@@ -14,8 +15,10 @@ import { useIsMobile } from "../store/AppConfigReducer";
 import { customerMobileHeadCell } from "../utils/mobileTableCells";
 import useUserApi from "../hooks/useUserApi";
 import { Button } from "@mui/material";
+import DotLoader from "../common/DotLoader";
 
 function Customers() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(customerInitialFormData);
   const [openDialog, setOpenDialog] = useState(false);
   const [linkUserFormData, setLinkUserFormData] = useState(
@@ -24,7 +27,7 @@ function Customers() {
   const [openLinkUserDialog, setOpenLinkUserDialog] = useState(false);
   const userList = useSelector(useUserList);
   const isMobile = useSelector(useIsMobile);
-  const { createUser, deleteUser, updateUser, linkUserReferral } = useUserApi();
+  const { createUser, deleteUser, updateUser, linkUserReferral, loading } = useUserApi();
   const editId = useRef<number>(null);
   const linkUserId = useRef<number>(null);
 
@@ -212,11 +215,20 @@ function Customers() {
     },
   ];
 
+  const handleUserClick = (user: UserClass) => {
+    navigate(`/customers/${user.getId()}`);
+  };
+
   return (
     <div className="handouts-container">
       <div className="table-section">
         <div className="table-header">
-          <span className="title label-title">Customer Records</span>
+          <span className="title label-title">
+            Customer Records
+            {loading && (
+              <DotLoader />
+            )}
+          </span>
 
           <Button
             variant="contained"
@@ -229,6 +241,8 @@ function Customers() {
         <TableComponentV1
           headCell={isMobile ? customerMobileHeadCell : headCell}
           list={userList}
+          onClick={handleUserClick}
+          loading={loading}
           onDelete={(item: UserClass) => {
             deleteUser(item.getId());
           }}

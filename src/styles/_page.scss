@@ -1,4 +1,21 @@
 .handouts-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .table-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .table-header {
+    background: $form-bg;
+    z-index: 10;
+    padding: 16px 0;
+  }
+
   .summary-grid {
     background: $form-bg;
 

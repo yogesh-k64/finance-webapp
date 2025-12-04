@@ -160,6 +160,7 @@ export function formatNumber(
     crore: true,
     comma: true,
     decimalPrecision: 2,
+    rupees: true,
     ...options,
   };
 
@@ -193,7 +194,7 @@ export function formatNumber(
     result = addIndianCommas(result);
   }
 
-  return isNegative ? `-${result}` : result;
+  return isNegative ? `-${result} ${config.rupees ? "₹" : ""}` : `${result} ${config.rupees ? "₹" : ""}`;
 }
 
 function formatWithPrecision(num: number, precision: number): string {

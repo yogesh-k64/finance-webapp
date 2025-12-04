@@ -10,6 +10,7 @@ export interface HeadCell {
   label: string;
   renderValue?: string;
   view?: (item: any) => React.ReactNode;
+  copy?: boolean
 }
 
 export interface MoreOption {
@@ -24,6 +25,7 @@ export interface TableComponentProps {
   onEdit?: (item: any) => void;
   onDelete?: (item: any) => void;
   moreOptions?: MoreOption[];
+  loading?: boolean;
 }
 
 export interface User {

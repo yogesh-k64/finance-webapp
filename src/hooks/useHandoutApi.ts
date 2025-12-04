@@ -10,9 +10,11 @@ import type {
 import { clearHandouts, setHandouts } from "../store/handoutsSlice";
 import { storeRefreshHandouts } from "../store/RefreshReducer";
 import { HandoutRespClass } from "../responseClass/HandoutResp";
+import { CollectionClass } from "../responseClass/CollectionClass";
 
 const useHandoutApi = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [handoutCollectionList, setHandoutCollectionList] = useState<CollectionClass[]>([]);
   const dispatch = useDispatch();
 
   const clearSelectedHandout = () => {
@@ -41,13 +43,13 @@ const useHandoutApi = () => {
   };
 
   const getHandoutCollectionsSuccessCallback = (
-    response: ApiResponse<any[]>
+    response: ApiResponse<CollectionClass[]>
   ) => {
     setLoading(false);
-    console.log(
-      "Handout collections fetched successfully:",
-      response.message || "Collections retrieved"
-    );
+    if (response.data){
+      const collectionData = response.data.map(item=>new CollectionClass(item))
+      setHandoutCollectionList(collectionData)
+    }
   };
 
   const createHandoutSuccessCallback = (response: ApiResponse<Handout>) => {
@@ -203,6 +205,7 @@ const useHandoutApi = () => {
 
   return {
     loading,
+    handoutCollectionList,
 
     getHandouts,
     getHandoutById,

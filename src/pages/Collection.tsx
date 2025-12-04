@@ -22,6 +22,7 @@ import useCollectionApi, {
   type CreateCollectionRequest,
 } from "../hooks/useCollectionApi";
 import type { CollectionClass } from "../responseClass/CollectionClass";
+import DotLoader from "../common/DotLoader";
 
 function Collection() {
   const allCollectionList = useSelector(useCollectionList);
@@ -33,7 +34,7 @@ function Collection() {
   const [formData, setFormData] = useState(collectionInitialFormData);
   const editId = useRef<number | null>(null);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const { createCollection, updateCollection, deleteCollection } =
+  const { createCollection, updateCollection, deleteCollection, loading } =
     useCollectionApi();
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -146,7 +147,7 @@ function Collection() {
 
   const headCell: HeadCell[] = [
     { label: "ID", renderValue: "getId" },
-    { label: "Amount", renderValue: "getAmount" },
+    { label: "Amount", renderValue: "getDispAmount" },
     { label: "Date", renderValue: "getDateStr" },
     { label: "Handout ID", renderValue: "getHandoutId" },
     { label: "Updated At", renderValue: "getUpdatedAt" },
@@ -196,7 +197,12 @@ function Collection() {
       </Grid>
       <div className="table-section">
         <div className="header-section">
-          <span className="title label-title">Collection Records</span>
+          <span className="title label-title">
+            Collection Records
+            {loading && (
+              <DotLoader />
+            )}
+          </span>
           <div className="filter-controls-wrapper">
             {isMobile ? (
               <>
@@ -250,6 +256,7 @@ function Collection() {
         <TableComponentV1
           headCell={isMobile ? collectionMobileHeadCell : headCell}
           list={collectionList}
+          loading={loading}
           onDelete={(item: CollectionClass) => {
             deleteCollection(item.getId());
           }}

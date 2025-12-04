@@ -3,6 +3,7 @@ import { DateObject } from "react-multi-date-picker";
 export const SCREENS = {
   HOME: "/home",
   CUSTOMERS: "/customers",
+  CUSTOMER_DETAILS: "/customers/:id",
   HANDOUTS: "/handouts",
   HANDOUTS_DETAILS: "/handouts/:id",
   COLLECTION: "/collection",

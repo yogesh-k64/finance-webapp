@@ -1,4 +1,4 @@
-import { isNonEmpty } from "../utils/utilsFunction";
+import { formatNumber, isNonEmpty } from "../utils/utilsFunction";
 
 export class CollectionClass {
   private id: number = 0;
@@ -12,10 +12,13 @@ export class CollectionClass {
     if (collection) {
       if (isNonEmpty(collection.id)) this.id = collection.id;
       if (isNonEmpty(collection.amount)) this.amount = collection.amount;
-      if (isNonEmpty(collection.handoutId)) this.handoutId = collection.handoutId;
+      if (isNonEmpty(collection.handoutId))
+        this.handoutId = collection.handoutId;
       if (isNonEmpty(collection.date)) this.date = new Date(collection.date);
-      if (isNonEmpty(collection.createdAt)) this.createdAt = new Date(collection.createdAt);
-      if (isNonEmpty(collection.updatedAt)) this.updatedAt = new Date(collection.updatedAt);
+      if (isNonEmpty(collection.createdAt))
+        this.createdAt = new Date(collection.createdAt);
+      if (isNonEmpty(collection.updatedAt))
+        this.updatedAt = new Date(collection.updatedAt);
     }
   }
 
@@ -29,6 +32,10 @@ export class CollectionClass {
 
   public getAmount(): number {
     return this.amount;
+  }
+
+  public getDispAmount(): string {
+    return formatNumber(this.amount);
   }
 
   public setAmount(amount: number) {

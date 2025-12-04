@@ -15,6 +15,7 @@ import Customers from "./pages/Customer";
 import Dashboard from "./pages/DashBoard";
 import Handouts from "./pages/Handouts";
 import HandoutsDetails from "./pages/HandoutsDetails";
+import UserDetails from "./pages/UserDetails";
 import HomePage from "./pages/HomePage";
 import { Provider } from "react-redux";
 import { SCREENS } from "./utils/constants";
@@ -61,6 +62,7 @@ function App() {
               <Route index element={<Navigate to={SCREENS.HOME} replace />} />
               <Route path={SCREENS.HOME} element={<HomePage />} />
               <Route path={SCREENS.CUSTOMERS} element={<Customers />} />
+              <Route path={SCREENS.CUSTOMER_DETAILS} element={<UserDetails />} />
               <Route path={SCREENS.HANDOUTS} element={<Handouts />} />
               <Route
                 path={SCREENS.HANDOUTS_DETAILS}

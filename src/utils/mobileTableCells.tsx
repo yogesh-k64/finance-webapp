@@ -1,6 +1,7 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import type { HeadCell } from "./interface";
 import { HandoutRespClass } from "../responseClass/HandoutResp";
+import { HandoutClass } from "../responseClass/HandoutClass";
 import { UserClass } from "../responseClass/UserClass";
 import { copyToClipboard } from "./utilsFunction";
 import type { CollectionClass } from "../responseClass/CollectionClass";
@@ -12,7 +13,7 @@ export const handoutMobileHeadCell: HeadCell[] = [
       <div className="mobile-detail-container">
         <div className="mobile-detail-row">
           <span>{item.getUser().getName()}</span>
-          <span>{item.getHandout().getAmount()}</span>
+          <span>{item.getHandout().getDispAmount()}</span>
         </div>
         <div className="mobile-detail-row">
           <span
@@ -78,11 +79,31 @@ export const collectionMobileHeadCell: HeadCell[] = [
     view: (item: CollectionClass) => (
       <div className="mobile-detail-container">
         <div className="mobile-detail-row">
-          <span>{item.getAmount()}</span>
+          <span>{item.getDispAmount()}</span>
         </div>
         <div className="mobile-detail-row">
           <span>{item.getDateStr()}</span>
-          <span>Handout: {item.getHandoutId()}</span>
+          {item.getHandoutId() ? <span>Handout: {item.getHandoutId()}</span> : <></>}
+        </div>
+      </div>
+    ),
+  },
+];
+
+export const userDetailsHandoutMobileHeadCell: HeadCell[] = [
+  {
+    label: "Handout Details",
+    view: (item: HandoutClass) => (
+      <div className="mobile-detail-container">
+        <div className="mobile-detail-row">
+          <span>ID: {item.getId()}</span>
+          <span>{item.getDispAmount()}</span>
+        </div>
+        <div className="mobile-detail-row">
+          <span>{item.getDateStr()}</span>
+        </div>
+        <div className="mobile-detail-meta">
+          <span>Created: {item.getCreatedAt()}</span>
         </div>
       </div>
     ),

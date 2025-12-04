@@ -130,7 +130,7 @@ body {
 }
 
 .custom-dialog {
-  .dialog-title{
+  .dialog-title {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -310,4 +310,10 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.details-card {
+  background: $form-bg !important;
+  color: $primary-txt-color !important;
+
 }

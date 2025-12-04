@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef, useCallback, useMemo } from "react";
 import { HandoutRespClass } from "../responseClass/HandoutResp";
 import useHandoutApi from "../hooks/useHandoutApi";
+import DotLoader from "../common/DotLoader";
 
 function Handouts() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ function Handouts() {
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState(handoutsInitialFormData);
   const editId = useRef<number | null>(null);
-  const { createHandout, updateHandout, deleteHandout } = useHandoutApi();
+  const { createHandout, updateHandout, deleteHandout, loading } = useHandoutApi();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -203,7 +204,7 @@ function Handouts() {
     { label: "User Name", renderValue: "getUser.getName" },
     { label: "User ID", renderValue: "getUser.getId" },
     { label: "Mobile", renderValue: "getUser.getMobile" },
-    { label: "Amount", renderValue: "getHandout.getAmount" },
+    { label: "Amount", renderValue: "getHandout.getDispAmount" },
     { label: "Date", renderValue: "getHandout.getDateStr" },
     { label: "Updated At", renderValue: "getHandout.getUpdatedAt" },
   ];
@@ -236,7 +237,12 @@ function Handouts() {
       </Grid>
       <div className="table-section">
         <div className="header-section">
-          <span className="title label-title">Handouts Records</span>
+          <span className="title label-title">
+            Handouts Records
+            {loading && (
+              <DotLoader />
+            )}
+          </span>
           <div className="filter-controls-wrapper">
             {isMobile ? (
               <>
@@ -290,6 +296,7 @@ function Handouts() {
         <TableComponentV1
           headCell={isMobile ? handoutMobileHeadCell : headCell}
           list={filteredHandouts}
+          loading={loading}
           onEdit={(item: HandoutRespClass) => {
             editId.current = item.getHandout().getId();
             setFormData({

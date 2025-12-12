@@ -1,11 +1,12 @@
 import { MAX_MOBILE_WIDTH, SCREENS } from "../utils/constants";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { setIsMobile, useIsMobile } from "../store/AppConfigReducer";
+import { setIsMobile, storeLoader, useIsMobile } from "../store/AppConfigReducer";
 import { useDispatch, useSelector } from "react-redux";
 
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import DrawerSection from "../components/DrawerSection";
+import GlobalLoader from "../common/GlobalLoader";
 import { Grid, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import PeopleOutlineSharpIcon from "@mui/icons-material/PeopleOutlineSharp";
 import { useEffect } from "react";
@@ -29,9 +30,9 @@ const DashBoard = () => {
   const refreshHandouts = useSelector(useRefreshHandouts);
   const refreshCollections = useSelector(useRefreshCollections);
   const isMobile = useSelector(useIsMobile);
-  const { getUsers } = useUserApi();
-  const { getHandouts } = useHandoutApi();
-  const { getCollections } = useCollectionApi();
+  const { getUsers, loading : userLoading } = useUserApi();
+  const { getHandouts, loading : handoutLoading } = useHandoutApi();
+  const { getCollections, loading : collectionLoading } = useCollectionApi();
 
   // Handle window resize
   useEffect(() => {
@@ -70,8 +71,14 @@ const DashBoard = () => {
     }
   }, [refreshCollections]);
 
+  useEffect(() => {
+    const isLoading = userLoading || handoutLoading || collectionLoading;
+    dispatch(storeLoader(isLoading));
+  }, [userLoading, handoutLoading, collectionLoading, dispatch]);
+
   return (
     <>
+      <GlobalLoader />
       <Grid container className="main-container">
         <Grid size={{ xs: 0, md: 2 }} p={3} className="drawer-section">
           <DrawerSection />

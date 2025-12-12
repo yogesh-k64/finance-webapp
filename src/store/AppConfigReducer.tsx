@@ -65,6 +65,7 @@ const AppConfigSlice = createSlice({
 export const {
   showSnackBar,
   hideSnackBar,
+  storeLoader,
   storeHomePageDateRange,
   setIsMobile,
 } = AppConfigSlice.actions;
@@ -79,5 +80,7 @@ export const useHomeDateRange = (state: { AppConfigReducer: AppConfigProps }) =>
   state.AppConfigReducer.homePageDateRange;
 export const useIsMobile = (state: { AppConfigReducer: AppConfigProps }) =>
   state.AppConfigReducer.isMobile;
+export const useLoader = (state: { AppConfigReducer: AppConfigProps }) =>
+  state.AppConfigReducer.loader;
 
 export default AppConfigSlice.reducer;

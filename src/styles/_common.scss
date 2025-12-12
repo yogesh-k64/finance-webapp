@@ -27,6 +27,18 @@
   color: #ffffff;
   outline: none !important;
   font-family: "Nunito", sans-serif !important;
+  padding: 8px 16px;
+  height: 36px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+
+  &.disabled {
+    opacity: 0.5;
+    background: rgba($border-outline, 0.5);
+  }
 }
 
 // cursor styles
@@ -131,4 +143,195 @@ button {
   40% {
     opacity: 1;
   }
+}
+
+// Date picker calendar styles
+.custom-date-picker-container {
+  // z-index: 10001 !important;
+}
+
+.rmdp-portal {
+  z-index: 10001 !important;
+}
+
+.rmdp-wrapper {
+  background: $form-bg !important;
+  border: 1px solid $border-outline !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+// Target the parent div that contains the calendar portal on mobile
+@media (max-width: $screen-md) {
+  body > div:has(.rmdp-wrapper) {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 10001 !important;
+    
+    > div {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      transform: none !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 20px !important;
+      
+      .rmdp-wrapper {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: auto !important;
+        height: auto !important;
+        max-width: 100vw !important;
+        border: none !important;
+        border-radius: 0 !important;
+        display: block !important;
+        background: transparent !important;
+        z-index: 10001 !important;
+        transform: none !important;
+        
+        .rmdp-calendar {
+          width: 90vw !important;
+          max-width: 380px !important;
+          margin: auto !important;
+          background: $form-bg !important;
+          border-radius: 12px !important;
+          border: 1px solid $border-outline !important;
+        }
+        
+        .rmdp-day-picker {
+          width: 100% !important;
+          padding: 12px !important;
+        }
+        
+        .rmdp-day {
+          height: 42px !important;
+          width: 42px !important;
+          font-size: 16px !important;
+        }
+        
+        .rmdp-header {
+          padding: 12px !important;
+          font-size: 18px !important;
+        }
+        
+        .rmdp-week-day {
+          font-size: 14px !important;
+        }
+      }
+      
+      // Add close button after calendar
+      &::after {
+        content: '✕';
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: $form-bg;
+        border: 2px solid $border-outline;
+        color: $primary-txt-color;
+        font-size: 24px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10002;
+        
+        &:hover {
+          background: $btn-bg;
+          border-color: $btn-bg;
+          transform: scale(1.1);
+        }
+      }
+    }
+    
+    // Hide the arrow on mobile
+    .ep-arrow {
+      display: none !important;
+    }
+    
+    // Make background clickable to close
+    &::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: -1;
+    }
+  }
+}
+
+.rmdp-header {
+  background: $form-bg !important;
+  
+  .rmdp-header-values {
+    color: $primary-txt-color !important;
+    
+    span {
+      color: $primary-txt-color !important;
+    }
+  }
+}
+
+.rmdp-month-picker,
+.rmdp-year-picker {
+  background: $form-bg !important;
+  
+  div {
+    color: $primary-txt-color !important;
+  }
+}
+
+.rmdp-day {
+  color: $primary-txt-color !important;
+  
+  &:not(.rmdp-disabled):hover {
+    background: rgba($btn-bg, 0.2) !important;
+  }
+}
+
+.rmdp-day.rmdp-selected {
+  background: $btn-bg !important;
+  color: $primary-txt-color !important;
+  box-shadow: none !important;
+}
+
+.rmdp-day.rmdp-range {
+  background: rgba($btn-bg, 0.3) !important;
+  color: $primary-txt-color !important;
+}
+
+.rmdp-day.rmdp-today {
+  span {
+    background: rgba($btn-bg, 0.1) !important;
+    color: $primary-txt-color !important;
+  }
+}
+
+.rmdp-week-day {
+  color: $secondary-txt-color !important;
+}
+
+.rmdp-arrow {
+  border-color: $primary-txt-color !important;
+}
+
+.rmdp-arrow-container:hover {
+  background: rgba($btn-bg, 0.2) !important;
 }

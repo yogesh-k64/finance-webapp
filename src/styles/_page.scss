@@ -97,4 +97,78 @@
     font-size: 16px;
     cursor: pointer;
   }
+
+  .week-tabs-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+
+    @media (max-width: $screen-md) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+    }
+  }
+
+  .week-tabs {
+    min-height: 36px !important;
+    border: 1px solid rgba($btn-bg, 0.3);
+    border-radius: 8px;
+    padding: 4px;
+    background-color: rgba($btn-bg, 0.05);
+    @media (max-width: $screen-md) {
+      width: calc(100% - 10px);
+    }
+    flex: 1;
+
+    .MuiTabs-indicator {
+      display: none;
+    }
+
+    .MuiTabs-scrollButtons {
+      color: $btn-bg;
+      display: none !important;
+    }
+
+    .MuiTabs-flexContainer {
+      justify-content: space-between !important;
+      width: 100%;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      border: 1px solid rgba($border-outline, 0.5);
+      background-color: rgba($neutral-clr-600, 0.3);
+    }
+  }
+
+  .week-tab {
+    min-height: 32px !important;
+    padding: 6px 16px !important;
+    font-size: 0.875rem !important;
+    color: $btn-bg !important;
+    border: 1px solid transparent !important;
+    border-radius: 6px !important;
+    margin: 0 2px !important;
+    min-width: 0 !important;
+    transition: all 0.2s ease !important;
+
+    &:hover {
+      background-color: rgba($btn-bg, 0.1) !important;
+      border: 1px solid rgba($btn-bg, 0.5) !important;
+    }
+
+    &.Mui-selected {
+      color: $primary-txt-color !important;
+      background-color: $btn-bg !important;
+      border: 1px solid $btn-bg !important;
+      font-weight: 600 !important;
+    }
+  }
+
+  .week-tab-mobile {
+    // padding: 6px 10px !important;
+  }
 }

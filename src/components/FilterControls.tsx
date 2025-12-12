@@ -28,13 +28,17 @@ function FilterControls({
         value={dateValues}
         onChange={onDateChange}
         range
+        className="custom-date-picker-calendar"
+        containerClassName="custom-date-picker-container"
+        calendarPosition="bottom-center"
+        portal
         render={(value: string, openCalendar: () => void) => {
           return (
             <button
               onClick={openCalendar}
-              className="custom-datepicker-input"
+              className={`custom-datepicker-input`}
             >
-              {formatDateRange(value)}
+              {value ? formatDateRange(value) : 'Custom Date'}
             </button>
           );
         }}

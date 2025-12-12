@@ -1,14 +1,8 @@
 import { Checkbox, FormControlLabel } from "@mui/material";
-import DatePicker, { DateObject } from "react-multi-date-picker";
+import DatePicker from "react-multi-date-picker";
 import { DATE_PICKER_FORMAT } from "../utils/constants";
 import { formatDateRange } from "../utils/utilsFunction";
-
-interface FilterControlsProps {
-  checked: boolean;
-  onShowAllChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  dateValues: DateObject[];
-  onDateChange: (dateRange: DateObject[]) => void;
-}
+import type { FilterControlsProps } from "../utils/interface";
 
 function FilterControls({
   checked,
@@ -38,7 +32,7 @@ function FilterControls({
               onClick={openCalendar}
               className={`custom-datepicker-input`}
             >
-              {value ? formatDateRange(value) : 'Custom Date'}
+              {value ? formatDateRange(value) : "Custom Date"}
             </button>
           );
         }}

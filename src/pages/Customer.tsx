@@ -1,13 +1,15 @@
 import TableComponentV1 from "../common/TableComponent";
 import DialogComponent from "../common/DialogComponent";
 import FormDataComp, { type FormField } from "./FormDataComp";
+import { customerHeadCell } from "../utils/tableHeadCells";
+import { customerErrorMessages } from "../utils/errorMessages";
 import {
   customerInitialFormData,
   linkUserInitialFormData,
 } from "../utils/constants";
 import { useRef, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import type { HeadCell, MoreOption } from "../utils/interface";
+import type { MoreOption } from "../utils/interface";
 import { UserClass } from "../responseClass/UserClass";
 import { useSelector } from "react-redux";
 import { useUserList } from "../store/customerSlice";
@@ -27,25 +29,10 @@ function Customers() {
   const [openLinkUserDialog, setOpenLinkUserDialog] = useState(false);
   const userList = useSelector(useUserList);
   const isMobile = useSelector(useIsMobile);
-  const { createUser, deleteUser, updateUser, linkUserReferral, loading } = useUserApi();
+  const { createUser, deleteUser, updateUser, linkUserReferral, loading } =
+    useUserApi();
   const editId = useRef<number>(null);
   const linkUserId = useRef<number>(null);
-
-  const headCell: HeadCell[] = [
-    { label: "id", renderValue: "getId" },
-    { label: "name", renderValue: "getName" },
-    { label: "address", renderValue: "getAddress" },
-    { label: "info", renderValue: "getInfo" },
-    { label: "mobile", renderValue: "getMobile" },
-    { label: "updatedAt", renderValue: "getUpdatedAt" },
-  ];
-
-  const ERROR_MSG = {
-    name: "Name is required",
-    mobile: "Valid 10-digit number required",
-    address: "Address is required",
-    info: "Info is required",
-  };
 
   const handleLinkUserSelectChange = useCallback((evt: any) => {
     const {
@@ -133,11 +120,11 @@ function Customers() {
         ...prev,
         name: {
           value: prev.name.value,
-          errorMsg: isNameNotValid ? ERROR_MSG.name : "",
+          errorMsg: isNameNotValid ? customerErrorMessages.name : "",
         },
         mobile: {
           value: prev.mobile.value,
-          errorMsg: isMobileNotValid ? ERROR_MSG.mobile : "",
+          errorMsg: isMobileNotValid ? customerErrorMessages.mobile : "",
         },
       };
     });
@@ -225,9 +212,7 @@ function Customers() {
         <div className="table-header">
           <span className="title label-title">
             Customer Records
-            {loading && (
-              <DotLoader />
-            )}
+            {loading && <DotLoader />}
           </span>
 
           <Button
@@ -239,7 +224,7 @@ function Customers() {
           </Button>
         </div>
         <TableComponentV1
-          headCell={isMobile ? customerMobileHeadCell : headCell}
+          headCell={isMobile ? customerMobileHeadCell : customerHeadCell}
           list={userList}
           onClick={handleUserClick}
           loading={loading}

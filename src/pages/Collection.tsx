@@ -1,61 +1,66 @@
-import { Grid, Button, Popover, IconButton } from "@mui/material";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import type { HeadCell } from "../utils/interface";
+import { Grid } from "@mui/material";
 import { useCollectionList } from "../store/collectionSlice";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  useHomeDateRange,
-  storeHomePageDateRange,
-  useIsMobile,
-} from "../store/AppConfigReducer";
+import { useSelector } from "react-redux";
+import { useIsMobile } from "../store/AppConfigReducer";
 import type { DateObject } from "react-multi-date-picker";
 
 import FormDataComp, { type FormField } from "./FormDataComp";
-import FilterControls from "../components/FilterControls";
 import DialogComponent from "../common/DialogComponent";
+import PageHeader from "../common/PageHeader";
 import { collectionInitialFormData } from "../utils/constants";
 import TableComponentV1 from "../common/TableComponent";
+import { collectionHeadCell } from "../utils/tableHeadCells";
+import { collectionErrorMessages } from "../utils/errorMessages";
 import { collectionMobileHeadCell } from "../utils/mobileTableCells";
-import { getCollectionSummary, formatNumber } from "../utils/utilsFunction";
-import { useState, useRef } from "react";
+import {
+  getCollectionSummary,
+  formatNumber,
+  getCurrentWeekNumber,
+  getCurrentMonthWeeks,
+} from "../utils/utilsFunction";
+import { useState, useRef, useMemo } from "react";
 import useCollectionApi, {
   type CreateCollectionRequest,
 } from "../hooks/useCollectionApi";
 import type { CollectionClass } from "../responseClass/CollectionClass";
-import DotLoader from "../common/DotLoader";
 
 function Collection() {
   const allCollectionList = useSelector(useCollectionList);
-  const dispatch = useDispatch();
-  const values = useSelector(useHomeDateRange);
   const isMobile = useSelector(useIsMobile);
-  const [checked, setChecked] = useState<boolean>(true); // Default to Show All
+
+  const [dateRange, setDateRange] = useState<DateObject[]>([]);
+  const [checked, setChecked] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [formData, setFormData] = useState(collectionInitialFormData);
   const editId = useRef<number | null>(null);
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [selectedWeek, setSelectedWeek] = useState<number | null>(
+    getCurrentWeekNumber()
+  );
+  const [filterMode, setFilterMode] = useState<"all" | "date" | "week">("week");
   const { createCollection, updateCollection, deleteCollection, loading } =
     useCollectionApi();
 
-  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+  const weeks = useMemo(() => getCurrentMonthWeeks(), []);
+
+  const updateDateRange = (newDateRange: DateObject[]) => {
+    if (newDateRange && newDateRange.length > 0) {
+      setDateRange(newDateRange);
+      setFilterMode("date");
+      setSelectedWeek(null);
+      setChecked(false);
+    }
   };
 
-  const handleClosePopover = () => {
-    setAnchorEl(null);
-  };
-
-  const openPopover = Boolean(anchorEl);
-
-  const updateDateRange = (dateRange: DateObject[]) => {
-    dispatch(storeHomePageDateRange(dateRange));
-  };
-
-  const ERROR_MSG = {
-    name: "Name is required",
-    amount: "Valid amount required",
-    date: "Date is required",
-    handoutId: "HandoutId is required",
+  const handleWeekChange = (
+    _event: React.SyntheticEvent,
+    newValue: number | null
+  ) => {
+    setSelectedWeek(newValue);
+    if (newValue !== null) {
+      setFilterMode("week");
+      setDateRange([]);
+      setChecked(false);
+    }
   };
 
   const formFields: FormField[] = [
@@ -99,15 +104,15 @@ function Collection() {
       ...prev,
       amount: {
         value: prev.amount.value,
-        errorMsg: isAmountNotValid ? ERROR_MSG.amount : "",
+        errorMsg: isAmountNotValid ? collectionErrorMessages.amount : "",
       },
       date: {
         value: prev.date.value,
-        errorMsg: isDateNotValid ? ERROR_MSG.date : "",
+        errorMsg: isDateNotValid ? collectionErrorMessages.date : "",
       },
       handoutId: {
         value: prev.handoutId.value,
-        errorMsg: isHandoutIdNotValid ? ERROR_MSG.handoutId : "",
+        errorMsg: isHandoutIdNotValid ? collectionErrorMessages.handoutId : "",
       },
     }));
 
@@ -145,25 +150,30 @@ function Collection() {
     editId.current = null;
   };
 
-  const headCell: HeadCell[] = [
-    { label: "ID", renderValue: "getId" },
-    { label: "Amount", renderValue: "getDispAmount" },
-    { label: "Date", renderValue: "getDateStr" },
-    { label: "Handout ID", renderValue: "getHandoutId" },
-    { label: "Updated At", renderValue: "getUpdatedAt" },
-  ];
-
-  const [fromDate, endDate] = values;
+  const [fromDate, endDate] = dateRange;
   const fromDateObj = new Date(fromDate?.toString());
   const endDateObj = new Date(endDate?.toString());
 
   const collectionList = allCollectionList.reduce((acc, item) => {
-    if (checked) acc.push(item);
-    else if (
+    const collectionDate = new Date(item.getDate());
+
+    if (checked) {
+      acc.push(item);
+    } else if (selectedWeek !== null) {
+      // Filter by selected week
+      const week = weeks.find((w) => w.weekNumber === selectedWeek);
+      if (
+        week &&
+        collectionDate >= week.startDate &&
+        collectionDate <= week.endDate
+      ) {
+        acc.push(item);
+      }
+    } else if (
       fromDateObj &&
       endDateObj &&
-      new Date(item.getDate()) >= fromDateObj &&
-      new Date(item.getDate()) <= endDateObj
+      collectionDate >= fromDateObj &&
+      collectionDate <= endDateObj
     ) {
       acc.push(item);
     }
@@ -177,6 +187,16 @@ function Collection() {
 
   const handleShowAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
+    if (event.target.checked) {
+      setFilterMode("all");
+      setSelectedWeek(null);
+      setDateRange([]);
+    } else {
+      const currentWeekNumber = getCurrentWeekNumber();
+      setSelectedWeek(currentWeekNumber);
+      setFilterMode("week");
+      setDateRange([]);
+    }
   };
 
   const summaryList = [{ title: "Collected Amount", value: total }];
@@ -196,65 +216,22 @@ function Collection() {
         })}
       </Grid>
       <div className="table-section">
-        <div className="header-section">
-          <span className="title label-title">
-            Collection Records
-            {loading && (
-              <DotLoader />
-            )}
-          </span>
-          <div className="filter-controls-wrapper">
-            {isMobile ? (
-              <>
-                <IconButton
-                  onClick={handleOpenPopover}
-                  className="filter-icon-btn"
-                  color="primary"
-                >
-                  <FilterListIcon />
-                </IconButton>
-                <Popover
-                  open={openPopover}
-                  anchorEl={anchorEl}
-                  onClose={handleClosePopover}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                >
-                  <div className="filter-popover-content">
-                    <FilterControls
-                      checked={checked}
-                      onShowAllChange={handleShowAll}
-                      dateValues={values}
-                      onDateChange={updateDateRange}
-                    />
-                  </div>
-                </Popover>
-              </>
-            ) : (
-              <FilterControls
-                checked={checked}
-                onShowAllChange={handleShowAll}
-                dateValues={values}
-                onDateChange={updateDateRange}
-              />
-            )}
-            <Button
-              variant="contained"
-              className="action-btn"
-              onClick={handleOpenDialog}
-            >
-              {isMobile ? "Add" : "Add New Collection"}
-            </Button>
-          </div>
-        </div>
+        <PageHeader
+          title="Collection Records"
+          loading={loading}
+          selectedWeek={selectedWeek}
+          onWeekChange={handleWeekChange}
+          filterMode={filterMode}
+          checked={checked}
+          onShowAllChange={handleShowAll}
+          dateValues={filterMode === "date" ? dateRange : []}
+          onDateChange={updateDateRange}
+          isMobile={isMobile}
+          addButtonText="Add New Collection"
+          onAddClick={handleOpenDialog}
+        />
         <TableComponentV1
-          headCell={isMobile ? collectionMobileHeadCell : headCell}
+          headCell={isMobile ? collectionMobileHeadCell : collectionHeadCell}
           list={collectionList}
           loading={loading}
           onDelete={(item: CollectionClass) => {

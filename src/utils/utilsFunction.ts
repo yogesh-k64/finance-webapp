@@ -1,6 +1,69 @@
 import type { CollectionClass } from "../responseClass/CollectionClass";
 import type { HandoutRespClass } from "../responseClass/HandoutResp";
-import type { IndianNumberFormatOptions } from "./interface";
+import type { IndianNumberFormatOptions, WeekInfo } from "./interface";
+
+export const getCurrentWeekNumber = (): number => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+
+  let weekNumber = 1;
+  let weekStart = new Date(firstDay);
+  let weekEnd = new Date(firstDay);
+  weekEnd.setDate(weekEnd.getDate() + 6);
+
+  while (weekEnd <= lastDay) {
+    if (now >= weekStart && now <= (weekEnd > lastDay ? lastDay : weekEnd)) {
+      return weekNumber;
+    }
+    weekStart = new Date(weekEnd);
+    weekStart.setDate(weekStart.getDate() + 1);
+    weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+    weekNumber++;
+  }
+
+  return weekNumber;
+};
+
+export const getCurrentMonthWeeks = (): WeekInfo[] => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+
+  // Get first and last day of current month
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+
+  const weeks: WeekInfo[] = [];
+  let weekNumber = 1;
+  const currentDate = new Date(firstDay);
+
+  while (currentDate <= lastDay) {
+    const weekStart = new Date(currentDate);
+    const weekEnd = new Date(currentDate);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+
+    // If week end goes beyond month, cap it at last day of month
+    if (weekEnd > lastDay) {
+      weeks.push({
+        weekNumber,
+        startDate: weekStart,
+        endDate: new Date(lastDay),
+      });
+      break;
+    } else {
+      weeks.push({ weekNumber, startDate: weekStart, endDate: weekEnd });
+    }
+
+    currentDate.setDate(currentDate.getDate() + 7);
+    weekNumber++;
+  }
+
+  return weeks;
+};
 
 export const getHandoutSummary = (
   list: HandoutRespClass[],
@@ -194,7 +257,9 @@ export function formatNumber(
     result = addIndianCommas(result);
   }
 
-  return isNegative ? `-${result} ${config.rupees ? "₹" : ""}` : `${result} ${config.rupees ? "₹" : ""}`;
+  return isNegative
+    ? `-${result} ${config.rupees ? "₹" : ""}`
+    : `${result} ${config.rupees ? "₹" : ""}`;
 }
 
 function formatWithPrecision(num: number, precision: number): string {

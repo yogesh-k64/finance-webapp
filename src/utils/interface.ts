@@ -10,7 +10,7 @@ export interface HeadCell {
   label: string;
   renderValue?: string;
   view?: (item: any) => React.ReactNode;
-  copy?: boolean
+  copy?: boolean;
 }
 
 export interface MoreOption {
@@ -85,4 +85,40 @@ export interface IndianNumberFormatOptions {
   crore?: boolean;
   comma?: boolean;
   decimalPrecision?: number;
+}
+
+// Component Props Interfaces
+export interface PageHeaderProps {
+  title: string;
+  loading?: boolean;
+  selectedWeek: number | null;
+  onWeekChange: (event: React.SyntheticEvent, value: number | null) => void;
+  filterMode: "all" | "date" | "week";
+  checked: boolean;
+  onShowAllChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  dateValues: any[];
+  onDateChange: (dateRange: any[]) => void;
+  isMobile: boolean;
+  addButtonText: string;
+  onAddClick: () => void;
+}
+
+export interface WeekSelectorProps {
+  selectedWeek: number | null;
+  onWeekChange: (event: React.SyntheticEvent, value: number | null) => void;
+  disabled?: boolean;
+  isMobile?: boolean;
+}
+
+export interface FilterControlsProps {
+  checked: boolean;
+  onShowAllChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  dateValues: any[];
+  onDateChange: (dateRange: any[]) => void;
+}
+
+export interface WeekInfo {
+  weekNumber: number;
+  startDate: Date;
+  endDate: Date;
 }

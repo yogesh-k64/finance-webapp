@@ -9,8 +9,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import type { HeadCell } from "../utils/interface";
 import TableComponentV1 from "../common/TableComponent";
+import { handoutDetailsHeadCell } from "../utils/tableHeadCells";
 import { copyToClipboard } from "../utils/utilsFunction";
 import { useHandoutsList } from "../store/handoutsSlice";
 import { useSelector } from "react-redux";
@@ -30,13 +30,6 @@ const HandoutsDetails = () => {
     useHandoutApi();
   const [selectedHandout, setSelectedHandout] =
     useState<HandoutRespClass | null>(null);
-
-  const headCell: HeadCell[] = [
-    { label: "ID", renderValue: "getId" },
-    { label: "Amount", renderValue: "getDispAmount" },
-    { label: "Date", renderValue: "getDateStr" },
-    { label: "Updated At", renderValue: "getUpdatedAt" },
-  ];
 
   useEffect(() => {
     if (id) {
@@ -152,7 +145,9 @@ const HandoutsDetails = () => {
             Handout's collections
           </Typography>
           <TableComponentV1
-            headCell={isMobile ? collectionMobileHeadCell : headCell}
+            headCell={
+              isMobile ? collectionMobileHeadCell : handoutDetailsHeadCell
+            }
             list={handoutCollectionList}
             loading={loading}
           />

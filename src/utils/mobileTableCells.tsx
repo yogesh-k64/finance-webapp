@@ -28,6 +28,10 @@ export const handoutMobileHeadCell: HeadCell[] = [
           </span>
           <span>{item.getHandout().getDateStr()}</span>
         </div>
+        <div className="mobile-detail-row">
+          <span>Status: <span className={`status-badge status-${item.getHandout().getStatus().toLowerCase()}`}>{item.getHandout().getStatus()}</span></span>
+          <span>Bond: {item.getHandout().getBond() ? <span className="bond-icon bond-yes">✓</span> : <span className="bond-icon bond-no">✕</span>}</span>
+        </div>
         <div className="mobile-detail-meta">
           <span>User ID: {item.getUser().getId()}</span>
           <span>Handout ID: {item.getHandout().getId()}</span>
@@ -98,6 +102,10 @@ export const userDetailsHandoutMobileHeadCell: HeadCell[] = [
         <div className="mobile-detail-row">
           <span>ID: {item.getId()}</span>
           <span>{item.getDispAmount()}</span>
+        </div>
+        <div className="mobile-detail-row">
+          <span>Status: <span className={`status-badge status-${item.getStatus().toLowerCase()}`}>{item.getStatus()}</span></span>
+          <span>Bond: {item.getBond() ? <span className="bond-icon bond-yes">✓</span> : <span className="bond-icon bond-no">✕</span>}</span>
         </div>
         <div className="mobile-detail-row">
           <span>{item.getDateStr()}</span>

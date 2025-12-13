@@ -9,6 +9,7 @@ import DrawerSection from "../components/DrawerSection";
 import GlobalLoader from "../common/GlobalLoader";
 import { Grid, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import PeopleOutlineSharpIcon from "@mui/icons-material/PeopleOutlineSharp";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import { useEffect } from "react";
 import {
   storeRefreshCollections,
@@ -123,6 +124,10 @@ const DashBoard = () => {
             },
           }}
         >
+          <BottomNavigationAction
+            value={SCREENS.HOME}
+            icon={<HomeRoundedIcon />}
+          />
           <BottomNavigationAction
             value={SCREENS.HANDOUTS}
             icon={<DescriptionRoundedIcon />}

@@ -56,6 +56,8 @@ export interface Handout {
   date: string;
   createdAt: string;
   updatedAt: string;
+  status: string;
+  bond: boolean;
 }
 
 export interface HandoutResp {
@@ -78,6 +80,8 @@ export interface CreateHandoutReq {
   amount: number;
   date: string;
   userId: number;
+  status: string;
+  bond: boolean;
 }
 
 export interface IndianNumberFormatOptions {

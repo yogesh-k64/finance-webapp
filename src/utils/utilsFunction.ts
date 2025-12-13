@@ -74,23 +74,65 @@ export const getHandoutSummary = (
     (acc, item) => {
       const handout = item.getHandout();
       const amount = handout.getAmount();
-      const bondAmt = amount <= 5000 ? 50 : 100;
+      const bondAmt = item.getHandout().getBond() ? amount <= 5000 ? 50 : 100 : 0;
       const profit = amount / 10 + bondAmt;
       const dateObj = new Date(handout.getDate());
+      const status = handout.getStatus();
+      
       if (fromDate && endDate) {
         if (dateObj >= fromDate && dateObj <= endDate) {
           acc.total += amount;
           acc.givenToCustomer += amount - profit;
           acc.profit += profit;
+          
+          // Track status breakdown
+          if (status === "ACTIVE") {
+            acc.statusBreakdown.active.count++;
+            acc.statusBreakdown.active.total += amount;
+          } else if (status === "COMPLETED") {
+            acc.statusBreakdown.completed.count++;
+            acc.statusBreakdown.completed.total += amount;
+          } else if (status === "PENDING") {
+            acc.statusBreakdown.pending.count++;
+            acc.statusBreakdown.pending.total += amount;
+          } else if (status === "CANCELLED") {
+            acc.statusBreakdown.cancelled.count++;
+            acc.statusBreakdown.cancelled.total += amount;
+          }
         }
       } else {
         acc.total += amount;
         acc.givenToCustomer += amount - profit;
         acc.profit += profit;
+        
+        // Track status breakdown
+        if (status === "ACTIVE") {
+          acc.statusBreakdown.active.count++;
+          acc.statusBreakdown.active.total += amount;
+        } else if (status === "COMPLETED") {
+          acc.statusBreakdown.completed.count++;
+          acc.statusBreakdown.completed.total += amount;
+        } else if (status === "PENDING") {
+          acc.statusBreakdown.pending.count++;
+          acc.statusBreakdown.pending.total += amount;
+        } else if (status === "CANCELLED") {
+          acc.statusBreakdown.cancelled.count++;
+          acc.statusBreakdown.cancelled.total += amount;
+        }
       }
       return acc;
     },
-    { total: 0, givenToCustomer: 0, profit: 0 }
+    { 
+      total: 0, 
+      givenToCustomer: 0, 
+      profit: 0,
+      statusBreakdown: {
+        active: { count: 0, total: 0 },
+        completed: { count: 0, total: 0 },
+        pending: { count: 0, total: 0 },
+        cancelled: { count: 0, total: 0 }
+      }
+    }
   );
 };
 

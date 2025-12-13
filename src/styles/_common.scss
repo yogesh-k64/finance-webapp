@@ -335,3 +335,76 @@ button {
 .rmdp-arrow-container:hover {
   background: rgba($btn-bg, 0.2) !important;
 }
+
+// Status Badge Styles
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  @media (max-width: $screen-md) {
+    padding: 2px 8px;
+    font-size: 10px;
+    border-radius: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  &.status-active {
+    background-color: rgba($status-success, 0.15);
+    color: $status-success;
+    border: 1px solid rgba($status-success, 0.3);
+  }
+
+  &.status-completed {
+    background-color: rgba($status-info, 0.15);
+    color: $status-info;
+    border: 1px solid rgba($status-info, 0.3);
+  }
+
+  &.status-pending {
+    background-color: rgba($status-warning, 0.15);
+    color: $status-warning;
+    border: 1px solid rgba($status-warning, 0.3);
+  }
+
+  &.status-cancelled {
+    background-color: rgba($status-danger, 0.15);
+    color: $status-danger;
+    border: 1px solid rgba($status-danger, 0.3);
+  }
+}
+
+// Bond Icon Styles
+.bond-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+
+  @media (max-width: $screen-md) {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    border-width: 1.5px;
+  }
+
+  &.bond-yes {
+    background-color: rgba($status-success, 0.15);
+    color: $status-success;
+    border: 2px solid $status-success;
+  }
+
+  &.bond-no {
+    background-color: rgba($status-danger, 0.15);
+    color: $status-danger;
+    border: 2px solid $status-danger;
+  }
+}

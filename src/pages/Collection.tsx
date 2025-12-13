@@ -179,11 +179,7 @@ function Collection() {
     }
     return acc;
   }, [] as CollectionClass[]);
-  const { total } = getCollectionSummary(
-    collectionList,
-    fromDateObj,
-    endDateObj
-  );
+  const { total } = getCollectionSummary(collectionList);
 
   const handleShowAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -199,7 +195,9 @@ function Collection() {
     }
   };
 
-  const summaryList = [{ title: "Collected Amount", value: total }];
+  const summaryList = [
+    { title: `Collected Amount (${collectionList.length})`, value: total }
+  ];
 
   return (
     <div className="handouts-container">

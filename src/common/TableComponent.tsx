@@ -22,6 +22,7 @@ import {
   getValueByKey,
   copyToClipboard,
 } from "../utils/utilsFunction";
+import { STATUS_TYPES } from "../utils/constants";
 import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useIsMobile } from "../store/AppConfigReducer";
@@ -139,6 +140,37 @@ const TableComponentV1 = (props: TableComponentProps) => {
                         <TableCell key={cellIndex}>{cell.view(item)}</TableCell>
                       );
                     }
+
+                    // Render status as badge
+                    if (cell.label === "Status") {
+                      const status = dispValue;
+                      let statusClass = "status-badge";
+                      if (status === STATUS_TYPES.ACTIVE) statusClass += " status-active";
+                      else if (status === STATUS_TYPES.COMPLETED) statusClass += " status-completed";
+                      else if (status === STATUS_TYPES.PENDING) statusClass += " status-pending";
+                      else if (status === STATUS_TYPES.CANCELLED) statusClass += " status-cancelled";
+                      
+                      return (
+                        <TableCell key={cellIndex}>
+                          <span className={statusClass}>{status}</span>
+                        </TableCell>
+                      );
+                    }
+
+                    // Render bond as check/cross icon
+                    if (cell.label === "Bond") {
+                      const bondValue = getValueByKey(item, "getHandout.getBond");
+                      return (
+                        <TableCell key={cellIndex}>
+                          {bondValue ? (
+                            <span className="bond-icon bond-yes">✓</span>
+                          ) : (
+                            <span className="bond-icon bond-no">✕</span>
+                          )}
+                        </TableCell>
+                      );
+                    }
+
                     return (
                       <TableCell key={cellIndex}>
                         {dispValue}

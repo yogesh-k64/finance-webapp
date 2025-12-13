@@ -8,6 +8,8 @@ export const handoutsHeadCell: HeadCell[] = [
   { label: "Mobile", renderValue: "getUser.getMobile" },
   { label: "Amount", renderValue: "getHandout.getDispAmount" },
   { label: "Date", renderValue: "getHandout.getDateStr" },
+  { label: "Status", renderValue: "getHandout.getStatus" },
+  { label: "Bond", renderValue: "getHandout.getBondDisplay" },
   { label: "Updated At", renderValue: "getHandout.getUpdatedAt" },
 ];
 
@@ -35,5 +37,7 @@ export const handoutDetailsHeadCell: HeadCell[] = [
   { label: "ID", renderValue: "getId" },
   { label: "Amount", renderValue: "getDispAmount" },
   { label: "Date", renderValue: "getDateStr" },
+  { label: "Status", renderValue: "getStatus" },
+  { label: "Bond", renderValue: "getBondDisplay" },
   { label: "Updated At", renderValue: "getUpdatedAt" },
 ];

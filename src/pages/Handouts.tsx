@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { SCREENS, handoutsInitialFormData } from "../utils/constants";
+import { SCREENS, handoutsInitialFormData, STATUS_OPTIONS } from "../utils/constants";
 import type { CreateHandoutReq } from "../utils/interface";
 import { handoutsHeadCell } from "../utils/tableHeadCells";
 import { handoutErrorMessages } from "../utils/errorMessages";
@@ -108,15 +108,31 @@ function Handouts() {
         InputLabelProps: { shrink: true },
         className: "form-group-full",
       },
+      {
+        name: "status",
+        label: "Status",
+        type: "dropDown",
+        required: true,
+        options: STATUS_OPTIONS,
+        handleSelectChange: handleSelectChange,
+        className: "form-group-half",
+      },
+      {
+        name: "bond",
+        label: "Bond",
+        type: "checkbox",
+        required: false,
+        className: "form-group-half",
+      },
     ],
     [userOptions, handleSelectChange]
   );
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: { value: value, errorMsg: "" },
+      [name]: { value: type === "checkbox" ? String(checked) : value, errorMsg: "" },
     }));
   }, []);
 
@@ -126,6 +142,7 @@ function Handouts() {
       formData.amount.value.trim() === "" ||
       isNaN(Number(formData.amount.value));
     const isDateNotValid = formData.date.value.trim() === "";
+    const isStatusNotValid = formData.status.value.trim() === "";
 
     setFormData((prev) => ({
       ...prev,
@@ -141,9 +158,13 @@ function Handouts() {
         value: prev.date.value,
         errorMsg: isDateNotValid ? handoutErrorMessages.date : "",
       },
+      status: {
+        value: prev.status.value,
+        errorMsg: isStatusNotValid ? "Status is required" : "",
+      },
     }));
 
-    return !isUserNotValid && !isAmountNotValid && !isDateNotValid;
+    return !isUserNotValid && !isAmountNotValid && !isDateNotValid && !isStatusNotValid;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -153,6 +174,8 @@ function Handouts() {
         amount: Number(formData.amount.value),
         date: new Date(formData.date.value).toISOString(),
         userId: Number(formData.user.value),
+        status: formData.status.value,
+        bond: formData.bond.value === "true",
       };
       if (editId.current) {
         updateHandout(editId.current, handoutObj);
@@ -211,13 +234,9 @@ function Handouts() {
     return acc;
   }, [] as HandoutRespClass[]);
 
-  const handoutsSummary = getHandoutSummary(
-    filteredHandouts,
-    fromDateObj,
-    endDateObj
-  );
+  const handoutsSummary = getHandoutSummary(filteredHandouts);
 
-  const { total, givenToCustomer, profit } = handoutsSummary;
+  const { total, profit, statusBreakdown } = handoutsSummary;
 
   const handleShowAll = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -236,22 +255,23 @@ function Handouts() {
   };
 
   const summaryList = [
-    { title: "Total Amount", value: total },
-    { title: "Handout Amount", value: givenToCustomer },
+    { title: isMobile ? "Total" : "Total Amount", value: total },
     { title: "Profit", value: profit },
+    { title: isMobile ? `Active (${statusBreakdown.active.count})` : `Active (${statusBreakdown.active.count})`, value: statusBreakdown.active.total },
+    { title: isMobile ? `Done (${statusBreakdown.completed.count})` : `Completed (${statusBreakdown.completed.count})`, value: statusBreakdown.completed.total },
+    { title: `Pending (${statusBreakdown.pending.count})`, value: statusBreakdown.pending.total },
+    { title: isMobile ? `Cancel (${statusBreakdown.cancelled.count})` : `Cancelled (${statusBreakdown.cancelled.count})`, value: statusBreakdown.cancelled.total },
   ];
 
   return (
     <div className="handouts-container">
-      <Grid container justifyContent={"space-between"} className="summary-grid">
+      <Grid container justifyContent={"space-between"} className="summary-grid handouts-summary">
         {summaryList.map((item) => {
           return (
-            <Grid size={3} key={item.title} className="summary-item">
+            <Grid size={{ xs: 4, md: 2 }} key={item.title} className="summary-item">
               <div className="item-box">
                 <div className="title">{item.title}</div>
-                <div className="value">
-                  {formatNumber(item.value, { lakh: false })}
-                </div>
+                <div className="value">{formatNumber(item.value, { lakh: false })}</div>
               </div>
             </Grid>
           );
@@ -286,6 +306,14 @@ function Handouts() {
               },
               date: {
                 value: item.getHandout().getDate().toISOString().split("T")[0],
+                errorMsg: "",
+              },
+              status: {
+                value: item.getHandout().getStatus() || "ACTIVE",
+                errorMsg: "",
+              },
+              bond: {
+                value: String(item.getHandout().getBond()),
                 errorMsg: "",
               },
             });

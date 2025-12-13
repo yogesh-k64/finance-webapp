@@ -97,6 +97,20 @@ const HandoutsDetails = () => {
                   {selectedHandout.getHandout().getDispAmount()}
                 </Typography>
                 <Typography variant="body1">
+                  <strong>Status:</strong>{" "}
+                  <span className={`status-badge status-${selectedHandout.getHandout().getStatus().toLowerCase()}`}>
+                    {selectedHandout.getHandout().getStatus()}
+                  </span>
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Bond:</strong>{" "}
+                  {selectedHandout.getHandout().getBond() ? (
+                    <span className="bond-icon bond-yes">✓</span>
+                  ) : (
+                    <span className="bond-icon bond-no">✕</span>
+                  )}
+                </Typography>
+                <Typography variant="body1">
                   <strong>Created At:</strong>{" "}
                   {selectedHandout.getHandout().getCreatedAt()}
                 </Typography>

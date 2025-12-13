@@ -9,6 +9,7 @@ const DrawerSection = () => {
   const { pathname } = locationInfo;
 
   const tabList = [
+    { label: "Home", path: SCREENS.HOME },
     { label: "Handouts", path: SCREENS.HANDOUTS },
     { label: "Collection", path: SCREENS.COLLECTION },
     { label: "Customers", path: SCREENS.CUSTOMERS },

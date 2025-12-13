@@ -1,4 +1,4 @@
-import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText } from '@mui/material'
+import { Button, TextField, FormControl, InputLabel, Select, MenuItem, FormHelperText, Checkbox, FormControlLabel } from '@mui/material'
 import { isNonEmpty } from '../utils/utilsFunction';
 import { memo } from 'react';
 
@@ -55,6 +55,41 @@ const FormDataComp: React.FC<FormDataCompProps> = memo(({ formData, handleChange
                 </Select>
                 {isNonEmpty(formFieldItem.errorMsg) && (
                   <FormHelperText>{formFieldItem?.errorMsg}</FormHelperText>
+                )}
+              </FormControl>
+            );
+          }
+
+          if (field.type === 'checkbox') {
+            return (
+              <FormControl 
+                key={field.name} 
+                className={fieldClassName}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name={field.name}
+                      checked={formFieldItem?.value === 'true'}
+                      onChange={handleChange}
+                      sx={{
+                        color: '#AEB9E1',
+                        '&.Mui-checked': {
+                          color: '#CB3CFF',
+                        },
+                      }}
+                    />
+                  }
+                  label={field.label}
+                  sx={{
+                    color: '#AEB9E1',
+                    '& .MuiFormControlLabel-label': {
+                      fontSize: '14px',
+                    }
+                  }}
+                />
+                {isNonEmpty(formFieldItem.errorMsg) && (
+                  <FormHelperText error>{formFieldItem?.errorMsg}</FormHelperText>
                 )}
               </FormControl>
             );

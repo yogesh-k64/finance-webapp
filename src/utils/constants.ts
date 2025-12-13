@@ -28,9 +28,17 @@ export const INITIAL_FILTER_DATE = [
 
 export const STATUS_TYPES = {
   ACTIVE: "ACTIVE",
-  PAID: "PAID",
-  CLOSED: "CLOSED",
+  PENDING: "PENDING",
+  CANCELLED: "CANCELLED",
+  COMPLETED: "COMPLETED",
 };
+
+export const STATUS_OPTIONS = [
+  { value: "ACTIVE", label: "Active" },
+  { value: "PENDING", label: "Pending" },
+  { value: "CANCELLED", label: "Cancelled" },
+  { value: "COMPLETED", label: "Completed" },
+];
 
 export const HEAD_CELL_ACTION = "action";
 
@@ -45,6 +53,8 @@ export const handoutsInitialFormData = {
   user: { value: "", errorMsg: "" },
   amount: { value: "", errorMsg: "" },
   date: { value: "", errorMsg: "" },
+  status: { value: STATUS_TYPES.ACTIVE, errorMsg: "" },
+  bond: { value: "true", errorMsg: "" },
 };
 
 export const collectionInitialFormData = {

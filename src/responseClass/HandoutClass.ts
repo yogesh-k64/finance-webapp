@@ -6,6 +6,8 @@ export class HandoutClass {
   private date: Date = new Date();
   private createdAt: Date = new Date();
   private updatedAt: Date = new Date();
+  private status: string = "ACTIVE";
+  private bond: boolean = false;
 
   constructor(handout?: any) {
     if (handout) {
@@ -16,6 +18,8 @@ export class HandoutClass {
         this.createdAt = new Date(handout.createdAt);
       if (isNonEmpty(handout.updatedAt))
         this.updatedAt = new Date(handout.updatedAt);
+      if (isNonEmpty(handout.status)) this.status = handout.status;
+      if (isNonEmpty(handout.bond)) this.bond = handout.bond;
     }
   }
 
@@ -65,5 +69,25 @@ export class HandoutClass {
 
   public setUpdatedAt(updatedAt: Date) {
     this.updatedAt = updatedAt;
+  }
+
+  public getStatus(): string {
+    return this.status;
+  }
+
+  public setStatus(status: string) {
+    this.status = status;
+  }
+
+  public getBond(): boolean {
+    return this.bond;
+  }
+
+  public getBondDisplay(): string {
+    return this.bond ? "Yes" : "No";
+  }
+
+  public setBond(bond: boolean) {
+    this.bond = bond;
   }
 }

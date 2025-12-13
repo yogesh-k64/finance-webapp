@@ -153,9 +153,18 @@ body {
 
   .form-container {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 20px;
     padding-top: 10px;
+
+    .form-group {
+      flex: 1 1 calc(50% - 10px);
+      min-width: 250px;
+
+      @media (max-width: $screen-md) {
+        flex: 1 1 100%;
+      }
+    }
 
     .form-row {
       display: grid;
@@ -164,7 +173,20 @@ body {
     }
 
     .form-group-full {
-      grid-column: 1 / -1;
+      flex: 1 1 100%;
+    }
+
+    .form-group-half {
+      flex: 1 1 calc(50% - 10px);
+      min-width: 200px;
+
+      @media (max-width: $screen-md) {
+        flex: 1 1 100%;
+      }
+    }
+
+    > div:last-child {
+      flex: 1 1 100%;
     }
   }
 }

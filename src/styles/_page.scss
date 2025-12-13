@@ -51,6 +51,39 @@
         }
       }
     }
+
+    // Handouts-specific mobile styles (multiple items in a row)
+    &.handouts-summary {
+      @media (max-width: $screen-md) {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        
+        .summary-item {
+          width: 33.333% !important;
+          
+          .item-box {
+            flex-direction: column !important;
+            align-items: center;
+            padding: 8px 6px !important;
+            height: auto;
+            min-height: 48px;
+            
+            .title {
+              font-size: 11px;
+              margin-bottom: 4px;
+              text-align: center;
+              line-height: 1.2;
+            }
+            
+            .value {
+              font-size: 10px;
+              margin-left: 0;
+              text-align: center;
+            }
+          }
+        }
+      }
+    }
   }
 
   .filter-controls-wrapper {

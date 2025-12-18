@@ -41,3 +41,11 @@ export const handoutDetailsHeadCell: HeadCell[] = [
   { label: "Bond", renderValue: "getBondDisplay" },
   { label: "Updated At", renderValue: "getUpdatedAt" },
 ];
+
+// Admin Panel - User Management head cells
+export const adminUserHeadCell: HeadCell[] = [
+  { label: "ID", renderValue: "getId" },
+  { label: "Username", renderValue: "getUsername" },
+  { label: "Role", renderValue: "getRole" },
+  { label: "Status", renderValue: "getStatus" },
+];

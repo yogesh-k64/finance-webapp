@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { MAX_MOBILE_WIDTH, SCREENS } from "../utils/constants";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { setIsMobile, storeLoader, useIsMobile } from "../store/AppConfigReducer";
 import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
@@ -10,6 +12,7 @@ import GlobalLoader from "../common/GlobalLoader";
 import { Grid, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import PeopleOutlineSharpIcon from "@mui/icons-material/PeopleOutlineSharp";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { useEffect } from "react";
 import {
   storeRefreshCollections,
@@ -31,11 +34,11 @@ const DashBoard = () => {
   const refreshHandouts = useSelector(useRefreshHandouts);
   const refreshCollections = useSelector(useRefreshCollections);
   const isMobile = useSelector(useIsMobile);
+  const admin = useSelector((state: RootState) => state.auth.admin);
   const { getUsers, loading : userLoading } = useUserApi();
   const { getHandouts, loading : handoutLoading } = useHandoutApi();
   const { getCollections, loading : collectionLoading } = useCollectionApi();
 
-  // Handle window resize
   useEffect(() => {
     const handleResize = () => {
       dispatch(setIsMobile(window.innerWidth <= MAX_MOBILE_WIDTH));
@@ -102,27 +105,6 @@ const DashBoard = () => {
           }}
           className="mobile-bottom-nav"
           showLabels={false}
-          sx={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: "60px",
-            backgroundColor: "#0B1739",
-            borderTop: "0.6px solid #343B4F",
-            boxShadow: "0px -4px 12px 0px rgba(1, 5, 17, 0.3)",
-            zIndex: 1000,
-            "& .MuiBottomNavigationAction-root": {
-              color: "#AEB9E1",
-              minWidth: "auto",
-              "&.Mui-selected": {
-                color: "#CB3CFF",
-              },
-              "& .MuiSvgIcon-root": {
-                fontSize: "24px",
-              },
-            },
-          }}
         >
           <BottomNavigationAction
             value={SCREENS.HOME}
@@ -140,6 +122,12 @@ const DashBoard = () => {
             value={SCREENS.CUSTOMERS}
             icon={<PeopleOutlineSharpIcon />}
           />
+          {admin?.role === 'admin' && (
+            <BottomNavigationAction
+              value={SCREENS.ADMIN}
+              icon={<AdminPanelSettingsIcon />}
+            />
+          )}
         </BottomNavigation>
       )}
     </>

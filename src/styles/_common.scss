@@ -376,6 +376,18 @@ button {
     color: $status-danger;
     border: 1px solid rgba($status-danger, 0.3);
   }
+
+  &.status-inactive {
+    background-color: rgba($neutral-clr-400, 0.15);
+    color: $neutral-clr-400;
+    border: 1px solid rgba($neutral-clr-400, 0.3);
+  }
+
+  &.status-disabled {
+    background-color: rgba($status-danger, 0.15);
+    color: $status-danger;
+    border: 1px solid rgba($status-danger, 0.3);
+  }
 }
 
 // Bond Icon Styles

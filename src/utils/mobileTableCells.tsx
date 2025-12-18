@@ -117,3 +117,27 @@ export const userDetailsHandoutMobileHeadCell: HeadCell[] = [
     ),
   },
 ];
+
+import { AdminUserClass } from "../responseClass/AdminUserClass";
+
+export const adminUserMobileHeadCell: HeadCell[] = [
+  {
+    label: "User Details",
+    view: (item: AdminUserClass) => (
+      <div className="mobile-detail-container admin-user-mobile">
+        <div className="mobile-detail-row admin-user-mobile__header">
+          <span className="admin-user-mobile__username">{item.getUsername()}</span>
+          <span className="admin-user-mobile__id">ID: {item.getId()}</span>
+        </div>
+        <div className="mobile-detail-row admin-user-mobile__info">
+          <span className={`admin-user-mobile__role admin-user-mobile__role--${item.getRole().toLowerCase()}`}>
+            {item.getRole()}
+          </span>
+          <span className={`admin-user-mobile__status ${item.getActive() ? 'admin-user-mobile__status--active' : 'admin-user-mobile__status--disabled'}`}>
+            {item.getStatus()}
+          </span>
+        </div>
+      </div>
+    ),
+  },
+];

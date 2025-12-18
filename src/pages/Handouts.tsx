@@ -203,9 +203,7 @@ function Handouts() {
   const fromDateObj = new Date(fromDate?.toString());
   const endDateObj = new Date(endDate?.toString());
 
-  const handoutsRespList = allHandouts.map(
-    (item) => new HandoutRespClass(item)
-  );
+  const handoutsRespList = allHandouts
 
   const filteredHandouts = handoutsRespList.reduce((acc, item) => {
     const handoutDate = item.getHandout().getDate();

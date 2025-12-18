@@ -166,7 +166,7 @@ const useUserApi = () => {
   const getUsers = () => {
     setLoading(true);
     services.GetRequest(
-      "/users",
+      "/customers",
       getUsersSuccessCallback,
       getUsersErrorCallback
     );
@@ -175,7 +175,7 @@ const useUserApi = () => {
   const getUserById = (id: number) => {
     setLoading(true);
     services.GetRequest(
-      `/users/${id}`,
+      `/customers/${id}`,
       getUserByIdSuccessCallback,
       getUserByIdErrorCallback
     );
@@ -184,7 +184,7 @@ const useUserApi = () => {
   const getUserHandouts = (id: number) => {
     setLoading(true);
     services.GetRequest(
-      `/users/${id}/handouts`,
+      `/customers/${id}/handouts`,
       getUserHandoutsSuccessCallback,
       getUserHandoutsErrorCallback
     );
@@ -200,7 +200,7 @@ const useUserApi = () => {
     };
     setLoading(true);
     services.PostRequest(
-      "/users",
+      "/customers",
       reqObj,
       createUserSuccessCallback,
       createUserErrorCallback
@@ -216,7 +216,7 @@ const useUserApi = () => {
     };
     setLoading(true);
     services.PutRequest(
-      `/users/${id}`,
+      `/customers/${id}`,
       reqObj,
       updateUserSuccessCallback,
       updateUserErrorCallback
@@ -226,7 +226,7 @@ const useUserApi = () => {
   const deleteUser = (id: number) => {
     setLoading(true);
     services.DeleteRequest(
-      `/users/${id}`,
+      `/customers/${id}`,
       deleteUserSuccessCallback,
       deleteUserErrorCallback
     );
@@ -238,7 +238,7 @@ const useUserApi = () => {
   ) => {
     setLoading(true);
     services.PostRequest(
-      `/users/${id}/referral`,
+      `/customers/${id}/referral`,
       referralData,
       linkReferralSuccessCallback,
       linkReferralErrorCallback
@@ -248,7 +248,7 @@ const useUserApi = () => {
   const getUserReferredBy = (id: number) => {
     setLoading(true);
     services.GetRequest(
-      `/users/${id}/referred-by`,
+      `/customers/${id}/referred-by`,
       getUserReferredBySuccessCallback,
       getUserReferredByErrorCallback
     );

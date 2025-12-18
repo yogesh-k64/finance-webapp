@@ -17,17 +17,38 @@ import Handouts from "./pages/Handouts";
 import HandoutsDetails from "./pages/HandoutsDetails";
 import UserDetails from "./pages/UserDetails";
 import HomePage from "./pages/HomePage";
-import { Provider } from "react-redux";
+import Login from "./pages/Login";
+import AdminPanel from "./pages/AdminPanel";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { Provider, useDispatch } from "react-redux";
 import { SCREENS } from "./utils/constants";
 import SnackBar from "./common/Snackbar";
 import { store } from "./store/store";
 import { useEffect } from "react";
+import { logout } from "./store/authSlice";
 
 const customTheme = createTheme({
   typography: {
     fontFamily: "Nunito, sans-serif",
   },
 });
+
+function AuthExpirationHandler() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      dispatch(logout());
+      navigate(SCREENS.LOGIN, { replace: true });
+    };
+
+    window.addEventListener('auth-expired', handleAuthExpired);
+    return () => window.removeEventListener('auth-expired', handleAuthExpired);
+  }, [navigate, dispatch]);
+
+  return null;
+}
 
 function RouteRestorer() {
   const navigate = useNavigate();
@@ -55,21 +76,43 @@ function App() {
       <Provider store={store}>
         <SnackBar />
         <Router basename="/finance-webapp">
+          <AuthExpirationHandler />
           <RouteRestorer />
           <Routes>
-            <Route path="*" element={<Navigate to={SCREENS.HOME} replace />} />
-            <Route path="/" element={<Dashboard />}>
+            {/* Public route */}
+            <Route 
+              path={SCREENS.LOGIN} 
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <Login />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* Protected routes */}
+            <Route 
+              path="/" 
+              element={<Dashboard />}
+            >
               <Route index element={<Navigate to={SCREENS.HOME} replace />} />
-              <Route path={SCREENS.HOME} element={<HomePage />} />
-              <Route path={SCREENS.CUSTOMERS} element={<Customers />} />
-              <Route path={SCREENS.CUSTOMER_DETAILS} element={<UserDetails />} />
-              <Route path={SCREENS.HANDOUTS} element={<Handouts />} />
-              <Route
-                path={SCREENS.HANDOUTS_DETAILS}
-                element={<HandoutsDetails />}
+              <Route path="home" element={<HomePage />} />
+              <Route path="customers" element={<Customers />} />
+              <Route path="customers/:id" element={<UserDetails />} />
+              <Route path="handouts" element={<Handouts />} />
+              <Route path="handouts/:id" element={<HandoutsDetails />} />
+              <Route path="collection" element={<Collection />} />
+              <Route 
+                path="admin" 
+                element={
+                  <ProtectedRoute requiredRole={['admin']}>
+                    <AdminPanel />
+                  </ProtectedRoute>
+                } 
               />
-              <Route path={SCREENS.COLLECTION} element={<Collection />} />
             </Route>
+
+            {/* Catch all - redirect to login */}
+            <Route path="*" element={<Navigate to={SCREENS.LOGIN} replace />} />
           </Routes>
         </Router>
       </Provider>

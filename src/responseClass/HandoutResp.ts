@@ -9,7 +9,7 @@ export class HandoutRespClass {
   constructor(handoutResp?: any) {
     if (handoutResp) {
       if (isNonEmpty(handoutResp.handout)) this.handout = new HandoutClass(handoutResp.handout);
-      if (isNonEmpty(handoutResp.user)) this.user = new UserClass(handoutResp.user);
+      if (isNonEmpty(handoutResp.customer)) this.user = new UserClass(handoutResp.customer);
     }
   }
 

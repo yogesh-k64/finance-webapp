@@ -102,6 +102,9 @@ const TableComponentV1 = (props: TableComponentProps) => {
     handleMoreOptionsClose();
   };
 
+  const disabledEdit = contextMenu?.item.disableEdit && contextMenu?.item.disableEdit()
+  const disabledDelete = contextMenu?.item.disableDelete && contextMenu?.item.disableDelete()
+
   if (isNonEmpty(list))
     return (
       <TableContainer component={Paper} className={`custom-table`}>
@@ -118,6 +121,8 @@ const TableComponentV1 = (props: TableComponentProps) => {
           </TableHead>
           <TableBody>
             {list.map((item, index) => {
+              const disableEdit = item.disableEdit && item.disableEdit()
+              const disableDel = item.disableDelete && item.disableDelete()
               return (
                 <TableRow
                   key={index}
@@ -145,11 +150,17 @@ const TableComponentV1 = (props: TableComponentProps) => {
                     if (cell.label === "Status") {
                       const status = dispValue;
                       let statusClass = "status-badge";
-                      if (status === STATUS_TYPES.ACTIVE) statusClass += " status-active";
-                      else if (status === STATUS_TYPES.COMPLETED) statusClass += " status-completed";
-                      else if (status === STATUS_TYPES.PENDING) statusClass += " status-pending";
-                      else if (status === STATUS_TYPES.CANCELLED) statusClass += " status-cancelled";
-                      
+                      if (status === STATUS_TYPES.ACTIVE)
+                        statusClass += " status-active";
+                      else if (status === STATUS_TYPES.COMPLETED)
+                        statusClass += " status-completed";
+                      else if (status === STATUS_TYPES.PENDING)
+                        statusClass += " status-pending";
+                      else if (status === STATUS_TYPES.CANCELLED)
+                        statusClass += " status-cancelled";
+                      else if (status === "DISABLED")
+                        statusClass += " status-disabled";
+
                       return (
                         <TableCell key={cellIndex}>
                           <span className={statusClass}>{status}</span>
@@ -159,7 +170,10 @@ const TableComponentV1 = (props: TableComponentProps) => {
 
                     // Render bond as check/cross icon
                     if (cell.label === "Bond") {
-                      const bondValue = getValueByKey(item, "getHandout.getBond");
+                      const bondValue = getValueByKey(
+                        item,
+                        "getHandout.getBond"
+                      );
                       return (
                         <TableCell key={cellIndex}>
                           {bondValue ? (
@@ -195,11 +209,12 @@ const TableComponentV1 = (props: TableComponentProps) => {
                     <TableCell>
                       {onEdit && (
                         <IconButton
+                          disabled={disableEdit}
                           onClick={(evt) => {
                             evt.stopPropagation();
                             onEdit(item);
                           }}
-                          className="action-icon"
+                          className={`action-icon ${disableEdit ? "disabled" : ""}`}
                           size="small"
                         >
                           <ModeEditSharpIcon />
@@ -207,11 +222,12 @@ const TableComponentV1 = (props: TableComponentProps) => {
                       )}
                       {onDelete && (
                         <IconButton
+                          disabled={disableDel}
                           onClick={(evt) => {
                             evt.stopPropagation();
                             onDelete(item);
                           }}
-                          className="action-icon"
+                          className={`action-icon ${disableDel ? "disabled" : ""}`}
                           size="small"
                         >
                           <DeleteOutlineSharpIcon />
@@ -244,13 +260,13 @@ const TableComponentV1 = (props: TableComponentProps) => {
           }
         >
           {onEdit && (
-            <MenuItem onClick={handleEdit}>
-              <ModeEditSharpIcon style={{ marginRight: 8 }} /> Edit
+            <MenuItem disabled={disabledEdit} onClick={handleEdit}>
+              <ModeEditSharpIcon style={{ marginRight: 8, opacity: disabledDelete ? 0.6 : 1 }} /> Edit
             </MenuItem>
           )}
           {onDelete && (
-            <MenuItem onClick={handleDelete}>
-              <DeleteOutlineSharpIcon style={{ marginRight: 8 }} /> Delete
+            <MenuItem disabled={disabledDelete} onClick={handleDelete}>
+              <DeleteOutlineSharpIcon style={{ marginRight: 8, opacity: disabledEdit ? 0.6 : 1 }} /> Delete
             </MenuItem>
           )}
           {moreOptions &&

@@ -25,7 +25,30 @@ class ApiServices {
     };
   }
 
-  private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
+  // Get authentication token from localStorage
+  private getAuthToken(): string | null {
+    return localStorage.getItem('authToken');
+  }
+
+  // Get headers with authentication token if available
+  private getAuthHeaders(customHeaders?: HeadersInit): HeadersInit {
+    const token = this.getAuthToken();
+    console.log('Getting auth token for request:', token ? 'Token found' : 'No token');
+    
+    const headers: HeadersInit = {
+      ...this.defaultHeaders,
+      ...customHeaders,
+    };
+
+    if (token) {
+      (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+      console.log('Authorization header set');
+    }
+
+    return headers;
+  }
+
+  private async handleResponse<T>(response: Response, endpoint: string): Promise<ApiResponse<T>> {
     const contentType = response.headers.get('Content-type');
     let data: any;
 
@@ -37,6 +60,21 @@ class ApiServices {
 
     if (!response.ok) {
       console.log('data :', data);
+      
+      // Handle authentication failures
+      // Don't redirect if it's the login endpoint itself failing
+      const isLoginEndpoint = endpoint.includes('/user/login');
+      
+      if ((response.status === 401 || response.status === 403) && !isLoginEndpoint) {
+        // Clear authentication data
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('admin');
+        localStorage.removeItem('expiresAt');
+        
+        // Dispatch custom event for auth failure
+        window.dispatchEvent(new CustomEvent('auth-expired'));
+      }
+      
       const error: ApiError = {
         message: data.message || `HTTP Error: ${response.status}`,
         status: response.status,
@@ -60,16 +98,13 @@ class ApiServices {
     const url = endpoint.startsWith('http') ? endpoint : `${this.baseURL}${endpoint}`;
     
     const config: RequestInit = {
-      headers: {
-        ...this.defaultHeaders,
-        ...options.headers,
-      },
       ...options,
+      headers: this.getAuthHeaders(options.headers),
     };
 
     try {
       const response = await fetch(url, config);
-      return await this.handleResponse<T>(response);
+      return await this.handleResponse<T>(response, endpoint);
     } catch (error) {
       if (error instanceof Error) {
         const apiError: ApiError = {

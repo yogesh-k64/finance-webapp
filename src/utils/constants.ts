@@ -1,12 +1,14 @@
 import { DateObject } from "react-multi-date-picker";
 
 export const SCREENS = {
+  LOGIN: "/login",
   HOME: "/home",
   CUSTOMERS: "/customers",
   CUSTOMER_DETAILS: "/customers/:id",
   HANDOUTS: "/handouts",
   HANDOUTS_DETAILS: "/handouts/:id",
   COLLECTION: "/collection",
+  ADMIN: "/admin",
 };
 
 export const LOCAL_STORAGE_KEY = {
@@ -78,3 +80,9 @@ export const initialFormData = {
 };
 
 export const MAX_MOBILE_WIDTH = 768
+
+export const USER_ROLES = {
+    Admin: 'admin',
+    Manager: 'manager',
+    Viewer: 'viewer',
+}

@@ -1,0 +1,342 @@
+@import 'colors';
+@import 'variables';
+
+.admin-panel {
+  margin-top: 24px;
+  margin-bottom: 24px;
+
+  @media (max-width: $screen-md) {
+    margin-bottom: 80px;
+    padding: 0 16px;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+
+    &-back-btn {
+      margin-right: 16px;
+      color: $neutral-clr-400;
+
+      &:hover {
+        background-color: $neutral-clr-700;
+      }
+    }
+
+    &-title {
+      color: $primary-txt-color;
+      font-weight: 600;
+      margin-bottom: 0;
+
+      @media (max-width: $screen-md) {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  &__user-info {
+    margin-bottom: 24px;
+    color: $secondary-txt-color;
+
+    strong {
+      color: $tertiary-txt-color;
+    }
+  }
+
+  &__content {
+    display: flex;
+    gap: 24px;
+
+    @media (max-width: $screen-md) {
+      flex-direction: column;
+    }
+  }
+
+  &__form-section {
+    flex: 1;
+
+    @media (min-width: $screen-md) {
+      flex: 0 0 40%;
+    }
+  }
+
+  &__list-section {
+    flex: 1;
+  }
+
+  &__paper {
+    padding: 24px;
+    background-color: $form-bg;
+    border: 1px solid $border-outline;
+
+    &-title {
+      color: $primary-txt-color;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+  }
+
+  &__alert {
+    margin-bottom: 16px;
+
+    &--error {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: $status-danger;
+      border: 1px solid rgba(244, 67, 54, 0.3);
+    }
+
+    &--success {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: $status-success;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+  }
+
+  &__form-field {
+    .MuiOutlinedInput-root {
+      background-color: $neutral-clr-700;
+      color: $primary-txt-color;
+
+      fieldset {
+        border-color: $border-outline;
+      }
+
+      &:hover fieldset {
+        border-color: $neutral-clr-400;
+      }
+
+      &.Mui-focused fieldset {
+        border-color: $btn-bg;
+      }
+    }
+
+    .MuiInputLabel-root {
+      color: $secondary-txt-color;
+
+      &.Mui-focused {
+        color: $btn-bg;
+      }
+    }
+
+    .MuiSelect-icon {
+      color: $secondary-txt-color;
+    }
+  }
+
+  &__dropdown-menu {
+    background-color: $neutral-clr-700;
+    border: 1px solid $border-outline;
+
+    .MuiMenuItem-root {
+      color: $primary-txt-color;
+
+      &:hover {
+        background-color: $form-bg;
+      }
+
+      &.Mui-selected {
+        background-color: $form-bg;
+
+        &:hover {
+          background-color: $border-outline;
+        }
+      }
+    }
+  }
+
+  &__submit-btn {
+    margin-top: 16px;
+    background: $btn-grad;
+    color: $primary-txt-color;
+    font-weight: 600;
+    text-transform: none;
+
+    &:hover {
+      background: linear-gradient(128.49deg, #B635E8 19.86%, #6F1FE0 68.34%);
+    }
+
+    &:disabled {
+      background: $border-outline;
+      color: $neutral-clr-500;
+    }
+  }
+
+  &__table {
+    .MuiTableCell-head {
+      color: $tertiary-txt-color;
+      font-weight: 600;
+      border-bottom: 1px solid $border-outline;
+    }
+
+    .MuiTableCell-body {
+      color: $primary-txt-color;
+      border-bottom: 1px solid $border-outline;
+    }
+
+    .MuiTableRow-root:hover {
+      background-color: $neutral-clr-700;
+    }
+  }
+
+  &__edit-btn {
+    color: $btn-bg;
+
+    &:hover {
+      background-color: $neutral-clr-700;
+    }
+  }
+
+  &__no-data {
+    padding: 32px 0;
+    text-align: center;
+    color: $secondary-txt-color;
+  }
+}
+
+.admin-dialog {
+  .MuiDialog-paper {
+    background-color: $form-bg;
+    border: 1px solid $border-outline;
+    min-width: 400px;
+  }
+
+  &__title {
+    color: $primary-txt-color;
+    font-weight: 600;
+  }
+
+  &__content {
+    padding-top: 16px;
+  }
+
+  &__actions {
+    padding: 16px;
+  }
+
+  &__cancel-btn {
+    color: $secondary-txt-color;
+
+    &:hover {
+      background-color: $neutral-clr-700;
+    }
+  }
+
+  &__submit-btn {
+    background: $btn-grad;
+    color: $primary-txt-color;
+    font-weight: 600;
+    text-transform: none;
+
+    &:hover {
+      background: linear-gradient(128.49deg, #B635E8 19.86%, #6F1FE0 68.34%);
+    }
+
+    &:disabled {
+      background: $border-outline;
+      color: $neutral-clr-500;
+    }
+  }
+
+  &__switch {
+    .MuiSwitch-switchBase.Mui-checked {
+      color: $btn-bg;
+    }
+
+    .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track {
+      background-color: $btn-bg;
+    }
+  }
+
+  &__label {
+    color: $secondary-txt-color;
+  }
+}
+
+.admin-user-mobile {
+  &__detail-container {
+    padding: 12px 0;
+  }
+
+  &__detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: $primary-txt-color;
+    font-size: 14px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__detail-meta {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid $border-outline;
+    font-size: 12px;
+    color: $secondary-txt-color;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__username {
+    font-weight: 600;
+    color: $primary-txt-color;
+  }
+
+  &__id {
+    color: $secondary-txt-color;
+  }
+
+  &__role {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &--admin {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: $status-danger;
+    }
+
+    &--manager {
+      background-color: rgba(255, 152, 0, 0.2);
+      color: $status-warning;
+    }
+
+    &--viewer {
+      background-color: rgba(33, 150, 243, 0.2);
+      color: $status-info;
+    }
+  }
+
+  &__status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &--active {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: $status-success;
+    }
+
+    &--inactive {
+      background-color: rgba(158, 158, 158, 0.2);
+      color: $secondary-txt-color;
+    }
+
+    &--disabled {
+      background-color: rgba(244, 67, 54, 0.2);
+      color: $status-danger;
+    }
+  }
+}

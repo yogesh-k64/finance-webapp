@@ -1,0 +1,102 @@
+@import 'colors';
+@import 'variables';
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $neutral-clr-800;
+
+  // Override Material-UI Container default styles
+  &.MuiContainer-root {
+    background-color: transparent;
+  }
+}
+
+.login-paper {
+  padding: 2rem;
+  width: 100%;
+  background-color: $neutral-clr-600 !important;
+  border-radius: 8px;
+  border: 1px solid $border-outline;
+}
+
+.login-title {
+  color: $neutral-clr-100;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.login-subtitle {
+  margin-bottom: 2rem;
+  color: $neutral-clr-400;
+}
+
+.login-error-alert {
+  margin-bottom: 1rem;
+  background-color: rgba(244, 67, 54, 0.1);
+  color: $status-danger;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.login-text-field {
+  .MuiOutlinedInput-root {
+    background-color: $neutral-clr-700 !important;
+    color: $neutral-clr-100 !important;
+
+    input {
+      color: $neutral-clr-100 !important;
+      background-color: transparent !important;
+    }
+
+    & fieldset {
+      border-color: $border-outline !important;
+    }
+
+    &:hover fieldset {
+      border-color: $neutral-clr-400 !important;
+    }
+
+    &.Mui-focused fieldset {
+      border-color: $btn-bg !important;
+    }
+  }
+
+  .MuiInputLabel-root {
+    color: $neutral-clr-400 !important;
+
+    &.Mui-focused {
+      color: $btn-bg !important;
+    }
+  }
+
+  .MuiOutlinedInput-input {
+    color: $neutral-clr-100 !important;
+    
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 100px $neutral-clr-700 inset !important;
+      -webkit-text-fill-color: $neutral-clr-100 !important;
+    }
+  }
+}
+
+.login-submit-button {
+  margin-top: 1.5rem;
+  background: $btn-grad !important;
+  color: $neutral-clr-100 !important;
+  font-weight: 600;
+  text-transform: none !important;
+  font-size: 16px !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+
+  &:hover {
+    background: linear-gradient(128.49deg, #B635E8 19.86%, #6F1FE0 68.34%) !important;
+  }
+
+  &:disabled {
+    background: $border-outline !important;
+    color: $neutral-clr-500 !important;
+  }
+}
